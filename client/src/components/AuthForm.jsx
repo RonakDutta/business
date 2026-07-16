@@ -78,20 +78,20 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   };
 
   const field =
-    "w-full rounded-xl border border-line-strong bg-white px-4 py-3.5 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
+    "w-full rounded-2xl border border-line-strong bg-[#fafbfc] px-4 py-3.5 text-[15px] text-ink shadow-[inset_0_1px_0_rgba(255,255,255,.8)] transition-[border-color,background,box-shadow] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--b4-accent)_10%,transparent)] focus:outline-none";
   const labelCls =
     "text-[11.5px] font-bold uppercase tracking-[0.07em] text-subtle";
 
   return (
-    <section className="mx-auto max-w-shell px-6 py-10 md:px-10 md:py-14">
+    <section className="mx-auto max-w-shell px-5 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14">
       <BackLink to="/">Back home</BackLink>
 
-      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-panel border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_420px]">
+      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_420px]">
         {/* ---- Form ------------------------------------------------- */}
-        <div className="p-8 md:p-12">
+        <div className="bg-gradient-to-b from-white to-[#fafbfc] p-6 sm:p-9 md:p-12">
           <div className="mx-auto max-w-[380px]">
             {returning && (
-              <div className="accent-tint accent-border mb-6 rounded-xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
+              <div className="accent-tint accent-border mb-6 rounded-2xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
                 Sign in to finish your RSVP — we'll take you straight back to
                 it.
               </div>
@@ -176,20 +176,20 @@ export default function AuthForm({ mode = "login", onSubmit }) {
               </label>
 
               {error && (
-                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-[13.5px] font-semibold text-red-600">
+                <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[13.5px] font-semibold text-red-600">
                   {error}
                 </p>
               )}
 
               <button
                 type="submit"
-                className="mt-1 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+                className="mt-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)]"
               >
                 {isSignup ? "Create account" : "Sign in"}
               </button>
             </form>
 
-            <p className="mt-7 border-t border-line pt-6 text-sm text-muted">
+            <p className="mt-8 border-t border-line pt-6 text-sm text-muted">
               {isSignup ? "Already a member? " : "New here? "}
               <Link
                 to={`${isSignup ? "/login" : "/signup"}${

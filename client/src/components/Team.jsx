@@ -1,21 +1,60 @@
-import CoverImage from "./CoverImage.jsx";
+import { useState } from "react";
 import { ArrowUpRightIcon } from "./icons.jsx";
 
 /**
  * Portraits sit in a 4/5 frame, desaturated until hover , keeps the row calm
  * when four different photos have four different colour casts.
  */
+function initials(name) {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function TeamPortrait({ person }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!person.image || failed) {
+    return (
+      <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-[#27344f] to-accent text-white">
+        <div
+          aria-hidden="true"
+          className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/10"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-16 -left-12 h-44 w-44 rounded-full border border-white/10"
+        />
+        <span className="relative grid h-20 w-20 place-items-center rounded-full border border-white/20 bg-white/10 text-[27px] font-extrabold tracking-[-0.05em] backdrop-blur-sm">
+          {initials(person.name)}
+        </span>
+        <span className="relative mt-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white/55">
+          Business 4.0
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={person.image}
+      alt={person.name}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-full w-full object-cover"
+    />
+  );
+}
+
 function TeamMember({ person }) {
   const inner = (
     <>
-      <div className="relative overflow-hidden rounded-card border border-line">
-        <div className="aspect-[4/5] transition-[scale,filter] duration-[600ms] ease-smooth grayscale-[0.55] group-hover:scale-[1.04] group-hover:grayscale-0">
-          <CoverImage
-            src={person.image}
-            alt={person.name}
-            label="PORTRAIT"
-            className="h-full w-full"
-          />
+      <div className=" relative overflow-hidden rounded-card border border-line">
+        <div className="aspect-[4/5] transition-[scale,filter] duration-[600ms] ease-smooth grayscale-[0.25] group-hover:scale-[1.04] group-hover:grayscale-0">
+          <TeamPortrait person={person} />
         </div>
 
         {/* accent hairline on hover */}
@@ -28,10 +67,10 @@ function TeamMember({ person }) {
         )}
       </div>
 
-      <div className="mt-4 text-[19px] font-extrabold leading-tight tracking-[-0.02em] text-ink md:text-[21px]">
+      <div className="flex justify-center mt-4 text-[19px] font-extrabold leading-tight tracking-[-0.02em] text-ink md:text-[21px]">
         {person.name}
       </div>
-      <div className="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
+      <div className="flex justify-center mt-1.5 items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
         <span className="h-1 w-1 rounded-full bg-accent" aria-hidden="true" />
         {person.role}
       </div>
