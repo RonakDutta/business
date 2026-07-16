@@ -14,7 +14,7 @@ export default function MetroRoute({ metro, className = "" }) {
     {
       icon: MetroIcon,
       label: `${metro.station} metro`,
-      note: "The only station for the venue",
+      note: "The nearest metro station for the venue",
     },
     {
       icon: ExitIcon,

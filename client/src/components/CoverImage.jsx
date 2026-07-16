@@ -15,7 +15,19 @@ export default function CoverImage({
   imgClassName = "",
   loading = "lazy",
 }) {
-  const [failed, setFailed] = useState(false);
+  /*
+    Remember WHICH src failed, not just that one did.
+
+    A plain `failed` boolean was sticky: once anything 404'd, this component
+    showed the placeholder forever, even after being handed a perfectly good
+    new src. That bites on every event page — EventsContext starts on the seed
+    records and swaps in the localStorage ones a tick later, so the first paint
+    can fail on a missing default and then refuse to draw the real image that
+    arrives immediately after. Comparing against the current src means a new
+    src is always given its own chance.
+  */
+  const [failedSrc, setFailedSrc] = useState(null);
+  const failed = Boolean(src) && failedSrc === src;
 
   if (!src || failed) {
     return (
@@ -32,7 +44,7 @@ export default function CoverImage({
       src={src}
       alt={alt}
       loading={loading}
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(src)}
       className={`h-full w-full object-cover ${className} ${imgClassName}`}
     />
   );

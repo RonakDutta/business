@@ -281,38 +281,6 @@ export default function Guidelines() {
           </section>
 
           {/* Getting here , the metro question, answered once. */}
-          <section
-            id="getting-here"
-            className="reveal mt-6 scroll-mt-28 rounded-panel border border-line bg-white p-6 md:p-8"
-          >
-            <h2 className="text-[22px] font-extrabold tracking-[-0.03em] md:text-[26px]">
-              Getting here
-            </h2>
-            <p className="mt-2.5 max-w-[440px] text-[14.5px] leading-relaxed text-muted">
-              {VENUE.name} , {VENUE.address}, {VENUE.city}.
-            </p>
-
-            <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
-              <MetroRoute metro={VENUE.metro} />
-
-              <div className="flex flex-col justify-center gap-3 border-t border-line pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
-                <div>
-                  <div className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-subtle">
-                    On the day
-                  </div>
-                  <a
-                    href={`tel:${VENUE.helpline}`}
-                    className="mt-1 block text-[18px] font-extrabold tracking-[-0.02em] text-accent"
-                  >
-                    {VENUE.helpline}
-                  </a>
-                </div>
-                <p className="text-[12.5px] leading-relaxed text-subtle">
-                  {VENUE.helplineNote}
-                </p>
-              </div>
-            </div>
-          </section>
 
           {/* Hand-off: guidelines read, now go do something. */}
           <section className="reveal mt-6 overflow-hidden rounded-panel bg-ink p-8 text-white md:p-10">

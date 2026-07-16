@@ -5,20 +5,14 @@ import {
   TicketIcon,
   ArrowUpRightIcon,
 } from "./icons.jsx";
-import {
-  googleCalendarUrl,
-  mapsUrl,
-  isOnline,
-  priceLabel,
-} from "../lib/format.js";
+import { googleCalendarUrl, mapsUrl, isOnline, priceLabel } from "../lib/format.js";
 
 /* ===========================================================================
    When / where / what it costs.
 
-   Was a tall card stacked in a right-hand sidebar , which is exactly where
-   meetup.com puts it, and it pushed the description into a narrow column for
-   its whole length. It's a strip under the hero now: the three facts sit side
-   by side above the fold, and the description gets the full width beneath.
+   No card chrome of its own — it's the lower half of the ticket in
+   EventDetail, below the perforation, so the hero and the facts read as one
+   object rather than two things stacked with a gap between them.
    =========================================================================== */
 
 function Fact({ icon: Icon, label, value, note, action }) {
@@ -55,7 +49,7 @@ export default function EventMeta({ event }) {
   const online = isOnline(location);
 
   return (
-    <div className="reveal grid grid-cols-1 divide-y divide-line rounded-panel border border-line bg-white shadow-[0_10px_30px_-26px_rgba(15,23,42,.4)] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    <div className="grid grid-cols-1 divide-y divide-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       <Fact
         icon={CalendarIcon}
         label="When"
@@ -78,7 +72,7 @@ export default function EventMeta({ event }) {
       <Fact
         icon={MapPinIcon}
         label="Where"
-        value={location.name}
+        value={location.shortName ?? location.name}
         note={`${location.address}${location.city ? ` · ${location.city}` : ""}`}
         action={
           !online && (

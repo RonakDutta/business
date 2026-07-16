@@ -1,8 +1,9 @@
 import Avatar from "./Avatar.jsx";
 
-/* Prime member styling is deliberately light for now , the concept isn't
+/* Prime member styling is deliberately light for now — the concept isn't
    defined yet. When it is, extend ROLE_STYLES rather than the components. */
 const ROLE_STYLES = {
+  "Super organiser": "bg-accent text-white",
   Organiser: "bg-ink text-white",
   "Prime member": "bg-accent/10 text-accent",
   Member: "bg-line text-subtle",
@@ -10,35 +11,71 @@ const ROLE_STYLES = {
 
 const isPrime = (role) => role === "Prime member";
 
+/**
+ * `bare` drops the heading and the section chrome, for when the page already
+ * supplies them — event detail puts "Who's coming" and the count in its label
+ * rail, so the list would otherwise announce itself twice.
+ */
 export default function AttendeeList({
   attendees = [],
   total = 0,
   past = false,
   you = null,
+  host = null,
+  bare = false,
 }) {
-  if (!attendees.length && !you) return null;
+  if (!attendees.length && !you && !host) return null;
 
-  const overflow = Math.max(0, total - attendees.length - (you ? 1 : 0));
+  /* The host runs every edition, so he's always in the room — he just isn't in
+     the attendee pool. He leads the list rather than being counted into it,
+     which is why he's subtracted from the overflow along with you. */
+  const overflow = Math.max(
+    0,
+    total - attendees.length - (you ? 1 : 0) - (host ? 1 : 0),
+  );
 
   // Tense follows the event, not just the heading.
   const copy = past
     ? { heading: "Who came", count: "attended", more: "more attended" }
     : { heading: "Who's coming", count: "going", more: "more members going" };
 
+  const Wrapper = bare ? "div" : "section";
+
   return (
-    <section className="reveal border-t border-line pt-12">
-      <div className="mb-8 flex flex-wrap items-baseline gap-3">
-        <h2 className="text-[26px] font-extrabold tracking-[-0.025em]">
-          {copy.heading}
-        </h2>
-        <span className="text-sm font-semibold text-subtle">
-          {total.toLocaleString("en-IN")} {copy.count}
-        </span>
-      </div>
+    <Wrapper className={bare ? "" : "reveal border-t border-line pt-12"}>
+      {!bare && (
+        <div className="mb-8 flex flex-wrap items-baseline gap-3">
+          <h2 className="text-[26px] font-extrabold tracking-[-0.025em]">
+            {copy.heading}
+          </h2>
+          <span className="text-sm font-semibold text-subtle">
+            {total.toLocaleString("en-IN")} {copy.count}
+          </span>
+        </div>
+      )}
 
       <ul className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
-        {/* You go first. Seeing yourself in the list is the whole point of
-            having RSVP'd. */}
+        {/* The organiser leads — he's the one constant in the room. */}
+        {host && (
+          <li className="flex items-center gap-3">
+            <Avatar person={host} size={44} ring />
+            <div className="min-w-0">
+              <div className="truncate text-sm font-bold text-ink">
+                {host.name}
+              </div>
+              <span
+                className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.04em] ${
+                  ROLE_STYLES[host.role] || ROLE_STYLES.Organiser
+                }`}
+              >
+                {host.role}
+              </span>
+            </div>
+          </li>
+        )}
+
+        {/* Then you. Seeing yourself in the list is the whole point of having
+            RSVP'd. */}
         {you && (
           <li className="flex items-center gap-3">
             <span className="account-avatar grid h-11 w-11 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white ring-2 ring-accent ring-offset-2 ring-offset-white">
@@ -57,9 +94,7 @@ export default function AttendeeList({
           <li key={p.id} className="flex items-center gap-3">
             <Avatar person={p} size={44} ring={isPrime(p.role)} />
             <div className="min-w-0">
-              <div className="truncate text-sm font-bold text-ink">
-                {p.name}
-              </div>
+              <div className="truncate text-sm font-bold text-ink">{p.name}</div>
               <span
                 className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.04em] ${
                   ROLE_STYLES[p.role] || ROLE_STYLES.Member
@@ -77,6 +112,6 @@ export default function AttendeeList({
           + {overflow.toLocaleString("en-IN")} {copy.more}
         </p>
       )}
-    </section>
+    </Wrapper>
   );
 }

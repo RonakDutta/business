@@ -3,12 +3,15 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEvents } from "../../context/EventsContext.jsx";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../../data/events.js";
 import Avatar from "../../components/Avatar.jsx";
-import { priceLabel } from "../../lib/format.js";
 import BackLink from "../../components/BackLink.jsx";
-import { CheckIcon, UsersIcon } from "../../components/icons.jsx";
+import CoverImage from "../../components/CoverImage.jsx";
+import ImagePicker, { SizeNote } from "../../components/ImagePicker.jsx";
+import { dataUrlBytes, isUploaded } from "../../lib/image.js";
+import { priceLabel } from "../../lib/format.js";
+import { CheckIcon, CloseIcon, UsersIcon } from "../../components/icons.jsx";
 
 const field =
-  "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
+  "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none disabled:bg-[#fafbfc] disabled:text-subtle";
 const labelCls =
   "text-[12px] font-bold uppercase tracking-[0.07em] text-subtle";
 
@@ -31,7 +34,11 @@ function Card({ title, note, children }) {
         <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-ink">
           {title}
         </h2>
-        {note && <p className="mt-1 text-[12.5px] text-subtle">{note}</p>}
+        {note && (
+          <p className="mt-1 text-[12.5px] leading-relaxed text-subtle">
+            {note}
+          </p>
+        )}
       </div>
       <div className="flex flex-col gap-5">{children}</div>
     </section>
@@ -52,11 +59,17 @@ export default function EventForm() {
     title: record?.title ?? "",
     entryFee: String(record?.entryFee ?? 150),
     attendeeCount: String(record?.attendeeCount ?? 0),
+    image: record?.image ?? "",
     description: (record?.description ?? DEFAULT_DESCRIPTION).join("\n\n"),
-    photos: (record?.photos ?? []).join(", "),
+    photos: record?.photos ?? [],
     cancelled: Boolean(record?.cancelled),
   }));
   const [error, setError] = useState("");
+
+  /* What these images cost in the only storage we have. */
+  const uploadBytes =
+    dataUrlBytes(form.image) +
+    form.photos.reduce((n, p) => n + dataUrlBytes(p), 0);
 
   if (editing && !record) {
     return (
@@ -77,21 +90,21 @@ export default function EventForm() {
 
   const save = () => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date))
-      return setError("Pick a date , it doubles as the event's ID and URL.");
+      return setError("Pick a date — it doubles as the event's ID and URL.");
 
     const next = {
       date: form.date,
       title: form.title.trim() || undefined,
       entryFee: Number(form.entryFee) || 0,
       attendeeCount: Number(form.attendeeCount) || 0,
+      /* Blank falls back to the shared default in lib/events-model.js rather
+         than storing an empty string that would render a broken image. */
+      image: form.image.trim() || undefined,
       description: form.description
         .split(/\n{2,}/)
         .map((p) => p.trim())
         .filter(Boolean),
-      photos: form.photos
-        .split(",")
-        .map((p) => p.trim())
-        .filter(Boolean),
+      photos: form.photos.filter(Boolean),
       cancelled: form.cancelled,
     };
 
@@ -107,6 +120,15 @@ export default function EventForm() {
         timeZone: "Asia/Kolkata",
       })
     : null;
+
+  /* The gallery only shows on the public site once the meetup has happened —
+     say so rather than letting someone wonder where their photos went. */
+  const isPast = built?.isPast;
+
+  const photoSrc = (photo) =>
+    isUploaded(photo) || photo.startsWith("/")
+      ? photo
+      : `/images/gallery/${form.date}/${photo}`;
 
   return (
     <>
@@ -174,6 +196,111 @@ export default function EventForm() {
             </div>
           </Card>
 
+          {/* ---- Two jobs, two cards ------------------------------------
+              The header is the one image behind the title, up before anyone
+              turns up. The gallery is the many images from after they did.
+              They used to be one field called "photos", which is why nobody
+              could tell which was which. */}
+
+          <Card
+            title="Header image"
+            note="Sits behind the title at the top of the event page. Landscape works best — it's cropped to fill."
+          >
+            <div className="overflow-hidden rounded-card border border-line">
+              <div className="relative h-[190px] bg-ink">
+                <CoverImage
+                  src={form.image.trim() || undefined}
+                  alt=""
+                  label="NO IMAGE — USING THE DEFAULT"
+                  className="h-full w-full"
+                />
+                {/* The real scrim, so you can see whether the title will be
+                    readable on this photo before you save it. */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <div className="text-[16px] font-extrabold leading-tight tracking-[-0.02em] text-white">
+                    {form.title.trim() || DEFAULT_TITLE}
+                  </div>
+                </div>
+
+                {form.image && (
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, image: "" }))}
+                    aria-label="Remove header image"
+                    className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-ink transition-colors duration-200 hover:bg-white"
+                  >
+                    <CloseIcon className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <ImagePicker
+              preset="header"
+              label="Drop the header image here"
+              hint="JPG, PNG or WebP. Resized to 1600px wide automatically."
+              onError={setError}
+              onAdd={([dataUrl]) => setForm((f) => ({ ...f, image: dataUrl }))}
+            />
+          </Card>
+
+          <Card
+            title="Photo gallery"
+            note={
+              isPast
+                ? "The album from the meetup. Live on the gallery now."
+                : "The album from after the meetup. These appear in the gallery once the date has passed."
+            }
+          >
+            {form.photos.length > 0 && (
+              <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+                {form.photos.map((photo, i) => (
+                  <div
+                    key={`${i}-${photo.slice(0, 24)}`}
+                    className="group relative aspect-square overflow-hidden rounded-lg border border-line"
+                  >
+                    <CoverImage
+                      src={photoSrc(photo)}
+                      alt=""
+                      label=""
+                      className="h-full w-full"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setForm((f) => ({
+                          ...f,
+                          photos: f.photos.filter((_, j) => j !== i),
+                        }))
+                      }
+                      aria-label={`Remove photo ${i + 1}`}
+                      className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-ink opacity-0 transition-opacity duration-200 hover:bg-white focus-visible:opacity-100 group-hover:opacity-100"
+                    >
+                      <CloseIcon className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <ImagePicker
+              multiple
+              preset="gallery"
+              label="Drop the photos here"
+              hint="Several at once is fine. Resized to 1280px automatically."
+              onError={setError}
+              onAdd={(urls) =>
+                setForm((f) => ({ ...f, photos: [...f.photos, ...urls] }))
+              }
+            />
+
+            <SizeNote bytes={uploadBytes} />
+          </Card>
+
           <Card
             title="What people read"
             note="Shown on the event page, under the cover."
@@ -184,18 +311,6 @@ export default function EventForm() {
                 className={`${field} resize-y leading-relaxed`}
                 value={form.description}
                 onChange={set("description")}
-              />
-            </Row>
-
-            <Row
-              label="Photo filenames"
-              hint={`Comma separated. Files go in public/images/gallery/${form.date || "<date>"}/`}
-            >
-              <input
-                className={field}
-                placeholder="01.jpg, 02.jpg"
-                value={form.photos}
-                onChange={set("photos")}
               />
             </Row>
           </Card>
@@ -249,7 +364,6 @@ export default function EventForm() {
         </div>
 
         <aside className="flex flex-col gap-5 lg:sticky lg:top-8">
-          {/* How the card will read once it's live. */}
           <div className="rounded-card border border-line bg-white p-6">
             <h2 className="text-[15px] font-extrabold tracking-[-0.01em]">
               How it'll read
@@ -268,6 +382,20 @@ export default function EventForm() {
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
+                <dt className="text-subtle">Header</dt>
+                <dd className="truncate text-right font-mono text-[11.5px] text-muted">
+                  {isUploaded(form.image)
+                    ? "uploaded"
+                    : form.image.trim() || "default"}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-subtle">Gallery</dt>
+                <dd className="font-bold text-ink">
+                  {form.photos.length || "—"}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
                 <dt className="text-subtle">URL</dt>
                 <dd className="truncate font-mono text-[11.5px] text-muted">
                   /events/{form.date || "…"}
@@ -276,7 +404,6 @@ export default function EventForm() {
             </dl>
           </div>
 
-          {/* Attendees , read-only until there's a real RSVP table */}
           <div className="rounded-card border border-line bg-white p-6">
             <div className="flex items-baseline justify-between">
               <h2 className="flex items-center gap-2 text-[15px] font-extrabold tracking-[-0.01em]">
