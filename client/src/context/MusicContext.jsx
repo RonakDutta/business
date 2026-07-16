@@ -9,7 +9,7 @@ import {
 
 const KEY = "b4:music";
 const SRC = "/audio/ambient.mp3";
-const VOLUME = 0.18; // background, not foreground — keep it low
+const VOLUME = 0.18; // background, not foreground , keep it low
 
 const MusicContext = createContext(null);
 
@@ -18,8 +18,8 @@ const MusicContext = createContext(null);
  *
  * Browsers block audio that plays before the user interacts with the page
  * (Chrome/Safari autoplay policy), so this can never start on load. It starts
- * on a click of the toggle, remembers the choice, and — for a returning
- * visitor who left it on — resumes on their first interaction.
+ * on a click of the toggle, remembers the choice, and , for a returning
+ * visitor who left it on , resumes on their first interaction.
  *
  * Default is OFF, deliberately. See the note in MusicToggle.jsx.
  */
@@ -73,7 +73,7 @@ export function MusicProvider({ children, src = SRC, volume = VOLUME }) {
       await audio.play();
       fadeTo(volume);
     } catch {
-      /* Browser refused — the gesture listener below will retry. */
+      /* Browser refused , the gesture listener below will retry. */
     }
   }, [ensureAudio, fadeTo, volume]);
 
@@ -101,7 +101,7 @@ export function MusicProvider({ children, src = SRC, volume = VOLUME }) {
   /*
     Autoplay is blocked until the visitor interacts with the page, so arm a
     listener for the first click/tap/key and start then. Listeners are attached
-    whenever we want sound but aren't producing any — that removes the race
+    whenever we want sound but aren't producing any , that removes the race
     where a rejected play() hadn't flipped a flag yet before the user clicked.
   */
   useEffect(() => {
@@ -140,7 +140,7 @@ export function MusicProvider({ children, src = SRC, volume = VOLUME }) {
       cancelAnimationFrame(fadeRef.current);
       audioRef.current?.pause();
     },
-    []
+    [],
   );
 
   const toggle = useCallback(() => {

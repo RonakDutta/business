@@ -3,7 +3,7 @@ import { POOL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../data/events.js";
 import { eventDateLabel, eventWhenHeadline } from "./format.js";
 
 /* ===========================================================================
-   Pure event model. No React, no storage — just record in, event out.
+   Pure event model. No React, no storage , just record in, event out.
 
    Kept separate so the admin, the public site and (later) the API can all
    agree on what an event *is* without importing each other.
@@ -20,7 +20,7 @@ const album = (eventId, files = []) =>
   Status comes from the clock, not a hand-set field.
 
   These meetups run fortnightly, so an event that is "upcoming" today is
-  "past" a week later. Deriving it means nobody has to remember to flip it —
+  "past" a week later. Deriving it means nobody has to remember to flip it ,
   and `cancelled` stays a separate flag so a cancelled meetup doesn't lose
   track of whether it has also already been and gone.
 */
@@ -75,12 +75,10 @@ export const byDateDesc = (a, b) => b.startsAt.localeCompare(a.startsAt);
 export function deriveCollections(meetups, now = Date.now()) {
   const allEvents = meetups.map((m) => buildEvent(m, now)).sort(byDateDesc);
 
-  /* Cancelled meetups stay in the upcoming list on purpose — members need to
+  /* Cancelled meetups stay in the upcoming list on purpose , members need to
      see that it's off. They're dropped from the past list, where they'd just
      be noise. */
-  const upcomingEvents = allEvents
-    .filter((e) => !e.isPast)
-    .sort(byDateAsc);
+  const upcomingEvents = allEvents.filter((e) => !e.isPast).sort(byDateAsc);
 
   const pastEvents = allEvents.filter((e) => e.isPast && !e.cancelled);
 

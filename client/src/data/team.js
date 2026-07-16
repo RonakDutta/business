@@ -5,9 +5,9 @@
    Reference as:     "/images/team/vishal.jpg"   (leading slash, no "public")
 
    Leave `image` out (or point it at a missing file) and a placeholder tile
-   shows instead — so you can add photos one at a time.
+   shows instead , so you can add photos one at a time.
 
-   `role` is a plain string — edit these to whatever the four of you actually
+   `role` is a plain string , edit these to whatever the four of you actually
    call yourselves. `linkedin` is optional; drop the key to hide the link.
    --------------------------------------------------------------------------- */
 

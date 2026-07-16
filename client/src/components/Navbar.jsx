@@ -36,7 +36,7 @@ const pill = ({ isActive }) =>
    Signed-in account menu.
 
    Everything to do with the account lives behind one control, so the bar keeps
-   the same shape whether you're logged out, logged in, or an organiser —
+   the same shape whether you're logged out, logged in, or an organiser ,
    rather than growing an extra pill per privilege.
    --------------------------------------------------------------------------- */
 function AccountMenu({ user, isAdmin, signOut }) {
@@ -186,13 +186,18 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-shell items-center justify-between gap-4 px-6 py-3.5 md:px-10">
-        <Link to="/" aria-label="Business 4.0 — home">
+        <Link to="/" aria-label="Business 4.0 , home">
           <Wordmark />
         </Link>
 
         <div className="hidden items-center gap-1 rounded-full bg-[#f4f5f8] p-1 md:flex">
           {LINKS.map((l) => (
-            <NavLink key={l.label} to={l.to} end={l.to === "/"} className={pill}>
+            <NavLink
+              key={l.label}
+              to={l.to}
+              end={l.to === "/"}
+              className={pill}
+            >
               {l.label}
             </NavLink>
           ))}

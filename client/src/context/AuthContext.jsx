@@ -1,18 +1,24 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const KEY = "b4:user";
 const AuthContext = createContext(null);
 
 /* ===========================================================================
-   ⚠️  STUB — THIS IS NOT AUTHENTICATION.
+   ⚠️  STUB , THIS IS NOT AUTHENTICATION.
 
    There is no server, no password check, no session. It writes a name into
    localStorage and trusts it. Anyone can open devtools and "sign in" as
    anybody, so do not put anything private behind it and do not ship it.
 
    It exists so the RSVP flow and the navbar can be built and reviewed now.
-   When the real backend lands, replace the three functions below — signIn,
-   signUp, signOut — and every component keeps working as-is.
+   When the real backend lands, replace the three functions below , signIn,
+   signUp, signOut , and every component keeps working as-is.
    =========================================================================== */
 
 export function AuthProvider({ children }) {
@@ -42,7 +48,7 @@ export function AuthProvider({ children }) {
   /*
     STUB RULE: any address starting with "admin@" is an admin.
     Sign in as admin@business4.com to reach /admin. Replace this with a real
-    role from the server — never trust a client-side check in production.
+    role from the server , never trust a client-side check in production.
   */
   const isAdmin = Boolean(user?.email?.toLowerCase().startsWith("admin@"));
 
@@ -52,7 +58,7 @@ export function AuthProvider({ children }) {
       persist(next);
       return next;
     },
-    [persist]
+    [persist],
   );
 
   const signUp = useCallback(
@@ -61,13 +67,15 @@ export function AuthProvider({ children }) {
       persist(next);
       return next;
     },
-    [persist]
+    [persist],
   );
 
   const signOut = useCallback(() => persist(null), [persist]);
 
   return (
-    <AuthContext.Provider value={{ user, ready, isAdmin, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, ready, isAdmin, signIn, signUp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

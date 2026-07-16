@@ -5,6 +5,7 @@ import Lightbox from "../components/Lightbox.jsx";
 import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
+import BackLink from "../components/BackLink.jsx";
 
 export default function AlbumDetail() {
   const { id } = useParams();
@@ -22,9 +23,7 @@ export default function AlbumDetail() {
 
   return (
     <section className="mx-auto max-w-shell px-6 pb-24 pt-16 md:px-10">
-      <Link to="/gallery" className="text-sm font-bold text-accent">
-        ← All albums
-      </Link>
+      <BackLink to="/gallery">All albums</BackLink>
 
       <div className="mb-10 mt-6 flex flex-wrap items-end justify-between gap-4">
         <div>

@@ -4,18 +4,22 @@ import { useEvents } from "../../context/EventsContext.jsx";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../../data/events.js";
 import Avatar from "../../components/Avatar.jsx";
 import { priceLabel } from "../../lib/format.js";
+import BackLink from "../../components/BackLink.jsx";
 import { CheckIcon, UsersIcon } from "../../components/icons.jsx";
 
 const field =
   "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
-const labelCls = "text-[12px] font-bold uppercase tracking-[0.07em] text-subtle";
+const labelCls =
+  "text-[12px] font-bold uppercase tracking-[0.07em] text-subtle";
 
 function Row({ label, hint, children }) {
   return (
     <label className="flex flex-col gap-2">
       <span className={labelCls}>{label}</span>
       {children}
-      {hint && <span className="text-[12px] leading-relaxed text-subtle">{hint}</span>}
+      {hint && (
+        <span className="text-[12px] leading-relaxed text-subtle">{hint}</span>
+      )}
     </label>
   );
 }
@@ -58,12 +62,9 @@ export default function EventForm() {
     return (
       <div className="rounded-card border border-line bg-white p-12 text-center">
         <p className="font-bold text-ink">No meetup with that date.</p>
-        <Link
-          to="/admin"
-          className="mt-4 inline-block text-sm font-bold text-accent"
-        >
-          ← Back to meetups
-        </Link>
+        <div className="mt-5 flex justify-center">
+          <BackLink to="/admin">Back to meetups</BackLink>
+        </div>
       </div>
     );
   }
@@ -76,7 +77,7 @@ export default function EventForm() {
 
   const save = () => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date))
-      return setError("Pick a date — it doubles as the event's ID and URL.");
+      return setError("Pick a date , it doubles as the event's ID and URL.");
 
     const next = {
       date: form.date,
@@ -109,12 +110,7 @@ export default function EventForm() {
 
   return (
     <>
-      <Link
-        to="/admin"
-        className="text-[13px] font-bold text-subtle transition-colors duration-200 hover:text-accent"
-      >
-        ← Meetups
-      </Link>
+      <BackLink to="/admin">Meetups</BackLink>
 
       <header className="mb-8 mt-3">
         <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-subtle">
@@ -280,7 +276,7 @@ export default function EventForm() {
             </dl>
           </div>
 
-          {/* Attendees — read-only until there's a real RSVP table */}
+          {/* Attendees , read-only until there's a real RSVP table */}
           <div className="rounded-card border border-line bg-white p-6">
             <div className="flex items-baseline justify-between">
               <h2 className="flex items-center gap-2 text-[15px] font-extrabold tracking-[-0.01em]">
@@ -296,7 +292,11 @@ export default function EventForm() {
               <ul className="mt-5 flex flex-col gap-3">
                 {built.attendees.map((p) => (
                   <li key={p.id} className="flex items-center gap-3">
-                    <Avatar person={p} size={34} ring={p.role === "Prime member"} />
+                    <Avatar
+                      person={p}
+                      size={34}
+                      ring={p.role === "Prime member"}
+                    />
                     <div className="min-w-0">
                       <div className="truncate text-[13px] font-bold text-ink">
                         {p.name}
@@ -310,7 +310,9 @@ export default function EventForm() {
               </ul>
             ) : (
               <p className="mt-4 text-[13px] leading-relaxed text-subtle">
-                {editing ? "Nobody yet." : "Appears once the meetup is created."}
+                {editing
+                  ? "Nobody yet."
+                  : "Appears once the meetup is created."}
               </p>
             )}
           </div>

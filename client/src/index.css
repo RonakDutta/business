@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
-/* v4 auto-detects source files — including markdown. The README documents
+/* v4 auto-detects source files , including markdown. The README documents
    class names in prose, which would otherwise generate real (dead) CSS. */
 @source not "../README.md";
 
 /* ---------------------------------------------------------------
-   Design tokens. In v4 this replaces tailwind.config.js entirely —
+   Design tokens. In v4 this replaces tailwind.config.js entirely ,
    every variable here generates utilities automatically:
    --color-ink       -> text-ink / bg-ink / border-ink
    --radius-card     -> rounded-card
@@ -38,7 +38,7 @@
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Runtime theme values — overwritten on :root by ThemeContext. */
+/* Runtime theme values , overwritten on :root by ThemeContext. */
 :root {
   --b4-accent: #1d4ed8;
   --b4-card: 18px;
@@ -68,7 +68,7 @@
     text-decoration: none;
   }
 
-  /* v4 resets buttons to `cursor: default` — restore the pointer. */
+  /* v4 resets buttons to `cursor: default` , restore the pointer. */
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
@@ -111,10 +111,10 @@
 }
 
 @layer components {
-  /* Scroll reveal — driven by useReveal() */
+  /* Scroll reveal , driven by useReveal() */
   /*
     Elements that also carry a `transition-[...]` utility (cards with hover
-    lifts) get their transition-property overwritten by that utility — the
+    lifts) get their transition-property overwritten by that utility , the
     utilities layer always beats this one. Those elements must list
     `opacity,translate` in their own utility; see EventCard/AlbumCard.
     Everything else falls back to the transition declared here.
@@ -137,7 +137,7 @@
 
   /*
     Dropdowns and drawers. An animation rather than a transition because these
-    elements are mounted on open — there's no "before" state to transition
+    elements are mounted on open , there's no "before" state to transition
     from. Same reason as .reveal for animating `translate`/`scale` instead of
     `transform`: it composes with v4's utilities rather than fighting them.
   */

@@ -1,4 +1,4 @@
-/** "Free" or "₹150" — one source of truth for how price renders. */
+/** "Free" or "₹150" , one source of truth for how price renders. */
 export const priceLabel = (entryFee) =>
   !entryFee ? "Free" : `₹${entryFee.toLocaleString("en-IN")}`;
 
@@ -24,7 +24,9 @@ export function googleCalendarUrl(event) {
 
 /** Text query used for both the maps link and the embedded map. */
 const locationQuery = (location) =>
-  [location?.name, location?.address, location?.city].filter(Boolean).join(", ");
+  [location?.name, location?.address, location?.city]
+    .filter(Boolean)
+    .join(", ");
 
 export const isOnline = (location) => /online/i.test(location?.name || "");
 
@@ -46,13 +48,12 @@ export function mapEmbedUrl(location) {
 
 export function mapsUrl(location) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    locationQuery(location)
+    locationQuery(location),
   )}`;
 }
 
 export const eventUrl = (event) =>
   `${window.location.origin}/events/${encodeURIComponent(event.id)}`;
-
 
 /* ---------------------------------------------------------------------------
    EVENT DATES
@@ -64,13 +65,41 @@ export const eventUrl = (event) =>
 
 const WD_SHORT = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const WD_LONG = [
-  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 const MO_SHORT = [
-  "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
 ];
 const MO_LONG = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const parts = (dateStr) => {
@@ -87,7 +116,11 @@ export function eventDateLabel(dateStr, past, startTime = "11:00 AM") {
 }
 
 /** Sidebar headline, e.g. "Saturday, Jul 18 · 11:00 AM to 1:00 PM IST" */
-export function eventWhenHeadline(dateStr, startTime = "11:00 AM", endTime = "1:00 PM") {
+export function eventWhenHeadline(
+  dateStr,
+  startTime = "11:00 AM",
+  endTime = "1:00 PM",
+) {
   const { m, d, wd } = parts(dateStr);
   return `${WD_LONG[wd]}, ${MO_LONG[m - 1]} ${d} · ${startTime} to ${endTime} IST`;
 }

@@ -6,7 +6,7 @@ function Stat({ value, suffix, label, decimals = 0 }) {
   return (
     <div className="flex flex-col items-center gap-2 px-4 py-8 text-center md:py-10">
       {/*
-        tabular-nums keeps every digit the same width — without it the number
+        tabular-nums keeps every digit the same width , without it the number
         visibly jitters while counting up from 0.
       */}
       <div

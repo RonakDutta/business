@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
 import Newsletter from "./Newsletter.jsx";
 import Wordmark from "./Wordmark.jsx";
+import { SOCIALS } from "../data/socials.js";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  UsersIcon,
+  XIcon,
+} from "./icons.jsx";
 
-/* Everything here is now a real route — the old #contact / #guidelines
-   anchors pointed at the footer itself, which was a link to nowhere. */
+/* Everything here is a real route , the old #contact / #guidelines anchors
+   pointed at the footer itself, which was a link to nowhere. */
 const COLUMNS = [
   {
     id: "explore",
@@ -24,15 +32,24 @@ const COLUMNS = [
     ],
   },
   {
-    id: "connect",
-    heading: "CONNECT",
+    id: "reach-us",
+    heading: "REACH US",
     links: [
-      { label: "Meetup", href: "https://www.meetup.com/business4-0", external: true },
       { label: "hello@business4.com", href: "mailto:hello@business4.com" },
       { label: "9999658436", href: "tel:9999658436" },
+      { label: "Shaheedi Park, New Delhi", to: "/contact" },
     ],
   },
 ];
+
+/* Add a network: add it to data/socials.js, then map its icon here. */
+const ICONS = {
+  instagram: InstagramIcon,
+  facebook: FacebookIcon,
+  x: XIcon,
+  linkedin: LinkedInIcon,
+  meetup: UsersIcon,
+};
 
 function FooterLink({ link }) {
   const cls = "text-sm opacity-75 transition-opacity hover:opacity-100";
@@ -58,6 +75,36 @@ function FooterLink({ link }) {
   );
 }
 
+/**
+ * Icons, not names. Five more text links would compete with the nav columns
+ * for attention; five circles read as one object.
+ */
+function Socials() {
+  const links = SOCIALS.filter((s) => s.url && ICONS[s.id]);
+  if (!links.length) return null;
+
+  return (
+    <div className="flex gap-2">
+      {links.map((s) => {
+        const Icon = ICONS[s.id];
+        return (
+          <a
+            key={s.id}
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${s.label} , ${s.handle}`}
+            title={s.handle}
+            className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.08] text-white/70 transition-[scale,background,color] duration-300 ease-smooth hover:scale-110 hover:bg-white hover:text-ink"
+          >
+            <Icon className="h-[17px] w-[17px]" />
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="mx-auto max-w-shell px-6 pb-12 md:px-10">
@@ -71,6 +118,13 @@ export default function Footer() {
               A community of marketers, founders, and freelancers who meet,
               learn, and grow together. Every second Saturday, at Shaheedi Park.
             </p>
+
+            <div className="mt-7">
+              <div className="mb-3 text-xs font-bold tracking-[0.08em] opacity-45">
+                FOLLOW
+              </div>
+              <Socials />
+            </div>
           </div>
 
           {COLUMNS.map((col) => (

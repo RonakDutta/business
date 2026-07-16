@@ -1,5 +1,5 @@
 /* ===========================================================================
-   One stroke weight, one join style, one 24x24 box — that's what keeps a set
+   One stroke weight, one join style, one 24x24 box , that's what keeps a set
    of hand-rolled icons from looking hand-rolled. Size them at the call site
    with a className; they inherit colour from `currentColor`.
    =========================================================================== */
@@ -311,6 +311,66 @@ export function ScanIcon({ className = "" }) {
     <Icon className={className}>
       <path d="M4 9V6.5A2.5 2.5 0 0 1 6.5 4H9M15 4h2.5A2.5 2.5 0 0 1 20 6.5V9M20 15v2.5a2.5 2.5 0 0 1-2.5 2.5H15M9 20H6.5A2.5 2.5 0 0 1 4 17.5V15" />
       <path d="M4 12h16" />
+    </Icon>
+  );
+}
+
+export function ArrowLeftIcon({ className = "" }) {
+  return (
+    <Icon className={className} strokeWidth={2.2}>
+      <path d="M20 12H5M11 6l-6 6 6 6" />
+    </Icon>
+  );
+}
+
+export function FacebookIcon({ className = "" }) {
+  return (
+    <Icon className={className}>
+      <path d="M13.5 21v-8H16l.5-3h-3V8.2c0-.9.3-1.5 1.6-1.5H16.6V4.1A21 21 0 0 0 14.5 4C12.3 4 10.8 5.3 10.8 7.9V10H8.3v3h2.5v8z" />
+    </Icon>
+  );
+}
+
+/* Formerly Twitter. The mark is a glyph, not a stroke drawing , filled to
+   match how X publishes it, rather than outlined to match everything else. */
+export function XIcon({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <path d="M17.2 3h3.3l-7.2 8.3L21.8 21h-6.6l-5.2-6.8L4.1 21H.8l7.7-8.8L.5 3h6.8l4.7 6.2zm-1.2 16h1.8L6.1 4.8H4.2z" />
+    </svg>
+  );
+}
+
+export function MetroIcon({ className = "" }) {
+  return (
+    <Icon className={className}>
+      <rect x="5" y="3" width="14" height="13" rx="4" />
+      <path d="M5 10.5h14M8.5 20l1.5-4M15.5 20L14 16M7 20h10" />
+      <path d="M9 13.2v.1M15 13.2v.1" strokeWidth={2.4} />
+    </Icon>
+  );
+}
+
+export function ExitIcon({ className = "" }) {
+  return (
+    <Icon className={className}>
+      <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" />
+      <path d="M14 8l4 4-4 4M18 12H9" />
+    </Icon>
+  );
+}
+
+export function WalkIcon({ className = "" }) {
+  return (
+    <Icon className={className}>
+      <circle cx="13" cy="4.5" r="1.8" />
+      <path d="M11 21l1.8-5.4L10.5 13V9.3l3-1.3 2.4 3 2.6 1" />
+      <path d="M10.5 13L7 15.5M12.8 15.6L15 21" />
     </Icon>
   );
 }

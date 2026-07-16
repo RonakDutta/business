@@ -9,10 +9,15 @@ const initials = (name) =>
     .toUpperCase();
 
 /**
- * Falls back to initials when the avatar API is unreachable — pravatar is a
+ * Falls back to initials when the avatar API is unreachable , pravatar is a
  * placeholder service and does go down. `ring` marks Prime members.
  */
-export default function Avatar({ person, size = 48, ring = false, className = "" }) {
+export default function Avatar({
+  person,
+  size = 48,
+  ring = false,
+  className = "",
+}) {
   const [failed, setFailed] = useState(false);
 
   const ringCls = ring

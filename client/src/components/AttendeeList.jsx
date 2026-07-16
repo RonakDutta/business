@@ -1,6 +1,6 @@
 import Avatar from "./Avatar.jsx";
 
-/* Prime member styling is deliberately light for now — the concept isn't
+/* Prime member styling is deliberately light for now , the concept isn't
    defined yet. When it is, extend ROLE_STYLES rather than the components. */
 const ROLE_STYLES = {
   Organiser: "bg-ink text-white",
@@ -57,7 +57,9 @@ export default function AttendeeList({
           <li key={p.id} className="flex items-center gap-3">
             <Avatar person={p} size={44} ring={isPrime(p.role)} />
             <div className="min-w-0">
-              <div className="truncate text-sm font-bold text-ink">{p.name}</div>
+              <div className="truncate text-sm font-bold text-ink">
+                {p.name}
+              </div>
               <span
                 className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.04em] ${
                   ROLE_STYLES[p.role] || ROLE_STYLES.Member

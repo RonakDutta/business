@@ -5,12 +5,33 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { useRsvp } from "../context/RsvpContext.jsx";
 import { useShare } from "../hooks/useShare.js";
 import AttendDialog from "./AttendDialog.jsx";
+import AvatarStack from "./AvatarStack.jsx";
 import { HeartIcon, ShareIcon, CheckIcon } from "./icons.jsx";
 import { priceLabel } from "../lib/format.js";
+
+const MONTHS = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 
 /**
  * Floating bar pinned to the bottom of the viewport.
  * The page reserves space for it with pb-32 so it never covers the footer.
+ *
+ * Pill-shaped rather than a slab, and it now leads with the date chip and
+ * carries the room with it , the two things that make someone decide. The
+ * price moved into the button, so the bar states the offer once instead of
+ * twice.
  */
 export default function EventActionBar({ event }) {
   const { isSaved, toggle } = useSavedEvents();
@@ -30,7 +51,7 @@ export default function EventActionBar({ event }) {
   /*
     RSVP is gated on sign-in. Signed out, this sends them to /login with a
     `next` param so they land back on this event afterwards rather than on the
-    home page. Signed in, it opens the payment step — the count only moves once
+    home page. Signed in, it opens the payment step , the count only moves once
     they confirm in there.
   */
   const onAttend = () => {
@@ -57,25 +78,52 @@ export default function EventActionBar({ event }) {
 
   const isDead = cancelled || (isPast && !hasPhotos);
 
+  // The id is the date, so the chip needs no extra field.
+  const [, m, d] = event.id.split("-").map(Number);
+  const day = d;
+  const month = MONTHS[m - 1];
+
   return (
     <>
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-4 md:pb-6">
-        <div className="pointer-events-auto mx-auto flex max-w-[980px] items-center gap-3 rounded-panel border border-line bg-white/95 p-3 shadow-[0_18px_40px_-20px_rgba(15,23,42,.4)] backdrop-blur-md md:gap-4 md:p-4 md:pl-6">
-          {/* Title block — hidden on the smallest screens so actions stay reachable */}
+        <div className="pointer-events-auto mx-auto flex max-w-[940px] items-center gap-3 rounded-panel border border-line bg-white/95 p-2.5 shadow-[0_18px_45px_-18px_rgba(15,23,42,.45)] backdrop-blur-md sm:rounded-full md:gap-4 md:p-3 md:pl-4">
+          {/* Date chip , same object as on the cards, so the bar reads as a
+              continuation of the one you clicked. */}
+          <div
+            className={`hidden w-[46px] shrink-0 flex-col items-center rounded-xl py-1.5 sm:flex ${
+              cancelled ? "bg-red-50 text-red-600" : "accent-tint text-accent"
+            }`}
+          >
+            <span className="text-[16px] font-extrabold leading-none tabular-nums">
+              {day}
+            </span>
+            <span className="mt-0.5 text-[8.5px] font-bold tracking-[0.1em] opacity-70">
+              {month}
+            </span>
+          </div>
+
           <div className="hidden min-w-0 flex-1 sm:block">
-            <div className="text-[11px] font-semibold tracking-[0.04em] text-subtle">
-              {event.date}
-            </div>
-            <div className="truncate text-[17px] font-extrabold tracking-[-0.02em] text-ink">
+            <div className="truncate text-[15px] font-extrabold leading-tight tracking-[-0.02em] text-ink">
               {event.title}
+            </div>
+            <div className="mt-1 flex items-center gap-2">
+              {event.attendeeCount > 0 && (
+                <AvatarStack
+                  people={event.attendees}
+                  total={event.attendeeCount}
+                  max={3}
+                  size={20}
+                />
+              )}
+              <span className="truncate text-[12px] font-semibold text-subtle">
+                {event.attendeeCount > 0
+                  ? `${event.attendeeCount} ${isPast ? "came" : "going"} · ${event.date}`
+                  : event.date}
+              </span>
             </div>
           </div>
 
-          <div className="flex flex-1 items-center justify-between gap-2 sm:flex-none sm:justify-end md:gap-3">
-            <span className="hidden rounded-full border border-line-strong px-4 py-2 text-[13px] font-bold text-ink sm:inline">
-              {priceLabel(event.entryFee)}
-            </span>
-
+          <div className="flex flex-1 items-center justify-between gap-2 sm:flex-none sm:justify-end md:gap-2.5">
             <button
               type="button"
               onClick={() => toggle(event.id)}
@@ -95,10 +143,10 @@ export default function EventActionBar({ event }) {
               onClick={share}
               aria-label="Share this event"
               title={shared ? "Link copied" : "Share this event"}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent transition-[scale] duration-200 ease-smooth hover:scale-105 active:scale-95"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-subtle transition-[scale,color,background] duration-200 ease-smooth hover:scale-105 hover:bg-line hover:text-ink active:scale-95"
             >
               {shared ? (
-                <CheckIcon className="h-5 w-5" />
+                <CheckIcon className="h-5 w-5 text-accent" />
               ) : (
                 <ShareIcon className="h-5 w-5" />
               )}
@@ -106,7 +154,7 @@ export default function EventActionBar({ event }) {
 
             {isDead ? (
               <span
-                className={`whitespace-nowrap rounded-btn px-5 py-3.5 text-[14px] font-bold md:px-7 md:text-[15px] ${
+                className={`whitespace-nowrap rounded-full px-5 py-3.5 text-[14px] font-bold md:px-7 md:text-[15px] ${
                   cancelled
                     ? "bg-red-50 text-red-600"
                     : "border border-line-strong text-subtle"
@@ -117,10 +165,12 @@ export default function EventActionBar({ event }) {
             ) : (
               <button
                 type="button"
-                onClick={isPast ? () => navigate(`/gallery/${event.id}`) : onAttend}
+                onClick={
+                  isPast ? () => navigate(`/gallery/${event.id}`) : onAttend
+                }
                 aria-pressed={going || undefined}
                 title={going ? "Click to give up your seat" : undefined}
-                className={`whitespace-nowrap rounded-btn px-5 py-3.5 text-[14px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 md:px-7 md:text-[15px] ${
+                className={`whitespace-nowrap rounded-full px-5 py-3.5 text-[14px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 md:px-7 md:text-[15px] ${
                   going ? "bg-accent" : "bg-ink hover:bg-accent"
                 }`}
               >

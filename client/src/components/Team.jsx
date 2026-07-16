@@ -2,7 +2,7 @@ import CoverImage from "./CoverImage.jsx";
 import { ArrowUpRightIcon } from "./icons.jsx";
 
 /**
- * Portraits sit in a 4/5 frame, desaturated until hover — keeps the row calm
+ * Portraits sit in a 4/5 frame, desaturated until hover , keeps the row calm
  * when four different photos have four different colour casts.
  */
 function TeamMember({ person }) {
@@ -68,8 +68,8 @@ export default function Team({ members = [] }) {
         </h2>
         <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
         <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
-          The people who show up early, stack the chairs, and make sure you leave
-          knowing someone new.
+          The people who show up early, stack the chairs, and make sure you
+          leave knowing someone new.
         </p>
       </div>
 

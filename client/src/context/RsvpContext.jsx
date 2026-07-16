@@ -15,9 +15,9 @@ const RsvpContext = createContext(null);
    Who's going, from this browser's point of view.
 
    Two things have to move together when someone pays: the meetup's attendee
-   count (a fact about the event — lives in EventsContext, which is why the
+   count (a fact about the event , lives in EventsContext, which is why the
    admin table updates at the same moment the public page does) and the list of
-   meetups *you* joined (a fact about you — lives here).
+   meetups *you* joined (a fact about you , lives here).
 
    Keeping the list here is also what makes confirm() safe to call twice: the
    count only moves for a meetup you aren't already on.
@@ -42,7 +42,7 @@ export function RsvpProvider({ children }) {
     try {
       localStorage.setItem(KEY, JSON.stringify(ids));
     } catch {
-      /* storage unavailable — this session only */
+      /* storage unavailable , this session only */
     }
   }, [ids]);
 

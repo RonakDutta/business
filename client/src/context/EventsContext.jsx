@@ -18,7 +18,7 @@ const EventsContext = createContext(null);
    Records live in state and are mirrored to localStorage, so admin edits
    survive a refresh and show up on the public site immediately. When the SQL
    backend lands, the mutators below become API calls and nothing else in the
-   app has to change — that's the whole point of routing every read through
+   app has to change , that's the whole point of routing every read through
    this hook instead of importing the data module directly.
 
    Note: once you've edited anything, your browser copy wins over the seed.
@@ -37,7 +37,7 @@ export function EventsProvider({ children }) {
         if (Array.isArray(parsed) && parsed.length) setMeetups(parsed);
       }
     } catch {
-      /* corrupt or unavailable — fall back to the seed */
+      /* corrupt or unavailable , fall back to the seed */
     }
     setReady(true);
   }, []);
@@ -47,7 +47,7 @@ export function EventsProvider({ children }) {
     try {
       localStorage.setItem(KEY, JSON.stringify(next));
     } catch {
-      /* storage unavailable — changes stay in memory for this session */
+      /* storage unavailable , changes stay in memory for this session */
     }
     return next;
   }, []);
@@ -56,21 +56,21 @@ export function EventsProvider({ children }) {
 
   const getEventById = useCallback(
     (id) => collections.allEvents.find((e) => e.id === id),
-    [collections.allEvents]
+    [collections.allEvents],
   );
 
   const getAlbumById = useCallback(
     (id) => collections.albums.find((a) => a.id === id),
-    [collections.albums]
+    [collections.albums],
   );
 
   const getRecord = useCallback(
     (id) => meetups.find((m) => m.date === id),
-    [meetups]
+    [meetups],
   );
 
   /* The date IS the id, so two meetups can't share one. The form checks this
-     before calling, but guard here too — this is the layer that owns it. */
+     before calling, but guard here too , this is the layer that owns it. */
   const addEvent = useCallback(
     (record) => {
       if (meetups.some((m) => m.date === record.date)) {
@@ -79,24 +79,28 @@ export function EventsProvider({ children }) {
       persist([...meetups, record]);
       return { ok: true, id: record.date };
     },
-    [meetups, persist]
+    [meetups, persist],
   );
 
   const updateEvent = useCallback(
     (id, patch) => {
-      if (patch.date && patch.date !== id && meetups.some((m) => m.date === patch.date)) {
+      if (
+        patch.date &&
+        patch.date !== id &&
+        meetups.some((m) => m.date === patch.date)
+      ) {
         return { ok: false, error: "Another meetup already uses that date." };
       }
       persist(meetups.map((m) => (m.date === id ? { ...m, ...patch } : m)));
       return { ok: true, id: patch.date ?? id };
     },
-    [meetups, persist]
+    [meetups, persist],
   );
 
   /* Moves the count when someone RSVPs. Deliberately not part of updateEvent:
      an RSVP isn't an edit of the meetup, it's an arrival, and it comes from the
      public site rather than the admin form. RsvpContext owns the "have I
-     already counted this person" question — see the note there. */
+     already counted this person" question , see the note there. */
   const addAttendee = useCallback(
     (id, delta = 1) =>
       persist(
@@ -104,23 +108,26 @@ export function EventsProvider({ children }) {
           m.date === id
             ? {
                 ...m,
-                attendeeCount: Math.max(0, (Number(m.attendeeCount) || 0) + delta),
+                attendeeCount: Math.max(
+                  0,
+                  (Number(m.attendeeCount) || 0) + delta,
+                ),
               }
-            : m
-        )
+            : m,
+        ),
       ),
-    [meetups, persist]
+    [meetups, persist],
   );
 
   const setCancelled = useCallback(
     (id, cancelled) =>
       persist(meetups.map((m) => (m.date === id ? { ...m, cancelled } : m))),
-    [meetups, persist]
+    [meetups, persist],
   );
 
   const removeEvent = useCallback(
     (id) => persist(meetups.filter((m) => m.date !== id)),
-    [meetups, persist]
+    [meetups, persist],
   );
 
   const resetToSeed = useCallback(() => {
@@ -148,12 +155,24 @@ export function EventsProvider({ children }) {
       resetToSeed,
     }),
     [
-      collections, ready, meetups, getEventById, getAlbumById, getRecord,
-      addEvent, updateEvent, addAttendee, setCancelled, removeEvent, resetToSeed,
-    ]
+      collections,
+      ready,
+      meetups,
+      getEventById,
+      getAlbumById,
+      getRecord,
+      addEvent,
+      updateEvent,
+      addAttendee,
+      setCancelled,
+      removeEvent,
+      resetToSeed,
+    ],
   );
 
-  return <EventsContext.Provider value={value}>{children}</EventsContext.Provider>;
+  return (
+    <EventsContext.Provider value={value}>{children}</EventsContext.Provider>
+  );
 }
 
 export function useEvents() {

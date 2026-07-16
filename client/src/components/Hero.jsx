@@ -28,7 +28,7 @@ export default function Hero() {
         data-delay="0.16"
         className="reveal mx-auto mt-[26px] max-w-[560px] text-[18px] leading-[1.65] text-muted [text-wrap:pretty]"
       >
-        Marketers, founders, and freelancers sharing real expertise — because we
+        Marketers, founders, and freelancers sharing real expertise , because we
         all know something worth teaching.
       </p>
 

@@ -10,7 +10,7 @@ import { priceLabel, isFree } from "../lib/format.js";
 
    The QR is a UPI intent string encoded at render time, so any UPI app scans
    it with the amount and reference already filled in. On a phone, the same
-   string opens the app directly — hence the button under the code.
+   string opens the app directly , hence the button under the code.
 
    What this can't do without a backend: verify the money arrived. The seat is
    booked when the attendee says they've paid, and the reference under the code
@@ -23,7 +23,7 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
   const free = isFree(event.entryFee);
   const [done, setDone] = useState(false);
 
-  // One reference per dialog — regenerating it mid-payment would be unhelpful.
+  // One reference per dialog , regenerating it mid-payment would be unhelpful.
   const reference = useMemo(() => paymentRef(event.id), [event.id]);
 
   const intent = useMemo(
@@ -95,7 +95,7 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
 
             {free ? (
               <p className="mt-3 text-[15px] leading-relaxed text-muted">
-                This edition is free — no payment needed. Confirm below and
+                This edition is free , no payment needed. Confirm below and
                 we'll count you in.
               </p>
             ) : (
@@ -135,8 +135,8 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
 
                 <p className="mt-4 text-[12px] leading-relaxed text-subtle">
                   Reference{" "}
-                  <span className="font-mono text-ink">{reference}</span> — quote
-                  it if anything goes wrong with the transfer.
+                  <span className="font-mono text-ink">{reference}</span> ,
+                  quote it if anything goes wrong with the transfer.
                 </p>
               </>
             )}
@@ -146,12 +146,12 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
               onClick={confirm}
               className="mt-5 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
             >
-              {free ? "Count me in" : "I've paid — confirm my seat"}
+              {free ? "Count me in" : "I've paid , confirm my seat"}
             </button>
 
             {!free && (
               <p className="mt-3 text-center text-[12px] text-subtle">
-                Pay at the door instead if you'd rather — cash or UPI.
+                Pay at the door instead if you'd rather , cash or UPI.
               </p>
             )}
           </>
@@ -175,8 +175,8 @@ function Confirmed({ event, onClose }) {
         You're going
       </h2>
       <p className="mx-auto mt-2 max-w-[300px] text-[15px] leading-relaxed text-muted">
-        {event.when.headline}. Enter via {event.location.gate || "the main gate"}{" "}
-        — we start on time.
+        {event.when.headline}. Enter via{" "}
+        {event.location.gate || "the main gate"} , we start on time.
       </p>
 
       <button

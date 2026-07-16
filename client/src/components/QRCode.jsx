@@ -6,7 +6,7 @@ import { encodeQR } from "../lib/qr.js";
  *
  * Drawn at module scale (1 unit = 1 module) and scaled by the viewBox, so it
  * stays sharp at any size and prints cleanly. `quiet` is the mandatory light
- * margin — the spec asks for 4 modules and scanners really do rely on it.
+ * margin , the spec asks for 4 modules and scanners really do rely on it.
  *
  * Colour comes from `currentColor`; keep it dark-on-light or scanners struggle.
  */
@@ -23,7 +23,7 @@ export default function QRCode({ value, quiet = 4, className = "", title }) {
 
   const span = code.size + quiet * 2;
 
-  // One path, one fill — cheaper than a few hundred <rect> elements.
+  // One path, one fill , cheaper than a few hundred <rect> elements.
   let d = "";
   for (let r = 0; r < code.size; r++) {
     for (let c = 0; c < code.size; c++) {

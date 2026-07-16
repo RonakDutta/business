@@ -17,15 +17,36 @@ import {
   UsersIcon,
 } from "../../components/icons.jsx";
 
-const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const MONTHS = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 
 const STATUS = {
-  upcoming: { label: "Upcoming", cls: "bg-accent/10 text-accent", dot: "bg-accent" },
+  upcoming: {
+    label: "Upcoming",
+    cls: "bg-accent/10 text-accent",
+    dot: "bg-accent",
+  },
   past: { label: "Held", cls: "bg-line text-subtle", dot: "bg-faint" },
-  cancelled: { label: "Cancelled", cls: "bg-red-50 text-red-600", dot: "bg-red-500" },
+  cancelled: {
+    label: "Cancelled",
+    cls: "bg-red-50 text-red-600",
+    dot: "bg-red-500",
+  },
 };
 
-/** The id is the date — a chip reads faster than "2026-07-18" in a long list. */
+/** The id is the date , a chip reads faster than "2026-07-18" in a long list. */
 function DateChip({ id, muted = false }) {
   const [y, m, d] = id.split("-").map(Number);
   return (
@@ -180,8 +201,7 @@ export default function Dashboard() {
     return allEvents
       .filter((e) => filter === "all" || e.status === filter)
       .filter(
-        (e) =>
-          !q || e.title.toLowerCase().includes(q) || e.id.includes(q),
+        (e) => !q || e.title.toLowerCase().includes(q) || e.id.includes(q),
       );
   }, [allEvents, filter, query]);
 
@@ -254,7 +274,7 @@ export default function Dashboard() {
             value={
               pastEvents.length
                 ? Math.round(totalAttendees / pastEvents.length)
-                : "—"
+                : ","
             }
             hint="People per meetup"
           />
@@ -271,7 +291,9 @@ export default function Dashboard() {
               onClick={() => setFilter(f.id)}
               aria-pressed={filter === f.id}
               className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-bold transition-colors duration-200 ${
-                filter === f.id ? "bg-ink text-white" : "text-muted hover:text-ink"
+                filter === f.id
+                  ? "bg-ink text-white"
+                  : "text-muted hover:text-ink"
               }`}
             >
               {f.label}
@@ -356,7 +378,9 @@ export default function Dashboard() {
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${status.cls}`}
                       >
-                        <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
+                        />
                         {status.label}
                       </span>
                     </td>
@@ -440,7 +464,7 @@ export default function Dashboard() {
             </p>
             <p className="mx-auto mt-1.5 max-w-[320px] text-[13px] leading-relaxed text-muted">
               {query
-                ? "Try the date instead — every meetup is filed under the day it runs."
+                ? "Try the date instead , every meetup is filed under the day it runs."
                 : "Add a date and it'll show up here and on the public site."}
             </p>
           </div>

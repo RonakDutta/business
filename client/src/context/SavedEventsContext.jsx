@@ -1,4 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 const KEY = "b4:saved-events";
 const SavedEventsContext = createContext(null);
@@ -20,7 +27,7 @@ export function SavedEventsProvider({ children }) {
     try {
       localStorage.setItem(KEY, JSON.stringify(saved));
     } catch {
-      /* storage unavailable — saves stay in-memory for this session */
+      /* storage unavailable , saves stay in-memory for this session */
     }
   }, [saved]);
 
@@ -35,7 +42,7 @@ export function SavedEventsProvider({ children }) {
 
   const toggle = useCallback((id) => {
     setSaved((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   }, []);
 
@@ -43,7 +50,7 @@ export function SavedEventsProvider({ children }) {
 
   const value = useMemo(
     () => ({ saved, toggle, isSaved, count: saved.length }),
-    [saved, toggle, isSaved]
+    [saved, toggle, isSaved],
   );
 
   return (
@@ -55,6 +62,7 @@ export function SavedEventsProvider({ children }) {
 
 export function useSavedEvents() {
   const ctx = useContext(SavedEventsContext);
-  if (!ctx) throw new Error("useSavedEvents must be used inside <SavedEventsProvider>");
+  if (!ctx)
+    throw new Error("useSavedEvents must be used inside <SavedEventsProvider>");
   return ctx;
 }

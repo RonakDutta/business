@@ -1,16 +1,17 @@
 import { useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import EventCard from "../components/EventCard.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { useSavedEvents } from "../context/SavedEventsContext.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
+import BackLink from "../components/BackLink.jsx";
 
 const TABS = ["upcoming", "past", "saved"];
 
 const EMPTY = {
   upcoming: {
     title: "No dates up yet",
-    body: "The next edition hasn't been announced. It's every second Saturday — check back in a few days.",
+    body: "The next edition hasn't been announced. It's every second Saturday , check back in a few days.",
     cta: null,
   },
   past: {
@@ -68,9 +69,7 @@ export default function Events() {
 
   return (
     <section className="mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
-      <Link to="/" className="text-sm font-bold text-accent">
-        ← Back home
-      </Link>
+      <BackLink to="/">Back home</BackLink>
 
       <h1 className="mb-3 mt-6 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]">
         All events

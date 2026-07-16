@@ -1,7 +1,7 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
-/** Route guard for /admin. Client-side only — see the note in AuthContext. */
+/** Route guard for /admin. Client-side only , see the note in AuthContext. */
 export default function RequireAdmin({ children }) {
   const { user, isAdmin, ready } = useAuth();
   const { pathname } = useLocation();
@@ -9,7 +9,9 @@ export default function RequireAdmin({ children }) {
   if (!ready) return null; // don't flash the login page while storage loads
 
   if (!user) {
-    return <Navigate to={`/login?next=${encodeURIComponent(pathname)}`} replace />;
+    return (
+      <Navigate to={`/login?next=${encodeURIComponent(pathname)}`} replace />
+    );
   }
 
   if (!isAdmin) {

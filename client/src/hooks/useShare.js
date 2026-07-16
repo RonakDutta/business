@@ -15,7 +15,7 @@ export function useShare(event) {
   const share = useCallback(async () => {
     const data = {
       title: event.title,
-      text: `${event.title} — ${event.date}, ${event.place}`,
+      text: `${event.title} , ${event.date}, ${event.place}`,
       url: eventUrl(event),
     };
 
@@ -24,7 +24,7 @@ export function useShare(event) {
         await navigator.share(data);
         return;
       } catch (err) {
-        if (err.name === "AbortError") return; // user dismissed — not an error
+        if (err.name === "AbortError") return; // user dismissed , not an error
       }
     }
 

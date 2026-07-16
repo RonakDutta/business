@@ -7,41 +7,47 @@ import { VENUE } from "./venue.js";
    Reference as "/images/events/eventtemp.jpg" (leading slash, no "public").
 
    Gallery photos:       public/images/gallery/<event-id>/
-   The event id is its DATE — so photos for the Jul 4 meetup live in
+   The event id is its DATE , so photos for the Jul 4 meetup live in
    public/images/gallery/2026-07-04/. See `photos:` on each event below.
    =========================================================================== */
 
 export const heroSlides = [
   {
     id: "s1",
-    label: "HERO PHOTO 1 — group, warm & candid",
+    label: "HERO PHOTO 1 , group, warm & candid",
     src: "/images/hero/hero1.jpg",
     alt: "Members talking in small groups before the session",
   },
   {
     id: "s2",
-    label: "HERO PHOTO 2 — speaker on stage",
+    label: "HERO PHOTO 2 , speaker on stage",
     src: "/images/hero/hero2.jpg",
     alt: "A speaker presenting to the room",
   },
   {
     id: "s3",
-    label: "HERO PHOTO 3 — networking break",
+    label: "HERO PHOTO 3 , networking break",
     src: "/images/hero/hero3.jpg",
     alt: "Attendees networking during the break",
   },
 ];
 
-/* Placeholder numbers — swap for real ones. "Cities" is gone: there's one
+/* Placeholder numbers , swap for real ones. "Cities" is gone: there's one
    venue now, so counting cities was telling on us. */
 export const stats = [
   { id: "members", value: 1200, suffix: "+", label: "Community members" },
   { id: "editions", value: 190, suffix: "+", label: "Editions hosted" },
-  { id: "rating", value: 4.7, decimals: 1, suffix: "★", label: "Rating on Meetup.com" },
+  {
+    id: "rating",
+    value: 4.7,
+    decimals: 1,
+    suffix: "★",
+    label: "Rating on Meetup.com",
+  },
 ];
 
 /* -------------------------------------------------------------------------
-   Attendees. `avatar` hits pravatar.cc — a stand-in until real profiles exist.
+   Attendees. `avatar` hits pravatar.cc , a stand-in until real profiles exist.
    `role` drives the badge: Organiser | Prime member | Member.
    ------------------------------------------------------------------------- */
 const person = (id, name, role, img) => ({
@@ -68,7 +74,7 @@ export const POOL = [
   person("u14", "Arjun Pillai", "Member", 68),
 ];
 
-/* Hardcoded for now — every meetup is hosted by the same person. When hosts
+/* Hardcoded for now , every meetup is hosted by the same person. When hosts
    vary, move this onto the individual event and default to this. */
 export const HOST = {
   id: "host",
@@ -96,7 +102,7 @@ const album = (eventId, files = []) =>
      entryFee   150
      location   VENUE  (from venue.js)
 
-   Adding the next meetup is one line. Status works itself out — see build().
+   Adding the next meetup is one line. Status works itself out , see build().
    =========================================================================== */
 
 export const DEFAULT_TITLE = "Business4.0 Meetup (Entry Fee Applicable)";
@@ -141,9 +147,8 @@ export const SEED_MEETUPS = [
   },
 ];
 
-
 /* ---------------------------------------------------------------------------
-   Everything derived from the list above — statuses, sorting, albums — now
+   Everything derived from the list above , statuses, sorting, albums , now
    lives in lib/events-model.js (pure) and context/EventsContext.jsx (state),
    because the admin needs to add and edit meetups at runtime. This file is
    just the seed: the data we start from.

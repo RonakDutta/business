@@ -31,7 +31,7 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* Admin sits outside the public Layout — no navbar, footer or music. */}
+      {/* Admin sits outside the public Layout , no navbar, footer or music. */}
       <Route
         path="/admin"
         element={

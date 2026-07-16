@@ -29,7 +29,7 @@ export default function Home() {
         title="Past events"
         events={pastEvents.slice(0, 3)}
         variant="past"
-        ctaLabel="Browse the archive →"
+        ctaLabel="Browse →"
         headingClass="text-[26px] md:text-[30px]"
         className="pb-20 pt-12"
       />

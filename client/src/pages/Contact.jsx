@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import MapEmbed from "../components/MapEmbed.jsx";
+import MetroRoute from "../components/MetroRoute.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { VENUE } from "../data/venue.js";
 import { useTheme } from "../context/ThemeContext.jsx";
@@ -22,7 +23,7 @@ import {
    anywhere. Swap `sendVia` for a POST when there's somewhere to POST to.
 
    Only channels that actually reach someone are listed. If the community adds
-   an Instagram or a LinkedIn page later, drop another <Channel> in — there are
+   an Instagram or a LinkedIn page later, drop another <Channel> in , there are
    icons for both in components/icons.jsx already.
    =========================================================================== */
 
@@ -40,9 +41,7 @@ function Channel({ icon: Icon, label, value, href, note, external }) {
   const props = href
     ? {
         href,
-        ...(external
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {}),
+        ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
       }
     : {};
 
@@ -98,15 +97,15 @@ export default function Contact() {
   const send = () => {
     if (!form.name.trim()) return setError("We'd like to know who's writing.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      return setError("That email doesn't look right — we reply to it.");
+      return setError("That email doesn't look right , we reply to it.");
     if (form.message.trim().length < 10)
       return setError("Tell us a bit more so we can actually answer.");
 
     setError("");
 
-    const body = `${form.message.trim()}\n\n— ${form.name.trim()}\n${form.email.trim()}`;
+    const body = `${form.message.trim()}\n\n, ${form.name.trim()}\n${form.email.trim()}`;
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(
-      `${form.topic} — Business 4.0`,
+      `${form.topic} , Business 4.0`,
     )}&body=${encodeURIComponent(body)}`;
 
     setSent(true);
@@ -133,8 +132,8 @@ export default function Contact() {
           data-delay="0.12"
           className="reveal mt-5 text-[17px] leading-[1.7] text-muted [text-wrap:pretty]"
         >
-          Four of us run this between day jobs, so give us a couple of days.
-          If it's about coming along, the{" "}
+          Four of us run this between day jobs, so give us a couple of days. If
+          it's about coming along, the{" "}
           <Link to="/guidelines" className="font-bold text-accent">
             guidelines
           </Link>{" "}
@@ -185,18 +184,7 @@ export default function Contact() {
             <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-subtle">
               Nearest metro
             </div>
-            <ul className="mt-3 flex flex-col gap-2.5">
-              {VENUE.metro.map((m) => (
-                <li key={m.name} className="flex items-center justify-between">
-                  <span className="text-[14.5px] font-bold text-ink">
-                    {m.name}
-                  </span>
-                  <span className="font-mono text-[12.5px] text-subtle">
-                    {m.distance}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <MetroRoute metro={VENUE.metro} className="mt-4" />
           </div>
         </div>
 
@@ -212,7 +200,7 @@ export default function Contact() {
                   Your mail app is open
                 </h2>
                 <p className="mx-auto mt-2.5 max-w-[300px] text-[14.5px] leading-relaxed text-muted">
-                  The message is drafted and addressed to {EMAIL} — hit send
+                  The message is drafted and addressed to {EMAIL} , hit send
                   there and it's on its way.
                 </p>
                 <button
@@ -283,12 +271,14 @@ export default function Contact() {
                       className={`${field} resize-y leading-relaxed`}
                       value={form.message}
                       onChange={set("message")}
-                      placeholder="Keep it short — we read everything."
+                      placeholder="Keep it short , we read everything."
                     />
                   </label>
 
                   {error && (
-                    <p className="text-sm font-semibold text-red-600">{error}</p>
+                    <p className="text-sm font-semibold text-red-600">
+                      {error}
+                    </p>
                   )}
 
                   <button

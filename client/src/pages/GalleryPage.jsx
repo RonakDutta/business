@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
 import AlbumCard from "../components/AlbumCard.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
+import BackLink from "../components/BackLink.jsx";
 
 export default function GalleryPage() {
   const { albums } = useEvents();
@@ -12,9 +12,7 @@ export default function GalleryPage() {
 
   return (
     <section className="mx-auto max-w-shell px-6 pb-24 pt-16 md:px-10">
-      <Link to="/" className="text-sm font-bold text-accent">
-        ← Back home
-      </Link>
+      <BackLink to="/">Back home</BackLink>
 
       <h1 className="mb-3 mt-6 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]">
         Gallery

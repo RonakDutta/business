@@ -20,7 +20,7 @@ import {
 
    "Add meetup" isn't in here. Creating a meetup is an action on the meetups
    page, not a place you navigate to, and it already has a primary button
-   there — two doors to one room only makes people wonder what the difference
+   there , two doors to one room only makes people wonder what the difference
    is.
    =========================================================================== */
 
@@ -39,7 +39,9 @@ const SectionLabel = ({ children }) => (
 
 const navCls = ({ isActive }) =>
   `relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-bold transition-colors duration-200 ${
-    isActive ? "bg-white/[0.09] text-white" : "text-white/55 hover:bg-white/5 hover:text-white"
+    isActive
+      ? "bg-white/[0.09] text-white"
+      : "text-white/55 hover:bg-white/5 hover:text-white"
   }`;
 
 function Rail({ user, signOut, onNavigate }) {
@@ -57,7 +59,13 @@ function Rail({ user, signOut, onNavigate }) {
       <nav className="mt-4 flex-1">
         <SectionLabel>Manage</SectionLabel>
         {NAV.map(({ label, to, end, icon: Icon }) => (
-          <NavLink key={label} to={to} end={end} onClick={onNavigate} className={navCls}>
+          <NavLink
+            key={label}
+            to={to}
+            end={end}
+            onClick={onNavigate}
+            className={navCls}
+          >
             {({ isActive }) => (
               <>
                 {isActive && (
@@ -96,7 +104,9 @@ function Rail({ user, signOut, onNavigate }) {
             <div className="truncate text-[12.5px] font-bold text-white">
               {user?.name}
             </div>
-            <div className="truncate text-[11px] text-white/45">{user?.email}</div>
+            <div className="truncate text-[11px] text-white/45">
+              {user?.email}
+            </div>
           </div>
         </div>
 
@@ -122,7 +132,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#f5f6f8] lg:flex">
-      {/* Desktop rail — sticky so the table scrolls under it. */}
+      {/* Desktop rail , sticky so the table scrolls under it. */}
       <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 lg:block">
         <Rail user={user} signOut={signOut} />
       </aside>
@@ -153,7 +163,11 @@ export default function AdminLayout() {
           onPointerDown={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div className="menu-pop absolute inset-y-0 left-0 w-[264px] origin-left">
-            <Rail user={user} signOut={signOut} onNavigate={() => setOpen(false)} />
+            <Rail
+              user={user}
+              signOut={signOut}
+              onNavigate={() => setOpen(false)}
+            />
           </div>
           <button
             type="button"

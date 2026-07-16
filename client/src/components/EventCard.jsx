@@ -4,11 +4,30 @@ import { useRsvp } from "../context/RsvpContext.jsx";
 import { useShare } from "../hooks/useShare.js";
 import CoverImage from "./CoverImage.jsx";
 import AvatarStack from "./AvatarStack.jsx";
-import { HeartIcon, ShareIcon, CheckIcon, MapPinIcon, ClockIcon } from "./icons.jsx";
+import {
+  HeartIcon,
+  ShareIcon,
+  CheckIcon,
+  MapPinIcon,
+  ClockIcon,
+} from "./icons.jsx";
 import { priceLabel } from "../lib/format.js";
 
 /* The id is the date, so the calendar chip needs no extra field to read. */
-const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const MONTHS = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 const chipParts = (id) => {
   const [, m, d] = id.split("-").map(Number);
   return { day: d, month: MONTHS[m - 1] };
@@ -55,7 +74,7 @@ export default function EventCard({ event, variant = "upcoming" }) {
 
         <Link to={to} className="absolute inset-0" aria-label={event.title} />
 
-        {/* Date chip — the one thing everyone scans for first. */}
+        {/* Date chip , the one thing everyone scans for first. */}
         <div
           className={`pointer-events-none absolute left-3 top-3 flex w-[52px] flex-col items-center rounded-xl py-1.5 ${
             cancelled ? "bg-red-600 text-white" : "bg-white text-ink"
@@ -166,7 +185,13 @@ export default function EventCard({ event, variant = "upcoming" }) {
               : "mt-4 block rounded-btn border border-line-strong bg-white p-3 text-center text-sm font-bold text-muted transition-colors duration-300 hover:border-accent hover:text-accent"
           }
         >
-          {cancelled ? "See details" : isUpcoming ? (going ? "You're going" : "RSVP") : "See details"}
+          {cancelled
+            ? "See details"
+            : isUpcoming
+              ? going
+                ? "You're going"
+                : "RSVP"
+              : "See details"}
         </Link>
       </div>
     </div>

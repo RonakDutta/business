@@ -3,7 +3,7 @@ import Avatar from "./Avatar.jsx";
 /**
  * Overlapping attendee faces with a "+n" cap.
  *
- * `total` is the real number going — `people` is only whoever we have a face
+ * `total` is the real number going , `people` is only whoever we have a face
  * for, so the overflow chip counts everyone the stack doesn't show.
  *
  * The white ring sits on a wrapper rather than on <Avatar>: Avatar sets its own

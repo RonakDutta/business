@@ -20,12 +20,14 @@ export function useReveal(deps = []) {
     // Stagger cards that sit in the same grid.
     document.querySelectorAll("[data-stagger]").forEach((el) => {
       const sibs = Array.from(el.parentElement?.children || []).filter((c) =>
-        c.hasAttribute("data-stagger")
+        c.hasAttribute("data-stagger"),
       );
       el.dataset.delay = (sibs.indexOf(el) % 3) * 0.1;
     });
 
-    const els = Array.from(document.querySelectorAll(".reveal:not(.is-visible)"));
+    const els = Array.from(
+      document.querySelectorAll(".reveal:not(.is-visible)"),
+    );
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -41,17 +43,17 @@ export function useReveal(deps = []) {
           /*
             Cards share one transition declaration between the reveal and their
             hover lift. If the stagger delay stayed on the element, every later
-            hover would wait for it too — so drop it once the reveal is done.
+            hover would wait for it too , so drop it once the reveal is done.
           */
           setTimeout(
             () => {
               el.style.transitionDelay = "";
             },
-            (delay + dur) * 1000 + 100
+            (delay + dur) * 1000 + 100,
           );
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
     );
 
     els.forEach((el) => io.observe(el));

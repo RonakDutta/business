@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------
    ENTRY FEE PAYMENT
 
-   The QR on the Attend dialog is generated from these values at render time —
+   The QR on the Attend dialog is generated from these values at render time ,
    it isn't a picture file, so changing the VPA here changes every code on the
    site immediately. Nothing to re-export, nothing to re-upload.
 
