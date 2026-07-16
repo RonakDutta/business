@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* v4 auto-detects source files — including markdown. The README documents
+   class names in prose, which would otherwise generate real (dead) CSS. */
+@source not "../README.md";
+
+/* ---------------------------------------------------------------
+   Design tokens. In v4 this replaces tailwind.config.js entirely —
+   every variable here generates utilities automatically:
+   --color-ink       -> text-ink / bg-ink / border-ink
+   --radius-card     -> rounded-card
+   --container-shell -> max-w-shell
+   --ease-smooth     -> ease-smooth
+   --------------------------------------------------------------- */
+@theme {
+  --color-ink: #16181d;
+  --color-muted: #5b6472;
+  --color-subtle: #7b8494;
+  --color-faint: #9aa3b2;
+  --color-line: #eef0f4;
+  --color-line-strong: #e4e7ed;
+  --color-accent: var(--b4-accent);
+
+  /* Meetup brand pink ("Wild Watermelon"), per meetup.com's current brand
+     assets. Their older red was #ED1C40 if you prefer that. */
+  --color-meetup: #ff4a79;
+
+  --radius-card: var(--b4-card);
+  --radius-panel: var(--b4-panel);
+  --radius-btn: var(--b4-btn);
+
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --container-shell: 1140px;
+
+  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Runtime theme values — overwritten on :root by ThemeContext. */
+:root {
+  --b4-accent: #1d4ed8;
+  --b4-card: 18px;
+  --b4-panel: 22px;
+  --b4-btn: 999px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+
+    /* `clip` rather than `hidden`: `hidden` computes overflow-y to `auto` and
+       turns this into a scroll container, which breaks `position: sticky` on
+       the navbar. `clip` clips without scrolling. See Layout.jsx. */
+    overflow-x: clip;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* v4 resets buttons to `cursor: default` — restore the pointer. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--b4-accent);
+    outline-offset: 3px;
+  }
+}
+
+/* Custom utilities use @utility in v4 so they land in the right
+   cascade layer and still respond to variants like hover:. */
+@utility placeholder-tile {
+  background: repeating-linear-gradient(
+    45deg,
+    #f2f4f8,
+    #f2f4f8 12px,
+    #f8f9fc 12px,
+    #f8f9fc 24px
+  );
+}
+
+@utility accent-border {
+  border-color: color-mix(in srgb, var(--b4-accent) 35%, #e4e7ed);
+}
+
+@utility accent-tint {
+  background: color-mix(in srgb, var(--b4-accent) 7%, transparent);
+}
+
+/* The signed-in chip. A flat accent circle read as another button; the tilt
+   plus the depth of the ink end makes it read as a person instead. */
+@utility account-avatar {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--b4-accent) 88%, white),
+    color-mix(in srgb, var(--b4-accent) 55%, var(--color-ink))
+  );
+}
+
+@layer components {
+  /* Scroll reveal — driven by useReveal() */
+  /*
+    Elements that also carry a `transition-[...]` utility (cards with hover
+    lifts) get their transition-property overwritten by that utility — the
+    utilities layer always beats this one. Those elements must list
+    `opacity,translate` in their own utility; see EventCard/AlbumCard.
+    Everything else falls back to the transition declared here.
+
+    Uses `translate` rather than `transform` so it composes with v4's
+    translate-* utilities instead of clobbering them.
+  */
+  .reveal {
+    opacity: 0;
+    translate: 0 var(--reveal-dist, 26px);
+    transition:
+      opacity var(--reveal-dur, 0.75s) var(--ease-reveal),
+      translate var(--reveal-dur, 0.75s) var(--ease-reveal);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    translate: none;
+  }
+
+  /*
+    Dropdowns and drawers. An animation rather than a transition because these
+    elements are mounted on open — there's no "before" state to transition
+    from. Same reason as .reveal for animating `translate`/`scale` instead of
+    `transform`: it composes with v4's utilities rather than fighting them.
+  */
+  @keyframes menu-pop {
+    from {
+      opacity: 0;
+      translate: 0 -6px;
+      scale: 0.97;
+    }
+    to {
+      opacity: 1;
+      translate: none;
+      scale: 1;
+    }
+  }
+
+  .menu-pop {
+    animation: menu-pop 0.18s var(--ease-smooth) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
