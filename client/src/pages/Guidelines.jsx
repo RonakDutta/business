@@ -41,7 +41,7 @@ const PHASES = [
     lede: "Ten minutes of admin that saves everyone an awkward start.",
     points: [
       "RSVP on this site or on Meetup so we know how many chairs to put out. The room is a real room , it fills up.",
-      "Pay the entry fee when you RSVP and skip the queue at the gate. Cash or UPI at the door works too.",
+      "Pay the entry fee by UPI when you RSVP and keep your payment reference handy.",
       "Come a few minutes early. We start at 11:00 and the intros go first.",
       `Enter via ${VENUE.gate}. The helpline is for finding the gate on the day , not for questions about the meetup.`,
     ],

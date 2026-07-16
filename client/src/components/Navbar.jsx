@@ -179,7 +179,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
+      className={`sticky top-0 z-50 relative bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
         scrolled
           ? "border-b border-line shadow-[0_6px_20px_-18px_rgba(15,23,42,.5)]"
           : "border-b border-transparent"
@@ -246,7 +246,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="menu-pop border-t border-line bg-white px-6 pb-6 pt-3 md:hidden">
+        <div className="menu-pop absolute inset-x-0 top-full max-h-[calc(100dvh-72px)] overflow-y-auto border-b border-t border-line bg-white px-6 pb-6 pt-3 shadow-[0_20px_32px_-24px_rgba(15,23,42,.45)] md:hidden">
           <div className="flex flex-col">
             {LINKS.map((l) => (
               <NavLink

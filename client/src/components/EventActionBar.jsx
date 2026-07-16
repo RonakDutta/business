@@ -77,8 +77,8 @@ export default function EventActionBar({ event }) {
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-4 md:pb-6">
-        <div className="pointer-events-auto mx-auto flex max-w-[940px] items-center gap-3 rounded-panel border border-line bg-white/95 p-2.5 shadow-[0_18px_45px_-18px_rgba(15,23,42,.45)] backdrop-blur-md sm:rounded-full md:gap-4 md:p-3 md:pl-4">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:px-4 sm:pb-4 md:pb-6">
+        <div className="pointer-events-auto mx-auto grid max-w-[940px] grid-cols-[42px_minmax(0,1fr)_40px] items-center gap-2 rounded-panel border border-line bg-white/95 p-2.5 shadow-[0_18px_45px_-18px_rgba(15,23,42,.45)] backdrop-blur-md sm:flex sm:gap-3 sm:rounded-full md:gap-4 md:p-3 md:pl-4">
           {/* Date chip — same object as on the cards, so the bar reads as a
               continuation of the one you clicked. */}
           <div
@@ -94,7 +94,7 @@ export default function EventActionBar({ event }) {
             </span>
           </div>
 
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 sm:flex-1">
             <div className="truncate text-[13.5px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[15px]">
               {event.title}
             </div>
@@ -116,7 +116,7 @@ export default function EventActionBar({ event }) {
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1 md:gap-2.5">
+          <div className="col-span-3 mt-1 flex min-w-0 items-center gap-2 sm:col-auto sm:mt-0 sm:shrink-0 sm:gap-1 md:gap-2.5">
             <button
               type="button"
               onClick={() => toggle(event.id)}
@@ -147,7 +147,7 @@ export default function EventActionBar({ event }) {
 
             {isDead ? (
               <span
-                className={`shrink-0 whitespace-nowrap rounded-full px-4 py-3 text-[13.5px] font-bold sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
+              className={`min-w-0 flex-1 rounded-full px-3 py-3 text-center text-[13px] font-bold sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
                   cancelled
                     ? "bg-red-50 text-red-600"
                     : "border border-line-strong text-subtle"
@@ -161,7 +161,7 @@ export default function EventActionBar({ event }) {
                 onClick={isPast ? () => navigate(`/gallery/${event.id}`) : onAttend}
                 aria-pressed={going || undefined}
                 title={going ? "Click to give up your seat" : undefined}
-                className={`shrink-0 whitespace-nowrap rounded-full px-4 py-3 text-[13.5px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
+                className={`min-w-0 flex-1 rounded-full px-4 py-3 text-center text-[13px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
                   going ? "bg-accent" : "bg-ink hover:bg-accent"
                 }`}
               >
@@ -179,7 +179,8 @@ export default function EventActionBar({ event }) {
       {payOpen && (
         <AttendDialog
           event={event}
-          onConfirm={() => confirm(event.id)}
+          user={user}
+          onConfirm={(paymentProof) => confirm(event.id, paymentProof)}
           onClose={() => setPayOpen(false)}
         />
       )}

@@ -76,14 +76,14 @@ export default function EventDetail() {
 
   return (
     <>
-      {/* pb-32 reserves room for the floating action bar */}
-      <article className="mx-auto max-w-shell px-6 pb-32 pt-8 md:px-10">
+      {/* Extra phone padding reserves room for the two-row action bar. */}
+      <article className="mx-auto max-w-shell px-5 pb-32 pt-6 sm:px-6 sm:pt-8 md:px-10">
         <BackLink to={-1}>Back</BackLink>
 
         {/* ---- The ticket ---------------------------------------------- */}
         <div className="reveal mt-5 overflow-hidden rounded-panel border border-line bg-white shadow-[0_24px_50px_-45px_rgba(15,23,42,.55)]">
           <header className="relative bg-ink">
-            <div className="h-[300px] md:h-[440px]">
+            <div className="h-[250px] sm:h-[300px] md:h-[440px]">
               <CoverImage
                 src={event.image}
                 alt={event.title}
@@ -99,7 +99,7 @@ export default function EventDetail() {
               className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"
             />
 
-            <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-10">
               <div className="flex flex-wrap items-center gap-2.5">
                 <span
                   className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${statusCls}`}
@@ -115,7 +115,7 @@ export default function EventDetail() {
                 </span>
               </div>
 
-              <h1 className="mt-4 max-w-[820px] text-[30px] font-extrabold leading-[1.08] tracking-[-0.035em] text-white [text-wrap:balance] md:text-[46px]">
+              <h1 className="mt-4 max-w-[820px] text-[27px] font-extrabold leading-[1.08] tracking-[-0.035em] text-white [text-wrap:balance] sm:text-[30px] md:text-[46px]">
                 {event.title}
               </h1>
 
@@ -158,7 +158,7 @@ export default function EventDetail() {
         </div>
 
         {/* ---- Sections on a rail -------------------------------------- */}
-        <div className="mt-14 flex flex-col gap-12">
+        <div className="mt-10 flex flex-col gap-10 sm:mt-14 sm:gap-12">
           {/* The fee is on the ticket. It was also the rail count and the first
               line of the body — the same number three times in one screen. */}
           <Row label="Details">

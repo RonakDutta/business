@@ -6,7 +6,7 @@ export default function Carousel({ slides }) {
 
   return (
     <div
-      className="reveal relative mt-16 overflow-hidden rounded-panel"
+      className="reveal relative mt-12 overflow-hidden rounded-panel sm:mt-16"
       data-delay="0.3"
       onMouseEnter={pause}
       onMouseLeave={resume}
@@ -34,11 +34,11 @@ export default function Carousel({ slides }) {
       <button
         aria-label="Previous slide"
         onClick={prev}
-        className="absolute left-[18px] top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[22px] leading-none text-ink shadow-[0_6px_18px_-8px_rgba(15,23,42,.45)] transition-transform duration-300 ease-smooth hover:scale-110"
+        className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-ink shadow-[0_6px_18px_-8px_rgba(15,23,42,.45)] transition-transform duration-300 ease-smooth hover:scale-110 sm:left-[18px] sm:h-11 sm:w-11"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
+          className="h-4 w-4 sm:h-5 sm:w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -54,11 +54,11 @@ export default function Carousel({ slides }) {
       <button
         aria-label="Next slide"
         onClick={next}
-        className="absolute right-[18px] top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[22px] leading-none text-ink shadow-[0_6px_18px_-8px_rgba(15,23,42,.45)] transition-transform duration-300 ease-smooth hover:scale-110"
+        className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-ink shadow-[0_6px_18px_-8px_rgba(15,23,42,.45)] transition-transform duration-300 ease-smooth hover:scale-110 sm:right-[18px] sm:h-11 sm:w-11"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
+          className="h-4 w-4 sm:h-5 sm:w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -68,7 +68,7 @@ export default function Carousel({ slides }) {
         </svg>
       </button>
 
-      <div className="absolute inset-x-0 bottom-5 flex justify-center gap-2">
+      <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5 sm:bottom-5 sm:gap-2">
         {slides.map((s, i) => (
           <button
             key={s.id}

@@ -96,7 +96,7 @@ export default function EventMeta({ event }) {
         value={priceLabel(event.entryFee)}
         note={
           event.entryFee > 0
-            ? "Pay when you RSVP, or at the door"
+            ? "Pay securely by UPI when you RSVP"
             : "No charge for this edition"
         }
       />

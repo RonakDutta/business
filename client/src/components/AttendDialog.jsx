@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "./QRCode.jsx";
+import ImagePicker from "./ImagePicker.jsx";
 import { CheckIcon, CloseIcon, ScanIcon } from "./icons.jsx";
 import { PAYMENT, paymentRef } from "../data/payment.js";
 import { upiIntent } from "../lib/qr.js";
 import { priceLabel, isFree } from "../lib/format.js";
+import { submitPaymentProof } from "../lib/payment-submission.js";
 
 /* ===========================================================================
    Attend → pay → confirmed.
@@ -18,10 +20,14 @@ import { priceLabel, isFree } from "../lib/format.js";
    lands, `confirm` moves behind its webhook and the rest of this file stands.
    =========================================================================== */
 
-export default function AttendDialog({ event, onConfirm, onClose }) {
+export default function AttendDialog({ event, user, onConfirm, onClose }) {
   const panelRef = useRef(null);
   const free = isFree(event.entryFee);
   const [done, setDone] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [paymentImage, setPaymentImage] = useState("");
+  const [paymentError, setPaymentError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // One reference per dialog , regenerating it mid-payment would be unhelpful.
   const reference = useMemo(() => paymentRef(event.id), [event.id]);
@@ -52,9 +58,54 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
     };
   }, [onClose]);
 
-  const confirm = () => {
-    onConfirm();
-    setDone(true);
+  const confirm = async () => {
+    if (!free && !paymentImage) {
+      setPaymentError("Please add a screenshot of your payment to continue.");
+      return;
+    }
+
+    /*
+      This is intentionally only assembled on the client today. When the
+      backend is ready, POST this exact object to a protected endpoint: upload
+      `paymentProof.imageDataUrl` to storage, then append its URL plus payer
+      name/email and payment fields to Google Sheets on the server. Never send
+      a Sheets credential or accept payment proof directly from the browser.
+    */
+    const submission = {
+      eventId: event.id,
+      payer: { name: user?.name || "", email: user?.email || "" },
+      payment: {
+        amount: event.entryFee,
+        vpa: PAYMENT.vpa,
+        reference,
+      },
+      paymentProof: {
+        imageDataUrl: paymentImage,
+        submittedAt: new Date().toISOString(),
+      },
+    };
+
+    try {
+      setSubmitting(true);
+      setPaymentError("");
+      await submitPaymentProof(submission);
+      onConfirm(submission);
+      setDone(true);
+    } catch (error) {
+      setPaymentError(error.message || "Unable to submit payment proof.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const copyUpiId = async () => {
+    try {
+      await navigator.clipboard.writeText(PAYMENT.vpa);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
@@ -68,7 +119,7 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
         aria-modal="true"
         aria-labelledby="attend-title"
         tabIndex={-1}
-        className="relative w-full max-w-[420px] rounded-t-panel bg-white p-6 shadow-[0_40px_80px_-30px_rgba(15,23,42,.5)] outline-none sm:rounded-panel sm:p-8"
+        className="relative max-h-[calc(100dvh-0.75rem)] w-full max-w-[420px] overflow-y-auto rounded-t-panel bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_40px_80px_-30px_rgba(15,23,42,.5)] outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-[calc(100dvh-3rem)] sm:rounded-panel sm:p-6"
       >
         <button
           type="button"
@@ -105,22 +156,32 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
                   filled in.
                 </p>
 
-                <div className="mt-6 flex flex-col items-center rounded-card border border-line bg-[#fafbfc] p-5">
+                <div className="mt-5 flex flex-col items-center rounded-card border border-line bg-[#fafbfc] p-4 sm:mt-5 sm:p-3">
                   <QRCode
                     value={intent}
                     title={`Pay ${priceLabel(event.entryFee)} to ${PAYMENT.displayName}`}
-                    className="h-[188px] w-[188px] rounded-lg text-ink"
+                    className="h-[160px] w-[160px] rounded-lg text-ink sm:h-[160px] sm:w-[160px]"
                   />
 
-                  <div className="mt-4 text-center">
-                    <div className="text-[26px] font-extrabold tracking-[-0.03em] tabular-nums text-ink">
+                  <div className="mt-3 text-center">
+                    <div className="text-[24px] font-extrabold tracking-[-0.03em] tabular-nums text-ink">
                       {priceLabel(event.entryFee)}
                     </div>
                     <div className="mt-0.5 text-[13px] font-semibold text-muted">
                       {PAYMENT.displayName}
                     </div>
-                    <div className="mt-0.5 font-mono text-[11px] text-subtle">
-                      {PAYMENT.vpa}
+                    <div className="mt-1.5 flex items-center justify-center gap-2 rounded-lg border border-line-strong bg-white px-2.5 py-1.5">
+                      <span className="font-mono text-[12px] font-bold text-ink">
+                        {PAYMENT.vpa}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={copyUpiId}
+                        className="shrink-0 rounded-md bg-ink px-2 py-1 text-[10px] font-bold text-white transition-colors hover:bg-accent"
+                        aria-label="Copy UPI ID"
+                      >
+                        {copied ? "Copied" : "Copy"}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -133,27 +194,77 @@ export default function AttendDialog({ event, onConfirm, onClose }) {
                   Open my UPI app
                 </a>
 
-                <p className="mt-4 text-[12px] leading-relaxed text-subtle">
+                <p className="mt-3 text-[12px] leading-relaxed text-subtle">
                   Reference{" "}
                   <span className="font-mono text-ink">{reference}</span> ,
                   quote it if anything goes wrong with the transfer.
                 </p>
+
+                <div className="mt-4">
+                  <div className="mb-2 flex items-baseline justify-between gap-3">
+                    <label className="text-[13px] font-bold text-ink">
+                      Payment screenshot <span className="text-red-600">*</span>
+                    </label>
+                    {paymentImage && (
+                      <button
+                        type="button"
+                        onClick={() => setPaymentImage("")}
+                        className="text-[12px] font-bold text-accent hover:text-ink"
+                      >
+                        Replace image
+                      </button>
+                    )}
+                  </div>
+
+                  {paymentImage ? (
+                    <div className="flex items-center gap-3 rounded-card border border-line bg-[#fafbfc] p-3">
+                      <img
+                        src={paymentImage}
+                        alt="Selected payment screenshot"
+                        className="h-16 w-16 rounded-lg border border-line object-cover"
+                      />
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-bold text-ink">Screenshot attached</p>
+                        <p className="mt-0.5 text-[11.5px] leading-relaxed text-subtle">
+                          Your payment proof will be submitted with your RSVP.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <ImagePicker
+                      preset="gallery"
+                      label="Add payment screenshot"
+                      hint="Required to submit your RSVP. PNG, JPG, or a phone screenshot work best."
+                      onError={setPaymentError}
+                      onAdd={([image]) => {
+                        setPaymentImage(image);
+                        setPaymentError("");
+                      }}
+                    />
+                  )}
+
+                  {paymentError && (
+                    <p role="alert" className="mt-2 text-[12px] font-semibold text-red-600">
+                      {paymentError}
+                    </p>
+                  )}
+                </div>
               </>
             )}
 
             <button
               type="button"
               onClick={confirm}
-              className="mt-5 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+              disabled={submitting}
+              className="mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
             >
-              {free ? "Count me in" : "I've paid , confirm my seat"}
+              {submitting
+                ? "Submitting payment proof…"
+                : free
+                  ? "Count me in"
+                  : "Submit payment proof"}
             </button>
 
-            {!free && (
-              <p className="mt-3 text-center text-[12px] text-subtle">
-                Pay at the door instead if you'd rather , cash or UPI.
-              </p>
-            )}
           </>
         )}
       </div>
