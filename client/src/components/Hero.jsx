@@ -10,9 +10,6 @@ export default function Hero() {
   const { meetupUrl } = useTheme();
   const { upcomingEvents } = useEvents();
 
-  // The soonest live meetup drives the "next meetup" chip. Falls back to the
-  // static community line when nothing is scheduled. The card date carries the
-  // time ("SAT, JUL 18 · 11:00 AM"); the chip only needs the day, so trim it.
   const next = upcomingEvents.find((e) => !e.cancelled);
   const nextDay = next?.date.split(" · ")[0];
 
@@ -30,9 +27,8 @@ export default function Hero() {
           <Link
             to={`/events/${encodeURIComponent(next.id)}`}
             data-delay="0"
-            className="reveal accent-border group mb-8 inline-flex items-center gap-2 whitespace-nowrap rounded-full border bg-white/70 px-3.5 py-2 text-xs font-bold tracking-[0.06em] text-ink shadow-[0_10px_30px_-24px_rgba(15,23,42,.7)] backdrop-blur transition-transform duration-300 ease-smooth hover:-translate-y-[2px]"
+            className="reveal accent-border group mb-8 inline-flex items-center gap-2 whitespace-nowrap rounded-full border bg-white/70 px-3.5 py-2 text-xs font-bold tracking-[0.06em] text-ink shadow-[0_10px_30px_-24px_rgba(15,23,42,.7)] backdrop-blur transition-transform duration-300 ease-smooth hover:-translate-y-[1px]"
           >
-            <span className="live-dot h-2 w-2 shrink-0 rounded-full bg-accent" />
             <span className="text-accent">NEXT MEETUP</span>
             <span className="text-line-strong">·</span>
             <span className="text-muted">{nextDay}</span>
@@ -101,7 +97,12 @@ export default function Hero() {
           data-delay="0.3"
           className="reveal mt-7 flex items-center justify-center gap-3 sm:mt-8"
         >
-          <AvatarStack people={POOL} total={stats[0]?.value ?? 1200} max={5} size={30} />
+          <AvatarStack
+            people={POOL}
+            total={stats[0]?.value ?? 1200}
+            max={5}
+            size={30}
+          />
           <p className="text-left text-[13px] leading-tight text-muted">
             <span className="font-bold text-ink">
               {(stats[0]?.value ?? 1200).toLocaleString("en-IN")}+
