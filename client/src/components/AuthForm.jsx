@@ -3,18 +3,18 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import BackLink from "./BackLink.jsx";
 import AvatarStack from "./AvatarStack.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
-import { CheckIcon } from "./icons.jsx";
+import { useReveal } from "../hooks/useReveal.js";
+import { Orb, ConnectionMesh } from "./Decor.jsx";
+import { CheckIcon, ShieldIcon, UsersIcon, CalendarIcon } from "./icons.jsx";
 
 /* ===========================================================================
    Shared shell for Login and Signup.
 
-   Was a form floating in the middle of an empty page, which made signing up
-   feel like paperwork. It's a split panel now: the form on the left, and on
-   the right the reason you're filling it in — the room you're joining, drawn
-   from the real event data rather than written as marketing copy.
-
-   The right panel is display-only and hidden under lg, so the form is the
-   whole page on a phone.
+   A split panel: the form on the left, and on the right the reason you're
+   filling it in — the room you're joining, drawn from the real event data
+   rather than marketing copy. The right panel is display-only and hidden
+   under lg; on a phone the form is the whole page, so the same social proof
+   is folded into a compact strip beneath it instead of being dropped.
    =========================================================================== */
 
 /* Local to this file — the only place in the app that needs an eye. */
@@ -49,6 +49,8 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   const navigate = useNavigate();
   const { upcomingEvents, pastEvents } = useEvents();
 
+  useReveal([mode]);
+
   const next = params.get("next") || "/";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -82,25 +84,54 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   const labelCls =
     "text-[11.5px] font-bold uppercase tracking-[0.07em] text-subtle";
 
+  const EyebrowIcon = isSignup ? UsersIcon : ShieldIcon;
+  const eyebrowText = isSignup ? "Join the community" : "Member access";
+  const [titleHead, titleTail] = isSignup
+    ? ["Create your ", "account"]
+    : ["Welcome ", "back"];
+
   return (
-    <section className="mx-auto max-w-shell px-5 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14">
+    <section className="relative isolate mx-auto max-w-shell px-5 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14">
+      {/* Vector backdrop. No overflow-hidden, so the glow fades softly and the
+          mesh is masked — consistent with the rest of the site. */}
+      <Orb className="pointer-events-none absolute -left-24 -top-6 -z-10 h-64 w-64 text-accent blur-3xl" />
+      <ConnectionMesh className="pointer-events-none absolute -right-6 top-0 -z-10 h-40 w-56 text-accent opacity-50 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-56 sm:w-80 lg:hidden" />
+
       <BackLink to="/">Back home</BackLink>
 
-      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_420px]">
+      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_440px]">
         {/* ---- Form ------------------------------------------------- */}
         <div className="bg-gradient-to-b from-white to-[#fafbfc] p-6 sm:p-9 md:p-12">
           <div className="mx-auto max-w-[380px]">
             {returning && (
-              <div className="accent-tint accent-border mb-6 rounded-2xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
-                Sign in to finish your RSVP — we'll take you straight back to
-                it.
+              <div className="accent-tint accent-border mb-6 flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
+                <CalendarIcon className="mt-0.5 h-4 w-4 shrink-0" />
+                Sign in to finish your RSVP — we'll take you straight back to it.
               </div>
             )}
 
-            <h1 className="text-[30px] font-extrabold tracking-[-0.035em] md:text-[36px]">
-              {isSignup ? "Create your account" : "Welcome back"}
+            <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+              <EyebrowIcon className="h-3.5 w-3.5" />
+              {eyebrowText}
+            </div>
+
+            <h1
+              data-delay="0.06"
+              className="reveal mt-3 text-[30px] font-extrabold tracking-[-0.035em] md:text-[36px]"
+            >
+              {titleHead}
+              <span className="relative whitespace-nowrap text-accent">
+                {titleTail}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint"
+                />
+              </span>
             </h1>
-            <p className="mt-2.5 text-[15px] leading-relaxed text-muted">
+            <p
+              data-delay="0.12"
+              className="reveal mt-2.5 text-[15px] leading-relaxed text-muted"
+            >
               {isSignup
                 ? "Takes a minute. You'll need one to RSVP for a meetup."
                 : "Sign in to RSVP and keep track of the meetups you're attending."}
@@ -203,8 +234,9 @@ export default function AuthForm({ mode = "login", onSubmit }) {
           </div>
         </div>
 
-        {/* ---- The room you're joining ------------------------------ */}
+        {/* ---- The room you're joining (desktop) -------------------- */}
         <aside className="relative hidden overflow-hidden bg-ink p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <ConnectionMesh className="pointer-events-none absolute -right-8 -top-10 h-72 w-96 text-white/[0.12]" />
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/25 blur-3xl"
@@ -268,6 +300,40 @@ export default function AuthForm({ mode = "login", onSubmit }) {
             </div>
           )}
         </aside>
+      </div>
+
+      {/* ---- Same value, folded into a strip for phones ------------- */}
+      <div className="reveal mt-4 rounded-[24px] border border-line bg-white p-5 shadow-[0_20px_50px_-45px_rgba(15,23,42,.55)] lg:hidden">
+        <ul className="flex flex-col gap-3">
+          {PERKS.map((p) => (
+            <li key={p} className="flex items-start gap-3">
+              <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+                <CheckIcon className="h-3 w-3" />
+              </span>
+              <span className="text-[14px] leading-snug text-muted">{p}</span>
+            </li>
+          ))}
+        </ul>
+
+        {nextEvent && (
+          <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
+            <AvatarStack
+              people={nextEvent.attendees}
+              total={nextEvent.attendeeCount}
+              max={4}
+              size={28}
+            />
+            <div className="min-w-0">
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-subtle">
+                Next meetup
+              </div>
+              <div className="truncate text-[13.5px] font-bold text-ink">
+                {nextEvent.when.headline.split(" · ")[0]} ·{" "}
+                {nextEvent.attendeeCount} going
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
