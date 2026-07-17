@@ -22,11 +22,14 @@ export default function GalleryPage() {
 
       <BackLink to="/">Back home</BackLink>
 
-      <div className="reveal mt-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+      <div className="reveal mt-7 flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
         <ImageIcon className="h-3.5 w-3.5" />
         The archive
       </div>
-      <h1 className="mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]">
+      <h1
+        data-delay="0.06"
+        className="reveal mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]"
+      >
         <span className="relative whitespace-nowrap">
           Gallery
           <span
@@ -35,7 +38,10 @@ export default function GalleryPage() {
           />
         </span>
       </h1>
-      <p className="mb-10 max-w-[520px] text-[17px] leading-[1.65] text-muted">
+      <p
+        data-delay="0.12"
+        className="reveal mb-10 max-w-[520px] text-[17px] leading-[1.65] text-muted"
+      >
         {totalPhotos} photos across {albums.length} meetups. Pick an event to see
         the full set.
       </p>
