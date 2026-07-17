@@ -79,11 +79,14 @@ export default function Events() {
 
       <BackLink to="/">Back home</BackLink>
 
-      <div className="reveal mt-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+      <div className="reveal mt-7 flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
         <CalendarIcon className="h-3.5 w-3.5" />
         The calendar
       </div>
-      <h1 className="mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]">
+      <h1
+        data-delay="0.06"
+        className="reveal mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]"
+      >
         All{" "}
         <span className="relative whitespace-nowrap text-accent">
           events
@@ -93,7 +96,10 @@ export default function Events() {
           />
         </span>
       </h1>
-      <p className="mb-9 max-w-[520px] text-[17px] leading-[1.65] text-muted">
+      <p
+        data-delay="0.12"
+        className="reveal mb-9 max-w-[520px] text-[17px] leading-[1.65] text-muted"
+      >
         Every session we've run and everything on the calendar. Members get
         first pick of seats.
       </p>
