@@ -83,7 +83,14 @@ export default function EventDetail() {
         {/* ---- The ticket ---------------------------------------------- */}
         <div className="reveal mt-5 overflow-hidden rounded-panel border border-line bg-white shadow-[0_24px_50px_-45px_rgba(15,23,42,.55)]">
           <header className="relative bg-ink">
-            <div className="h-[250px] sm:h-[300px] md:h-[440px]">
+            {/*
+              On phones the image is a clean banner and the type sits on the
+              ink panel *below* it — the long title used to be absolutely
+              positioned over a 250px photo and buried it whole. From sm up
+              there's room, so the block goes back to an overlay on the image
+              with a scrim.
+            */}
+            <div className="h-[190px] sm:h-[300px] md:h-[440px]">
               <CoverImage
                 src={event.image}
                 alt={event.title}
@@ -93,13 +100,13 @@ export default function EventDetail() {
               />
             </div>
 
-            {/* Scrim. Heavier at the foot, where the type sits. */}
+            {/* Scrim. Overlay only — on mobile the type isn't on the photo. */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"
+              className="absolute inset-0 hidden bg-gradient-to-t from-ink via-ink/60 to-ink/10 sm:block"
             />
 
-            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-10">
+            <div className="relative p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:p-6 md:p-10">
               <div className="flex flex-wrap items-center gap-2.5">
                 <span
                   className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${statusCls}`}
@@ -115,7 +122,7 @@ export default function EventDetail() {
                 </span>
               </div>
 
-              <h1 className="mt-4 max-w-[820px] text-[27px] font-extrabold leading-[1.08] tracking-[-0.035em] text-white [text-wrap:balance] sm:text-[30px] md:text-[46px]">
+              <h1 className="mt-3.5 max-w-[820px] text-[23px] font-extrabold leading-[1.12] tracking-[-0.03em] text-white [text-wrap:balance] sm:mt-4 sm:text-[30px] sm:leading-[1.08] md:text-[46px]">
                 {event.title}
               </h1>
 
@@ -151,8 +158,22 @@ export default function EventDetail() {
             </div>
           </header>
 
-          {/* The perforation. */}
-          <div className="border-t border-dashed border-line-strong">
+          {/*
+            The perforation. Two notches punched into the seam turn what was a
+            hard black-to-white edge (which read as a sharp, un-rounded card
+            end) into a ticket tear: the notches round off the ink block's
+            bottom corners and the dashed line reads as the tear between stub
+            and ticket. Notch fill matches the page behind the card (white).
+          */}
+          <div className="relative border-t border-dashed border-line-strong">
+            <span
+              aria-hidden="true"
+              className="absolute -left-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute -right-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+            />
             <EventMeta event={event} />
           </div>
         </div>

@@ -5,6 +5,8 @@ import { useReveal } from "../hooks/useReveal.js";
 import { useSavedEvents } from "../context/SavedEventsContext.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
+import { Orb, ConnectionMesh } from "../components/Decor.jsx";
+import { CalendarIcon } from "../components/icons.jsx";
 
 const TABS = ["upcoming", "past", "saved"];
 
@@ -68,25 +70,46 @@ export default function Events() {
   const empty = EMPTY[tab];
 
   return (
-    <section className="mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
-      <BackLink to="/">Back home</BackLink>
+    <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
+      {/* Vector backdrop. No overflow-hidden (body already clips-x), so the
+          glow fades softly; the mesh is masked and kept subtle. Mobile-first:
+          both stay faint and out of the text's way on small screens. */}
+      <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
+      <ConnectionMesh className="pointer-events-none absolute -right-6 top-2 -z-10 h-36 w-52 text-accent opacity-60 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-52 sm:w-80 sm:opacity-70 md:-right-4" />
 
-      <h1 className="mb-3 mt-6 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]">
-        All events
+      <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+        <CalendarIcon className="h-3.5 w-3.5" />
+        The calendar
+      </div>
+      <h1
+        data-delay="0.06"
+        className="reveal mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]"
+      >
+        All{" "}
+        <span className="relative whitespace-nowrap text-accent">
+          events
+          <span
+            aria-hidden
+            className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint"
+          />
+        </span>
       </h1>
-      <p className="mb-9 max-w-[520px] text-[17px] leading-[1.65] text-muted">
+      <p
+        data-delay="0.12"
+        className="reveal mb-9 max-w-[520px] text-[17px] leading-[1.65] text-muted"
+      >
         Every session we've run and everything on the calendar. Members get
         first pick of seats.
       </p>
 
-      <div className="mb-9 inline-flex gap-1 rounded-btn border border-line-strong p-1.5">
+      <div className="mb-9 flex w-full gap-1 rounded-btn border border-line-strong p-1.5 sm:inline-flex sm:w-auto">
         {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
             aria-pressed={tab === t.id}
-            className={`flex items-center gap-2 rounded-btn px-5 py-2.5 text-sm font-bold transition-colors duration-300 ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-btn px-3 py-2.5 text-sm font-bold transition-colors duration-300 sm:flex-none sm:px-5 ${
               tab === t.id ? "bg-ink text-white" : "text-muted hover:text-ink"
             }`}
           >

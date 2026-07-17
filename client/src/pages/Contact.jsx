@@ -13,6 +13,7 @@ import {
   PhoneIcon,
   UsersIcon,
 } from "../components/icons.jsx";
+import { Rings, Orb, Scatter } from "../components/Decor.jsx";
 
 /* ===========================================================================
    CONTACT
@@ -115,9 +116,17 @@ export default function Contact() {
     "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
 
   return (
-    <div className="mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
+    <div className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
+      {/* "Reach out" ripples + a soft orb behind the header. Decorative.
+          No overflow-hidden: it clipped the blurred orb into a hard-edged
+          rectangle. The body's overflow-x:clip already prevents any scrollbar,
+          so the glow can bleed past the column and fade off softly instead. */}
+      <Rings className="pointer-events-none absolute -right-16 -top-16 -z-10 hidden h-80 w-80 text-accent md:block" />
+      <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
+
       <header className="max-w-[640px]">
-        <div className="reveal accent-border inline-flex items-center rounded-full border px-[18px] py-2 text-xs font-bold tracking-[0.1em] text-accent">
+        <div className="reveal accent-border inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-2 text-xs font-bold tracking-[0.1em] text-accent backdrop-blur">
+          <MailIcon className="h-3.5 w-3.5" />
           GET IN TOUCH
         </div>
 
@@ -125,7 +134,15 @@ export default function Contact() {
           data-delay="0.06"
           className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[52px]"
         >
-          Talk to the organisers.
+          Talk to the{" "}
+          <span className="relative whitespace-nowrap text-accent">
+            organisers
+            <span
+              aria-hidden
+              className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint"
+            />
+          </span>
+          .
         </h1>
 
         <p
@@ -190,7 +207,9 @@ export default function Contact() {
 
         {/* Message */}
         <aside className="reveal lg:sticky lg:top-28">
-          <div className="rounded-panel border border-line bg-white p-6 shadow-[0_20px_50px_-40px_rgba(15,23,42,.5)] md:p-8">
+          <div className="relative overflow-hidden rounded-panel border border-line bg-white p-6 shadow-[0_20px_50px_-40px_rgba(15,23,42,.5)] md:p-8">
+            <Scatter className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 text-accent/50" />
+            <div className="relative">
             {sent ? (
               <div className="py-6 text-center">
                 <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent/10 text-accent">
@@ -291,6 +310,7 @@ export default function Contact() {
                 </div>
               </>
             )}
+            </div>
           </div>
         </aside>
       </div>

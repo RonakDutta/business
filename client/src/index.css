@@ -100,6 +100,73 @@
   background: color-mix(in srgb, var(--b4-accent) 7%, transparent);
 }
 
+/* ---------------------------------------------------------------------------
+   HERO AMBIENCE
+
+   The hero was a centred column marooned in white. These two layers give it
+   atmosphere without clutter: soft brand-coloured glows behind the headline,
+   and a faint dotted grid that fades out toward the edges. Both are purely
+   decorative (aria-hidden) and self-contained, so removing the two elements
+   in Hero.jsx reverts the look completely.
+   --------------------------------------------------------------------------- */
+@utility hero-glows {
+  background:
+    radial-gradient(
+      560px 380px at 12% -8%,
+      color-mix(in srgb, var(--b4-accent) 16%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      520px 420px at 90% 4%,
+      color-mix(in srgb, var(--color-meetup) 11%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      620px 300px at 50% 118%,
+      color-mix(in srgb, var(--b4-accent) 9%, transparent),
+      transparent 70%
+    );
+}
+
+@utility hero-grid {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 9%, transparent) 1px,
+    transparent 1.4px
+  );
+  background-size: 24px 24px;
+  /* Fade the dots out so they read as texture near the top, not a wallpaper. */
+  -webkit-mask-image: radial-gradient(78% 62% at 50% 2%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(78% 62% at 50% 2%, #000 0%, transparent 74%);
+}
+
+/* ---------------------------------------------------------------------------
+   SECTION RHYTHM
+
+   A flat white page reads as one long scroll. A faint tinted band under the
+   events lets each block announce itself. The tint is built from the live
+   accent so it re-themes with everything else.
+   --------------------------------------------------------------------------- */
+@utility section-tint {
+  background:
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      color-mix(in srgb, var(--b4-accent) 4%, #fff) 12%,
+      color-mix(in srgb, var(--b4-accent) 4%, #fff) 88%,
+      #fff 100%
+    );
+}
+
+/* A soft dotted field for decorative panels — larger + fainter than hero-grid,
+   and unmasked so callers control the fade with their own gradient overlay. */
+@utility dot-field {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
+    transparent 1.6px
+  );
+  background-size: 30px 30px;
+}
+
 /* The signed-in chip. A flat accent circle read as another button; the tilt
    plus the depth of the ink end makes it read as a person instead. */
 @utility account-avatar {

@@ -5,12 +5,20 @@ import { VENUE } from "../data/venue.js";
 import { priceLabel } from "../lib/format.js";
 import MetroRoute from "../components/MetroRoute.jsx";
 import {
+  Waves,
+  PlusField,
+  RoutePath,
+  ConnectionMesh,
+  Orb,
+} from "../components/Decor.jsx";
+import {
   ArrowRightIcon,
   CalendarIcon,
   CheckIcon,
   ClockIcon,
   CloseIcon,
   MapPinIcon,
+  ShieldIcon,
   TicketIcon,
 } from "../components/icons.jsx";
 
@@ -105,218 +113,289 @@ function Rule({ text, allowed }) {
   );
 }
 
+/* Small section label — icon + eyebrow + heading, reused down the page. */
+function SectionHead({ icon: Icon, eyebrow, title, className = "" }) {
+  return (
+    <div className={className}>
+      <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+        {Icon && <Icon className="h-3.5 w-3.5" />}
+        {eyebrow}
+      </div>
+      <h2 className="mt-2.5 text-[26px] font-extrabold tracking-[-0.03em] md:text-[34px]">
+        {title}
+      </h2>
+    </div>
+  );
+}
+
 export default function Guidelines() {
   const { upcomingEvents } = useEvents();
   const next = upcomingEvents.find((e) => !e.cancelled);
 
   useReveal([]);
 
-  const tocCls =
-    "text-[13.5px] font-bold text-muted transition-colors duration-200 hover:text-accent";
-
   return (
     <div className="mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
-      <header className="max-w-[720px]">
-        <div className="reveal accent-border inline-flex items-center rounded-full border px-[18px] py-2 text-xs font-bold tracking-[0.1em] text-accent">
-          COMMUNITY GUIDELINES
+      {/* ---- Hero ------------------------------------------------------- */}
+      {/*
+        No overflow-hidden here: it clipped the blurred orb into a hard-edged
+        rectangle against the white page. The body already has overflow-x:clip,
+        so letting the decoration bleed past the column costs no scrollbar and
+        the glow fades naturally instead. The Waves carry their own left/right
+        mask so their lines feather in rather than starting on a sharp edge.
+      */}
+      <header className="relative isolate">
+        <Waves className="pointer-events-none absolute -right-16 -top-10 -z-10 hidden h-56 w-[560px] text-accent [-webkit-mask-image:linear-gradient(to_right,transparent,#000_45%,#000_85%,transparent)] [mask-image:linear-gradient(to_right,transparent,#000_45%,#000_85%,transparent)] md:block" />
+        <Orb className="pointer-events-none absolute -left-28 -top-24 -z-10 h-72 w-72 text-accent blur-2xl" />
+
+        <div className="max-w-[720px]">
+          <div className="reveal accent-border inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-2 text-xs font-bold tracking-[0.1em] text-accent backdrop-blur">
+            <ShieldIcon className="h-3.5 w-3.5" />
+            COMMUNITY GUIDELINES
+          </div>
+
+          <h1
+            data-delay="0.06"
+            className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[54px]"
+          >
+            How a meetup{" "}
+            <span className="relative whitespace-nowrap text-accent">
+              actually runs
+              <span
+                aria-hidden
+                className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint"
+              />
+            </span>
+            .
+          </h1>
+
+          <p
+            data-delay="0.12"
+            className="reveal mt-5 text-[17px] leading-[1.7] text-muted [text-wrap:pretty]"
+          >
+            Two hours, every two weeks, same room. Here's what to expect and
+            what we expect back , read it once and you'll walk in like a
+            regular.
+          </p>
         </div>
-
-        <h1
-          data-delay="0.06"
-          className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[54px]"
-        >
-          How a meetup actually runs.
-        </h1>
-
-        <p
-          data-delay="0.12"
-          className="reveal mt-5 text-[17px] leading-[1.7] text-muted [text-wrap:pretty]"
-        >
-          Two hours, every two weeks, same room. Here's what to expect and what
-          we expect back , read it once and you'll walk in like a regular.
-        </p>
       </header>
 
       {/* The four things people ask before anything else. */}
       <div
         data-delay="0.18"
-        className="reveal mt-10 grid grid-cols-2 divide-line rounded-panel border border-line bg-white sm:grid-cols-4 sm:divide-x"
+        className="reveal relative mt-10 overflow-hidden rounded-panel border border-line bg-gradient-to-b from-white to-[#f8f9fc]"
       >
-        {FACTS.map((f) => (
-          <div key={f.label} className="flex items-center gap-3 p-5">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
-              <f.icon className="h-[18px] w-[18px]" />
-            </span>
-            <div className="min-w-0">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-subtle">
-                {f.label}
-              </div>
-              <div className="mt-0.5 truncate text-[14.5px] font-bold text-ink">
-                {f.value}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-[210px_1fr] lg:gap-16">
-        <nav className="reveal hidden lg:block">
-          <div className="sticky top-28">
-            <div className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-subtle">
-              On this page
-            </div>
-            <ul className="mt-4 flex flex-col gap-3 border-l border-line pl-4">
-              {PHASES.map((p) => (
-                <li key={p.id}>
-                  <a href={`#${p.id}`} className={tocCls}>
-                    {p.title}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a href="#house-rules" className={tocCls}>
-                  House rules
-                </a>
-              </li>
-              <li>
-                <a href="#getting-here" className={tocCls}>
-                  Getting here
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
-        <div className="flex flex-col gap-5">
-          {/* Phases: cards on a spine. Numbered because before/during/after is
-              a real order, not decoration. */}
-          {PHASES.map((phase) => (
-            <section
-              key={phase.id}
-              id={phase.id}
-              className="reveal scroll-mt-28 overflow-hidden rounded-panel border border-line bg-white"
-            >
-              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-line bg-[#fbfcfd] px-6 py-5 md:px-8">
-                <span className="font-mono text-[12px] font-bold text-accent">
-                  {phase.n}
-                </span>
-                <h2 className="text-[22px] font-extrabold tracking-[-0.03em] md:text-[26px]">
-                  {phase.title}
-                </h2>
-                <p className="w-full text-[13.5px] text-subtle md:w-auto md:flex-1 md:text-right">
-                  {phase.lede}
-                </p>
-              </div>
-
-              <ul className="flex flex-col gap-4 px-6 py-6 md:px-8">
-                {phase.points.map((point) => (
-                  <li
-                    key={point}
-                    className="flex gap-4 text-[15.5px] leading-[1.7] text-muted"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-[11px] h-[3px] w-4 shrink-0 rounded-full bg-line-strong"
-                    />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-
-          {/* House rules , deliberately unnumbered; they aren't in any order. */}
-          <section id="house-rules" className="reveal mt-6 scroll-mt-28">
-            <h2 className="text-[26px] font-extrabold tracking-[-0.03em] md:text-[30px]">
-              House rules
-            </h2>
-            <p className="mt-3 max-w-[560px] text-[15px] leading-relaxed text-muted">
-              Short list, seriously meant.
-            </p>
-
-            <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-card border border-line bg-white p-6">
-                <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
-                  Please do
-                </div>
-                <ul className="mt-4 flex flex-col gap-3.5">
-                  {DO.map((t) => (
-                    <Rule key={t} text={t} allowed />
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-card border border-line bg-white p-6">
-                <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-red-500">
-                  Please don't
-                </div>
-                <ul className="mt-4 flex flex-col gap-3.5">
-                  {DONT.map((t) => (
-                    <Rule key={t} text={t} allowed={false} />
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* The one rule that isn't a matter of taste, so it doesn't sit in
-                a column with the ones that are. */}
-            <div className="mt-4 flex gap-4 rounded-card border border-red-200 bg-red-50/60 p-6">
-              <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-red-600 text-[13px] font-extrabold text-white">
-                !
+        <PlusField className="pointer-events-none absolute inset-0 h-full w-full text-accent/[0.08]" />
+        <div className="relative grid grid-cols-2 divide-line sm:grid-cols-4 sm:divide-x">
+          {FACTS.map((f) => (
+            <div key={f.label} className="flex items-center gap-3 p-5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
+                <f.icon className="h-[18px] w-[18px]" />
               </span>
-              <p className="text-[14.5px] leading-relaxed text-ink">
-                <b>Harassment, of any kind, ends your membership.</b> You'll be
-                asked to leave and you won't be invited back , no warning, no
-                debate. If anything happens in the room, find an organiser. If
-                you'd rather not do that in person,{" "}
-                <Link
-                  to="/contact"
-                  className="font-bold text-red-600 underline"
-                >
-                  write to us
-                </Link>
-                .
-              </p>
-            </div>
-          </section>
-
-          {/* Getting here , the metro question, answered once. */}
-
-          {/* Hand-off: guidelines read, now go do something. */}
-          <section className="reveal mt-6 overflow-hidden rounded-panel bg-ink p-8 text-white md:p-10">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <h2 className="text-[24px] font-extrabold tracking-[-0.03em] md:text-[28px]">
-                  {next ? "That's it. Come along." : "That's it."}
-                </h2>
-                <p className="mt-2.5 max-w-[420px] text-[14.5px] leading-relaxed text-white/60">
-                  {next
-                    ? `Next one is ${next.when.headline.split(" · ")[0]} at ${VENUE.shortName} · ${priceLabel(next.entryFee)}.`
-                    : "The next date isn't up yet. Check back , it's every second Saturday."}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2.5">
-                {next && (
-                  <Link
-                    to={`/events/${next.id}`}
-                    className="inline-flex items-center gap-2 rounded-btn bg-white px-6 py-3.5 text-sm font-bold text-ink transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
-                  >
-                    RSVP
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </Link>
-                )}
-                <Link
-                  to="/contact"
-                  className="rounded-btn border border-white/20 px-6 py-3.5 text-sm font-bold text-white/80 transition-colors duration-200 hover:border-white/50 hover:text-white"
-                >
-                  Ask us something
-                </Link>
+              <div className="min-w-0">
+                <div className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-subtle">
+                  {f.label}
+                </div>
+                <div className="mt-0.5 truncate text-[14.5px] font-bold text-ink">
+                  {f.value}
+                </div>
               </div>
             </div>
-          </section>
+          ))}
         </div>
       </div>
+
+      {/* ---- The flow: a numbered timeline ----------------------------- */}
+      <section className="mt-16">
+        <SectionHead
+          className="reveal"
+          icon={CalendarIcon}
+          eyebrow="The flow"
+          title="Before, during, after"
+        />
+
+        <div className="relative mt-9">
+          {/* The spine the nodes hang on. */}
+          <div
+            aria-hidden
+            className="absolute bottom-4 left-[21px] top-3 w-px bg-gradient-to-b from-accent/50 via-line-strong to-transparent md:left-[25px]"
+          />
+
+          <div className="flex flex-col gap-5">
+            {PHASES.map((phase) => (
+              <section
+                key={phase.id}
+                id={phase.id}
+                className="reveal relative scroll-mt-28 pl-[58px] md:pl-[70px]"
+              >
+                <span className="absolute left-0 top-0 grid h-11 w-11 place-items-center rounded-full border-2 border-accent bg-white font-mono text-[13px] font-bold text-accent shadow-[0_8px_20px_-12px_var(--b4-accent)] md:h-[52px] md:w-[52px] md:text-[15px]">
+                  {phase.n}
+                </span>
+
+                <div className="overflow-hidden rounded-panel border border-line bg-white">
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-line bg-[#fbfcfd] px-6 py-5 md:px-8">
+                    <h3 className="text-[21px] font-extrabold tracking-[-0.03em] md:text-[25px]">
+                      {phase.title}
+                    </h3>
+                    <p className="w-full text-[13.5px] text-subtle md:w-auto md:flex-1 md:text-right">
+                      {phase.lede}
+                    </p>
+                  </div>
+
+                  <ul className="grid grid-cols-1 gap-x-8 gap-y-4 px-6 py-6 sm:grid-cols-2 md:px-8">
+                    {phase.points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex gap-3 text-[15px] leading-[1.65] text-muted"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent/10 text-accent"
+                        >
+                          <CheckIcon className="h-2.5 w-2.5" />
+                        </span>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---- House rules , deliberately unnumbered --------------------- */}
+      <section id="house-rules" className="reveal mt-16 scroll-mt-28">
+        <SectionHead
+          icon={ShieldIcon}
+          eyebrow="The deal"
+          title="House rules"
+        />
+        <p className="mt-3 max-w-[560px] text-[15px] leading-relaxed text-muted">
+          Short list, seriously meant.
+        </p>
+
+        <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="relative overflow-hidden rounded-card border border-line bg-white p-6">
+            <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
+              Please do
+            </div>
+            <ul className="mt-4 flex flex-col gap-3.5">
+              {DO.map((t) => (
+                <Rule key={t} text={t} allowed />
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-card border border-line bg-white p-6">
+            <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-red-500">
+              Please don't
+            </div>
+            <ul className="mt-4 flex flex-col gap-3.5">
+              {DONT.map((t) => (
+                <Rule key={t} text={t} allowed={false} />
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* The one rule that isn't a matter of taste. */}
+        <div className="mt-4 flex gap-4 rounded-card border border-red-200 bg-red-50/60 p-6">
+          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-red-600 text-[13px] font-extrabold text-white">
+            !
+          </span>
+          <p className="text-[14.5px] leading-relaxed text-ink">
+            <b>Harassment, of any kind, ends your membership.</b> You'll be asked
+            to leave and you won't be invited back , no warning, no debate. If
+            anything happens in the room, find an organiser. If you'd rather not
+            do that in person,{" "}
+            <Link to="/contact" className="font-bold text-red-600 underline">
+              write to us
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* ---- Getting here ---------------------------------------------- */}
+      <section
+        id="getting-here"
+        className="reveal relative mt-16 scroll-mt-28 overflow-hidden rounded-panel border border-line bg-white p-6 md:p-9"
+      >
+        <RoutePath className="pointer-events-none absolute -right-8 top-2 hidden h-32 w-96 text-accent sm:block" />
+
+        <SectionHead
+          icon={MapPinIcon}
+          eyebrow="Getting here"
+          title="Finding the room"
+        />
+
+        <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-subtle">
+              From the nearest metro
+            </div>
+            <MetroRoute metro={VENUE.metro} className="mt-5" />
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <p className="inline-flex w-fit items-center gap-2 rounded-btn bg-accent/10 px-3.5 py-1.5 text-[12.5px] font-bold text-accent">
+              <MapPinIcon className="h-4 w-4" />
+              Enter via {VENUE.gate}
+            </p>
+            <p className="max-w-[380px] text-[14px] leading-relaxed text-muted">
+              {VENUE.name} · {VENUE.address}, {VENUE.city}.
+            </p>
+            <p className="max-w-[380px] text-[13px] leading-relaxed text-subtle">
+              Lost on the day? Call{" "}
+              <a
+                href={`tel:${VENUE.helpline}`}
+                className="font-bold text-accent"
+              >
+                {VENUE.helpline}
+              </a>
+              . Directions only , not for questions about the event.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- Hand-off -------------------------------------------------- */}
+      <section className="reveal relative mt-16 overflow-hidden rounded-panel bg-ink p-8 text-white md:p-11">
+        <ConnectionMesh className="pointer-events-none absolute -right-4 -top-6 h-64 w-96 text-white/[0.13]" />
+
+        <div className="relative flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <h2 className="text-[24px] font-extrabold tracking-[-0.03em] md:text-[30px]">
+              {next ? "That's it. Come along." : "That's it."}
+            </h2>
+            <p className="mt-2.5 max-w-[420px] text-[14.5px] leading-relaxed text-white/60">
+              {next
+                ? `Next one is ${next.when.headline.split(" · ")[0]} at ${VENUE.shortName} · ${priceLabel(next.entryFee)}.`
+                : "The next date isn't up yet. Check back , it's every second Saturday."}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2.5">
+            {next && (
+              <Link
+                to={`/events/${next.id}`}
+                className="inline-flex items-center gap-2 rounded-btn bg-white px-6 py-3.5 text-sm font-bold text-ink transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
+              >
+                RSVP
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            )}
+            <Link
+              to="/contact"
+              className="rounded-btn border border-white/20 px-6 py-3.5 text-sm font-bold text-white/80 transition-colors duration-200 hover:border-white/50 hover:text-white"
+            >
+              Ask us something
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

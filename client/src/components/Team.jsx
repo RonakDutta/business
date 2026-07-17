@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowUpRightIcon } from "./icons.jsx";
+import { ArrowUpRightIcon, UsersIcon } from "./icons.jsx";
+import { Orb } from "./Decor.jsx";
 
 /**
  * Portraits sit in a 4/5 frame, desaturated until hover , keeps the row calm
@@ -100,8 +101,17 @@ export default function Team({ members = [] }) {
   if (!members.length) return null;
 
   return (
-    <section id="team" className="mx-auto max-w-shell px-6 pb-20 md:px-10">
+    <section
+      id="team"
+      className="relative mx-auto max-w-shell overflow-hidden px-6 pb-20 pt-4 md:px-10"
+    >
+      <Orb className="pointer-events-none absolute -left-24 top-0 -z-10 h-72 w-72 text-accent blur-2xl" />
+
       <div className="reveal mb-10 text-center">
+        <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+          <UsersIcon className="h-3.5 w-3.5" />
+          The organisers
+        </div>
         <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
           Meet the organising team
         </h2>
