@@ -20,9 +20,7 @@ export default function GalleryPage() {
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
       <Scatter className="pointer-events-none absolute -right-4 top-4 -z-10 h-36 w-36 text-accent opacity-70 sm:h-52 sm:w-52 md:right-2" />
 
-      <BackLink to="/">Back home</BackLink>
-
-      <div className="reveal mt-7 flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+      <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
         <ImageIcon className="h-3.5 w-3.5" />
         The archive
       </div>
@@ -42,8 +40,8 @@ export default function GalleryPage() {
         data-delay="0.12"
         className="reveal mb-10 max-w-[520px] text-[17px] leading-[1.65] text-muted"
       >
-        {totalPhotos} photos across {albums.length} meetups. Pick an event to see
-        the full set.
+        {totalPhotos} photos across {albums.length} meetups. Pick an event to
+        see the full set.
       </p>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

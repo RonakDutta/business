@@ -77,9 +77,7 @@ export default function Events() {
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
       <ConnectionMesh className="pointer-events-none absolute -right-6 top-2 -z-10 h-36 w-52 text-accent opacity-60 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-52 sm:w-80 sm:opacity-70 md:-right-4" />
 
-      <BackLink to="/">Back home</BackLink>
-
-      <div className="reveal mt-7 flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+      <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
         <CalendarIcon className="h-3.5 w-3.5" />
         The calendar
       </div>
