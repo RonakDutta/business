@@ -137,8 +137,15 @@ export default function Guidelines() {
   return (
     <div className="mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
       {/* ---- Hero ------------------------------------------------------- */}
-      <header className="relative isolate overflow-hidden">
-        <Waves className="pointer-events-none absolute -right-16 -top-10 -z-10 hidden h-56 w-[560px] text-accent md:block" />
+      {/*
+        No overflow-hidden here: it clipped the blurred orb into a hard-edged
+        rectangle against the white page. The body already has overflow-x:clip,
+        so letting the decoration bleed past the column costs no scrollbar and
+        the glow fades naturally instead. The Waves carry their own left/right
+        mask so their lines feather in rather than starting on a sharp edge.
+      */}
+      <header className="relative isolate">
+        <Waves className="pointer-events-none absolute -right-16 -top-10 -z-10 hidden h-56 w-[560px] text-accent [-webkit-mask-image:linear-gradient(to_right,transparent,#000_45%,#000_85%,transparent)] [mask-image:linear-gradient(to_right,transparent,#000_45%,#000_85%,transparent)] md:block" />
         <Orb className="pointer-events-none absolute -left-28 -top-24 -z-10 h-72 w-72 text-accent blur-2xl" />
 
         <div className="max-w-[720px]">

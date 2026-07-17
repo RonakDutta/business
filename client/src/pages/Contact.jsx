@@ -116,8 +116,11 @@ export default function Contact() {
     "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
 
   return (
-    <div className="relative isolate mx-auto max-w-shell overflow-hidden px-6 pb-24 pt-14 md:px-10">
-      {/* "Reach out" ripples + a soft orb behind the header. Decorative. */}
+    <div className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
+      {/* "Reach out" ripples + a soft orb behind the header. Decorative.
+          No overflow-hidden: it clipped the blurred orb into a hard-edged
+          rectangle. The body's overflow-x:clip already prevents any scrollbar,
+          so the glow can bleed past the column and fade off softly instead. */}
       <Rings className="pointer-events-none absolute -right-16 -top-16 -z-10 hidden h-80 w-80 text-accent md:block" />
       <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
 
