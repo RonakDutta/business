@@ -139,21 +139,32 @@
   mask-image: radial-gradient(78% 62% at 50% 2%, #000 0%, transparent 74%);
 }
 
-/* The pulsing "live" dot on the next-meetup chip. */
-@keyframes live-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--b4-accent) 55%, transparent);
-  }
-  70% {
-    box-shadow: 0 0 0 7px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
+/* ---------------------------------------------------------------------------
+   SECTION RHYTHM
+
+   A flat white page reads as one long scroll. A faint tinted band under the
+   events lets each block announce itself. The tint is built from the live
+   accent so it re-themes with everything else.
+   --------------------------------------------------------------------------- */
+@utility section-tint {
+  background:
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      color-mix(in srgb, var(--b4-accent) 4%, #fff) 12%,
+      color-mix(in srgb, var(--b4-accent) 4%, #fff) 88%,
+      #fff 100%
+    );
 }
 
-@utility live-dot {
-  animation: live-pulse 2.2s var(--ease-smooth) infinite;
+/* A soft dotted field for decorative panels — larger + fainter than hero-grid,
+   and unmasked so callers control the fade with their own gradient overlay. */
+@utility dot-field {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
+    transparent 1.6px
+  );
+  background-size: 30px 30px;
 }
 
 /* The signed-in chip. A flat accent circle read as another button; the tilt
