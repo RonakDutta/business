@@ -158,8 +158,22 @@ export default function EventDetail() {
             </div>
           </header>
 
-          {/* The perforation. */}
-          <div className="border-t border-dashed border-line-strong">
+          {/*
+            The perforation. Two notches punched into the seam turn what was a
+            hard black-to-white edge (which read as a sharp, un-rounded card
+            end) into a ticket tear: the notches round off the ink block's
+            bottom corners and the dashed line reads as the tear between stub
+            and ticket. Notch fill matches the page behind the card (white).
+          */}
+          <div className="relative border-t border-dashed border-line-strong">
+            <span
+              aria-hidden="true"
+              className="absolute -left-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute -right-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+            />
             <EventMeta event={event} />
           </div>
         </div>
