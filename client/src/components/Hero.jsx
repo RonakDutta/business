@@ -52,14 +52,13 @@ export default function Hero() {
           className="reveal mx-auto max-w-[860px] text-[34px] font-extrabold leading-[1.12] tracking-[-0.03em] [text-wrap:balance] sm:text-[46px] sm:leading-[1.03] sm:tracking-[-0.035em] md:text-[70px]"
         >
           A place to meet, learn, and{" "}
-          <span className="relative whitespace-nowrap text-accent">
-            grow together
+          <span className="relative block w-fit mx-auto whitespace-nowrap text-accent">
+            grow together.
             <span
               aria-hidden
               className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint sm:-bottom-1.5"
             />
           </span>
-          .
         </h1>
 
         <p
