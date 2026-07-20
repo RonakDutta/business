@@ -18,7 +18,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden px-5 pb-16 pt-14 text-center sm:px-6 sm:pt-[92px] md:px-10 md:pb-20"
+      className="relative isolate overflow-hidden px-5 pb-16 pt-10 text-center sm:px-6 sm:pt-[92px] md:px-10 md:pb-20"
     >
       {/* Layered vector backdrop — remove these nodes to revert to plain white. */}
       <div aria-hidden className="hero-glows absolute inset-0 -z-10" />
@@ -31,7 +31,7 @@ export default function Hero() {
           <Link
             to={`/events/${encodeURIComponent(next.id)}`}
             data-delay="0"
-            className="reveal accent-border group mb-8 inline-flex items-center gap-2 rounded-full border bg-white/70 py-2 pl-3 pr-3.5 text-xs font-bold tracking-[0.04em] text-ink shadow-[0_10px_30px_-24px_rgba(15,23,42,.7)] backdrop-blur transition-transform duration-300 ease-smooth hover:-translate-y-[2px]"
+            className="reveal accent-border group mb-6 inline-flex items-center gap-2 rounded-full border bg-white/70 py-2 pl-3 pr-3.5 text-xs font-bold tracking-[0.04em] text-ink shadow-[0_10px_30px_-24px_rgba(15,23,42,.7)] backdrop-blur transition-transform duration-300 ease-smooth hover:-translate-y-[2px] sm:mb-8"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/12 text-accent">
               <CalendarIcon className="h-3.5 w-3.5" />
@@ -49,7 +49,7 @@ export default function Hero() {
 
         <h1
           data-delay="0.08"
-          className="reveal mx-auto max-w-[860px] text-[36px] font-extrabold leading-[1.03] tracking-[-0.035em] [text-wrap:balance] sm:text-[46px] md:text-[70px]"
+          className="reveal mx-auto max-w-[860px] text-[34px] font-extrabold leading-[1.12] tracking-[-0.03em] [text-wrap:balance] sm:text-[46px] sm:leading-[1.03] sm:tracking-[-0.035em] md:text-[70px]"
         >
           A place to meet, learn, and{" "}
           <span className="relative whitespace-nowrap text-accent">
