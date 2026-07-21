@@ -81,7 +81,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
         <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white">
           {initial}
         </span>
-        <span className="hidden max-w-[96px] truncate text-[13px] font-bold text-ink lg:block">
+        <span className="hidden max-w-24 truncate text-[13px] font-bold text-ink lg:block">
           {user.name}
         </span>
         <ChevronDownIcon
@@ -94,7 +94,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
       {open && (
         <div
           role="menu"
-          className="menu-pop absolute right-0 top-[calc(100%+10px)] w-[248px] origin-top-right overflow-hidden rounded-card border border-line bg-white shadow-[0_24px_50px_-24px_rgba(15,23,42,.45)]"
+          className="menu-pop absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card border border-line bg-white shadow-[0_24px_50px_-24px_rgba(15,23,42,.45)]"
         >
           <div className="flex items-center gap-3 border-b border-line p-4">
             <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
@@ -179,7 +179,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 relative bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
+      className={`top-0 z-50 relative bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
         scrolled
           ? "border-b border-line shadow-[0_6px_20px_-18px_rgba(15,23,42,.5)]"
           : "border-b border-transparent"
@@ -237,9 +237,9 @@ export default function Navbar() {
             className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink"
           >
             {open ? (
-              <CloseIcon className="h-[18px] w-[18px]" />
+              <CloseIcon className="h-4.5 w-4.5" />
             ) : (
-              <MenuIcon className="h-[18px] w-[18px]" />
+              <MenuIcon className="h-4.5 w-4.5" />
             )}
           </button>
         </div>
@@ -290,7 +290,7 @@ export default function Navbar() {
                   {isAdmin && (
                     <Link
                       to="/admin"
-                      className="rounded-btn bg-accent/10 px-[22px] py-[11px] text-center text-sm font-bold text-accent"
+                      className="rounded-btn bg-accent/10 px-5.5 py-2.75 text-center text-sm font-bold text-accent"
                     >
                       Organiser console
                     </Link>
@@ -301,7 +301,7 @@ export default function Navbar() {
                       signOut();
                       setOpen(false);
                     }}
-                    className="rounded-btn border border-line-strong px-[22px] py-[11px] text-center text-sm font-bold text-muted"
+                    className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-muted"
                   >
                     Log out
                   </button>
@@ -311,13 +311,13 @@ export default function Navbar() {
               <div className="flex flex-col gap-2">
                 <Link
                   to="/login"
-                  className="rounded-btn border border-line-strong px-[22px] py-[11px] text-center text-sm font-bold text-ink"
+                  className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-ink"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-btn bg-ink px-[22px] py-[11px] text-center text-sm font-bold text-white"
+                  className="rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
                 >
                   Sign up
                 </Link>
