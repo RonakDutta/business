@@ -179,7 +179,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`top-0 z-50 relative bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
+      className={`top-0 z-50 sticky bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
         scrolled
           ? "border-b border-line shadow-[0_6px_20px_-18px_rgba(15,23,42,.5)]"
           : "border-b border-transparent"
