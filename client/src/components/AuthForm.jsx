@@ -5,6 +5,7 @@ import AvatarStack from "./AvatarStack.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { Orb, ConnectionMesh } from "./Decor.jsx";
+import Spinner from "./Spinner.jsx";
 import { CheckIcon, ShieldIcon, UsersIcon, CalendarIcon } from "./icons.jsx";
 
 /* ===========================================================================
@@ -226,8 +227,9 @@ export default function AuthForm({ mode = "login", onSubmit }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                className="mt-2 flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
               >
+                {submitting && <Spinner className="h-4 w-4" />}
                 {submitting
                   ? isSignup
                     ? "Creating account…"
