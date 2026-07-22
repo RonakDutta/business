@@ -89,7 +89,7 @@ export default function Hero() {
             href={meetupUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-btn bg-meetup px-5 py-4 text-[15px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_20px_-10px_var(--color-meetup)] sm:px-7"
+            className="inline-flex items-center justify-center gap-1.5 rounded-btn bg-meetup px-5 py-4 text-[15px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_10px_-10px_var(--color-meetup)] sm:px-7"
           >
             Join on Meetup
             <ArrowUpRightIcon className="h-4 w-4" />
@@ -97,7 +97,7 @@ export default function Hero() {
 
           <Link
             to="/events"
-            className="inline-flex items-center justify-center gap-1.5 rounded-btn border border-line-strong bg-white/70 px-5 py-4 text-[15px] font-bold text-ink backdrop-blur transition-[border-color,translate] duration-300 ease-smooth hover:-translate-y-[3px] hover:border-ink sm:px-[26px]"
+            className="inline-flex items-center justify-center gap-1.5 rounded-btn border border-ink bg-white/70 px-5 py-4 text-[15px] font-bold text-ink backdrop-blur transition-[border-color,translate] duration-300 ease-smooth hover:-translate-y-[3px] hover:border-ink sm:px-[26px]"
           >
             See all events
             <ArrowRightIcon className="h-4 w-4" />
