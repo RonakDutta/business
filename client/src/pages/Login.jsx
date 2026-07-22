@@ -3,5 +3,10 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Login() {
   const { signIn } = useAuth();
-  return <AuthForm mode="login" onSubmit={({ email }) => signIn(email)} />;
+  return (
+    <AuthForm
+      mode="login"
+      onSubmit={({ email, password }) => signIn(email, password)}
+    />
+  );
 }
