@@ -32,7 +32,7 @@
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --container-shell: 1140px;
+  --container-shell: 1240px;
 
   --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
