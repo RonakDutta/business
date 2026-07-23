@@ -8,9 +8,38 @@ import {
 } from "react";
 import { SEED_MEETUPS } from "../data/events.js";
 import { deriveCollections } from "../lib/events-model.js";
+import { events as eventsApi } from "../api";
 
 const KEY = "b4:meetups";
 const EventsContext = createContext(null);
+
+/*
+  VITE_API_URL is the switch (same as AuthContext). Set → read events from the
+  backend; unset → the original seed + localStorage, so the app and preview
+  keep working with no server.
+*/
+const hasApi = Boolean(import.meta.env.VITE_API_URL);
+
+/*
+  The API returns processed events (status/labels derived server-side); the app
+  is built around raw records that lib/events-model turns into events. Map the
+  API shape back to a record so deriveCollections and every component keep
+  working untouched. Gallery photos come from a separate endpoint — wired later
+  — so `photos` is empty for now (the seed still carries its own).
+*/
+function apiEventToRecord(e) {
+  return {
+    date: e.date,
+    title: e.title,
+    entryFee: e.entryFee,
+    attendeeCount: e.attendeeCount,
+    description: e.description,
+    image: e.image ?? undefined,
+    cancelled: e.cancelled,
+    location: e.locationOverride || undefined,
+    photos: [],
+  };
+}
 
 /* ===========================================================================
    The single source of truth for meetups.
@@ -30,16 +59,37 @@ export function EventsProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length) setMeetups(parsed);
+    let active = true;
+
+    (async () => {
+      if (hasApi) {
+        // Real mode: the backend is the source of truth. A reachable-but-empty
+        // response is honoured (a fresh DB genuinely has no events yet); only a
+        // failed request falls back to the seed so the site still renders.
+        try {
+          const apiEvents = await eventsApi.list();
+          if (active) setMeetups(apiEvents.map(apiEventToRecord));
+        } catch {
+          if (active) setMeetups(SEED_MEETUPS);
+        }
+      } else {
+        // Stub mode: trust the browser's copy, else the seed.
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length) setMeetups(parsed);
+          }
+        } catch {
+          /* corrupt or unavailable — fall back to the seed */
+        }
       }
-    } catch {
-      /* corrupt or unavailable — fall back to the seed */
-    }
-    setReady(true);
+      if (active) setReady(true);
+    })();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   /*

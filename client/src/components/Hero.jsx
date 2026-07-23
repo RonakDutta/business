@@ -73,13 +73,19 @@ export default function Hero() {
           we all know something worth teaching.
         </p>
 
+        {/*
+          Mobile CTA hierarchy: the primary RSVP spans full width, then the two
+          secondary actions share a row beneath it — cleaner than three
+          full-width buttons stacked back-to-back. From sm up it's a centred
+          inline row.
+        */}
         <div
           data-delay="0.24"
-          className="reveal mx-auto mt-9 grid max-w-[420px] grid-cols-1 gap-2.5 sm:mt-10 sm:flex sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3"
+          className="reveal mx-auto mt-9 grid max-w-[400px] grid-cols-2 gap-2.5 sm:mt-10 sm:flex sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3"
         >
           <a
             href="#events"
-            className="inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_20px_-12px_rgba(15,23,42,.5)] sm:px-8"
+            className="col-span-2 inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_20px_-12px_rgba(15,23,42,.5)] sm:px-8"
           >
             RSVP for the next event
             <ArrowRightIcon className="h-4 w-4" />
@@ -89,7 +95,7 @@ export default function Hero() {
             href={meetupUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-btn bg-meetup px-5 py-4 text-[15px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_10px_-10px_var(--color-meetup)] sm:px-7"
+            className="inline-flex items-center justify-center gap-1.5 rounded-btn bg-meetup px-3 py-3.5 text-[14px] font-bold text-white transition-[translate,box-shadow] duration-300 ease-smooth hover:-translate-y-[3px] hover:text-white hover:shadow-[0_10px_10px_-10px_var(--color-meetup)] sm:px-7 sm:py-4 sm:text-[15px]"
           >
             Join on Meetup
             <ArrowUpRightIcon className="h-4 w-4" />
@@ -97,7 +103,7 @@ export default function Hero() {
 
           <Link
             to="/events"
-            className="inline-flex items-center justify-center gap-1.5 rounded-btn border border-ink bg-white/70 px-5 py-4 text-[15px] font-bold text-ink backdrop-blur transition-[border-color,translate] duration-300 ease-smooth hover:-translate-y-[3px] hover:border-ink sm:px-[26px]"
+            className="inline-flex items-center justify-center gap-1.5 rounded-btn border border-ink bg-white/70 px-3 py-3.5 text-[14px] font-bold text-ink backdrop-blur transition-[border-color,translate] duration-300 ease-smooth hover:-translate-y-[3px] hover:border-ink sm:px-[26px] sm:py-4 sm:text-[15px]"
           >
             See all events
             <ArrowRightIcon className="h-4 w-4" />
