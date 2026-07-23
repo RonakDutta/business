@@ -9,6 +9,7 @@ import {
 import { SEED_MEETUPS } from "../data/events.js";
 import { deriveCollections } from "../lib/events-model.js";
 import { events as eventsApi } from "../api";
+import { isUploaded, dataUrlToBlob } from "../lib/image.js";
 
 const KEY = "b4:meetups";
 const EventsContext = createContext(null);
@@ -29,6 +30,9 @@ const hasApi = Boolean(import.meta.env.VITE_API_URL);
 */
 function apiEventToRecord(e) {
   return {
+    // The frontend keys events by date (the URL); apiId keeps the server's
+    // uuid alongside so the write mutators can target the right resource.
+    apiId: e.id,
     date: e.date,
     title: e.title,
     entryFee: e.entryFee,
@@ -39,6 +43,15 @@ function apiEventToRecord(e) {
     location: e.locationOverride || undefined,
     photos: [],
   };
+}
+
+/* Upload any freshly-picked (data URL) gallery photos to an event; existing
+   Cloudinary URLs are left as-is. */
+async function uploadNewPhotos(apiId, photos = []) {
+  for (const photo of photos) {
+    const blob = dataUrlToBlob(photo);
+    if (blob) await eventsApi.addPhoto(apiId, { image: blob });
+  }
 }
 
 /* ===========================================================================
@@ -133,13 +146,45 @@ export function EventsProvider({ children }) {
     [meetups]
   );
 
-  /* The date IS the id, so two meetups can't share one. The form checks this
-     before calling, but guard here too — this is the layer that owns it. */
+  /*
+    The mutators are async and branch on `hasApi`:
+      - API mode → create/update/delete on the backend (header image + new
+        gallery photos stream to Cloudinary), then mirror the result into local
+        state so the UI updates without a refetch. Errors come back as
+        { ok:false, error } for the form to show.
+      - Stub mode → the original localStorage behaviour, unchanged.
+    Every one still resolves to { ok, id?, error? }, so callers just await.
+
+    The date IS the id, so two meetups can't share one — guard here even though
+    the form checks too.
+  */
   const addEvent = useCallback(
-    (record) => {
+    async (record) => {
       if (meetups.some((m) => m.date === record.date)) {
         return { ok: false, error: "A meetup already exists on that date." };
       }
+
+      if (hasApi) {
+        try {
+          const created = await eventsApi.create({
+            date: record.date,
+            title: record.title,
+            entryFee: record.entryFee,
+            attendeeCount: record.attendeeCount,
+            description: record.description,
+            ...(isUploaded(record.image)
+              ? { image: dataUrlToBlob(record.image) }
+              : {}),
+          });
+          await uploadNewPhotos(created.id, record.photos);
+          const rec = { ...apiEventToRecord(created), photos: record.photos ?? [] };
+          setMeetups((prev) => [...prev, rec]);
+          return { ok: true, id: rec.date };
+        } catch (err) {
+          return { ok: false, error: err?.message || "Couldn't save the meetup." };
+        }
+      }
+
       const res = persist([...meetups, record]);
       return res.ok ? { ok: true, id: record.date } : res;
     },
@@ -147,10 +192,37 @@ export function EventsProvider({ children }) {
   );
 
   const updateEvent = useCallback(
-    (id, patch) => {
+    async (id, patch) => {
       if (patch.date && patch.date !== id && meetups.some((m) => m.date === patch.date)) {
         return { ok: false, error: "Another meetup already uses that date." };
       }
+
+      if (hasApi) {
+        const current = meetups.find((m) => m.date === id);
+        if (!current?.apiId) {
+          return { ok: false, error: "This meetup isn't loaded from the server." };
+        }
+        try {
+          const updated = await eventsApi.update(current.apiId, {
+            date: patch.date,
+            title: patch.title,
+            entryFee: patch.entryFee,
+            attendeeCount: patch.attendeeCount,
+            cancelled: patch.cancelled,
+            description: patch.description,
+            ...(isUploaded(patch.image)
+              ? { image: dataUrlToBlob(patch.image) }
+              : {}),
+          });
+          await uploadNewPhotos(current.apiId, patch.photos);
+          const rec = { ...apiEventToRecord(updated), photos: patch.photos ?? [] };
+          setMeetups((prev) => prev.map((m) => (m.date === id ? rec : m)));
+          return { ok: true, id: rec.date };
+        } catch (err) {
+          return { ok: false, error: err?.message || "Couldn't save the changes." };
+        }
+      }
+
       const res = persist(meetups.map((m) => (m.date === id ? { ...m, ...patch } : m)));
       return res.ok ? { ok: true, id: patch.date ?? id } : res;
     },
@@ -177,13 +249,39 @@ export function EventsProvider({ children }) {
   );
 
   const setCancelled = useCallback(
-    (id, cancelled) =>
-      persist(meetups.map((m) => (m.date === id ? { ...m, cancelled } : m))),
+    async (id, cancelled) => {
+      if (hasApi) {
+        const current = meetups.find((m) => m.date === id);
+        if (!current?.apiId) return { ok: false, error: "Not loaded from the server." };
+        try {
+          const updated = await eventsApi.update(current.apiId, { cancelled });
+          const rec = { ...apiEventToRecord(updated), photos: current.photos };
+          setMeetups((prev) => prev.map((m) => (m.date === id ? rec : m)));
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: err?.message };
+        }
+      }
+      return persist(meetups.map((m) => (m.date === id ? { ...m, cancelled } : m)));
+    },
     [meetups, persist]
   );
 
   const removeEvent = useCallback(
-    (id) => persist(meetups.filter((m) => m.date !== id)),
+    async (id) => {
+      if (hasApi) {
+        const current = meetups.find((m) => m.date === id);
+        if (!current?.apiId) return { ok: false, error: "Not loaded from the server." };
+        try {
+          await eventsApi.remove(current.apiId);
+          setMeetups((prev) => prev.filter((m) => m.date !== id));
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: err?.message };
+        }
+      }
+      return persist(meetups.filter((m) => m.date !== id));
+    },
     [meetups, persist]
   );
 
