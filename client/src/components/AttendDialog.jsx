@@ -5,7 +5,6 @@ import { CheckIcon, CloseIcon, ScanIcon } from "./icons.jsx";
 import { PAYMENT, paymentRef } from "../data/payment.js";
 import { upiIntent } from "../lib/qr.js";
 import { priceLabel, isFree } from "../lib/format.js";
-import { submitPaymentProof } from "../lib/payment-submission.js";
 
 /* ===========================================================================
    Attend → pay → confirmed.
@@ -65,11 +64,10 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
     }
 
     /*
-      This is intentionally only assembled on the client today. When the
-      backend is ready, POST this exact object to a protected endpoint: upload
-      `paymentProof.imageDataUrl` to storage, then append its URL plus payer
-      name/email and payment fields to Google Sheets on the server. Never send
-      a Sheets credential or accept payment proof directly from the browser.
+      RsvpContext.confirm() takes this over the finish line: in API mode it
+      uploads `paymentProof.imageDataUrl` to /api/payments (Cloudinary) and
+      records the RSVP; in stub mode it just books the seat locally. Either
+      way it resolves to { ok, error }.
     */
     const submission = {
       eventId: event.id,
@@ -88,11 +86,16 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
     try {
       setSubmitting(true);
       setPaymentError("");
-      await submitPaymentProof(submission);
-      onConfirm(submission);
+      const res = await onConfirm(submission);
+      if (res && res.ok === false) {
+        setPaymentError(
+          res.error || "Unable to submit your RSVP. Please try again.",
+        );
+        return;
+      }
       setDone(true);
     } catch (error) {
-      setPaymentError(error.message || "Unable to submit payment proof.");
+      setPaymentError(error.message || "Unable to submit your RSVP.");
     } finally {
       setSubmitting(false);
     }
