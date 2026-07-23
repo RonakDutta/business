@@ -41,7 +41,9 @@ function apiEventToRecord(e) {
     image: e.image ?? undefined,
     cancelled: e.cancelled,
     location: e.locationOverride || undefined,
-    photos: [],
+    // Cloudinary URLs from the API; events-model treats absolute URLs as
+    // already-resolved, so the gallery renders them straight through.
+    photos: Array.isArray(e.photos) ? e.photos : [],
   };
 }
 

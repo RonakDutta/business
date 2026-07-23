@@ -37,7 +37,19 @@ const toISODate = (d) => (d instanceof Date ? d.toISOString().slice(0, 10) : d);
 // GET /api/events?status=upcoming|past|all
 export const listEvents = asyncHandler(async (req, res) => {
   const { rows } = await query("select * from events order by event_date desc");
-  let events = rows.map(withStatus);
+
+  // One extra query for every event's photo URLs, grouped by event — so the
+  // client gets galleries in the same round-trip instead of one call per event.
+  const photoRows = await query(
+    "select event_id, url from photos order by position, created_at",
+  );
+  const photosByEvent = {};
+  for (const p of photoRows.rows) (photosByEvent[p.event_id] ??= []).push(p.url);
+
+  let events = rows.map((r) => ({
+    ...withStatus(r),
+    photos: photosByEvent[r.id] || [],
+  }));
 
   const status = req.query.status;
   if (status === "upcoming")
@@ -52,7 +64,15 @@ export const listEvents = asyncHandler(async (req, res) => {
 export const getEvent = asyncHandler(async (req, res) => {
   const { rows } = await query("select * from events where id = $1", [req.params.id]);
   if (!rows[0]) throw new ApiError(404, "Event not found.");
-  res.json({ event: withStatus(rows[0]) });
+
+  const photoRows = await query(
+    "select url from photos where event_id = $1 order by position, created_at",
+    [req.params.id],
+  );
+
+  res.json({
+    event: { ...withStatus(rows[0]), photos: photoRows.rows.map((p) => p.url) },
+  });
 });
 
 // POST /api/events   (admin) — optional cover image via multipart "image"
