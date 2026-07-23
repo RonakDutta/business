@@ -2,6 +2,10 @@ import { query } from "../config/db.js";
 import { asyncHandler, ApiError } from "../utils/asyncHandler.js";
 import { uploadBuffer, destroyAsset } from "../config/cloudinary.js";
 
+// Mirrors the schema column default and the frontend's DEFAULT_TITLE, so a
+// blank title falls back to the standard meetup name instead of NULL.
+const DEFAULT_TITLE = "Business4.0 Meetup (Entry Fee Applicable)";
+
 /* ---------------------------------------------------------------------------
    EVENTS (meetups).
 
@@ -90,7 +94,7 @@ export const createEvent = asyncHandler(async (req, res) => {
      returning *`,
     [
       date,
-      title || undefined,
+      (title || "").trim() || DEFAULT_TITLE,
       entryFee != null ? Number(entryFee) : null,
       parseDescription(description),
       attendeeCount != null ? Number(attendeeCount) : null,
