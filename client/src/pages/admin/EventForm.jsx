@@ -6,6 +6,7 @@ import Avatar from "../../components/Avatar.jsx";
 import BackLink from "../../components/BackLink.jsx";
 import CoverImage from "../../components/CoverImage.jsx";
 import ImagePicker, { SizeNote } from "../../components/ImagePicker.jsx";
+import Spinner from "../../components/Spinner.jsx";
 import { dataUrlBytes, isUploaded } from "../../lib/image.js";
 import { priceLabel } from "../../lib/format.js";
 import { CheckIcon, CloseIcon, UsersIcon } from "../../components/icons.jsx";
@@ -65,6 +66,7 @@ export default function EventForm() {
     cancelled: Boolean(record?.cancelled),
   }));
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   /* What these images cost in the only storage we have. */
   const uploadBytes =
@@ -88,7 +90,8 @@ export default function EventForm() {
       [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value,
     }));
 
-  const save = () => {
+  const save = async () => {
+    if (saving) return;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date))
       return setError("Pick a date — it doubles as the event's ID and URL.");
 
@@ -108,9 +111,20 @@ export default function EventForm() {
       cancelled: form.cancelled,
     };
 
-    const res = editing ? updateEvent(id, next) : addEvent(next);
-    if (!res.ok) return setError(res.error);
-    navigate("/admin");
+    setError("");
+    setSaving(true);
+    try {
+      // Mutators are async now (they may upload images to the backend) — await
+      // and only leave the form once it actually saved.
+      const res = editing ? await updateEvent(id, next) : await addEvent(next);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      navigate("/admin");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(form.date);
@@ -349,10 +363,19 @@ export default function EventForm() {
             <button
               type="button"
               onClick={save}
-              className="inline-flex items-center gap-2 rounded-btn bg-ink px-7 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+              disabled={saving}
+              className="inline-flex items-center gap-2 rounded-btn bg-ink px-7 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
             >
-              <CheckIcon className="h-4 w-4" />
-              {editing ? "Save changes" : "Create meetup"}
+              {saving ? (
+                <Spinner className="h-4 w-4" />
+              ) : (
+                <CheckIcon className="h-4 w-4" />
+              )}
+              {saving
+                ? "Saving…"
+                : editing
+                  ? "Save changes"
+                  : "Create meetup"}
             </button>
             <Link
               to="/admin"

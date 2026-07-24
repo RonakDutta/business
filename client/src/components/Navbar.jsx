@@ -179,10 +179,12 @@ export default function Navbar() {
 
   return (
     <header
-      className={`top-0 z-50 sticky bg-white/80 backdrop-blur-[14px] transition-[border-color,box-shadow] duration-300 ${
+      className={`sticky top-0 z-50 bg-white/85 backdrop-blur-[14px] transition-[box-shadow,border-radius] duration-300 ${
+        open ? "" : "rounded-b-[26px]"
+      } ${
         scrolled
-          ? "border-b border-line shadow-[0_6px_20px_-18px_rgba(15,23,42,.5)]"
-          : "border-b border-transparent"
+          ? "shadow-[0_10px_30px_-20px_rgba(15,23,42,.45)] ring-1 ring-line/70"
+          : ""
       }`}
     >
       <nav className="mx-auto flex max-w-shell items-center justify-between gap-4 px-6 py-3.5 md:px-10">
@@ -246,7 +248,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="menu-pop absolute inset-x-0 top-full max-h-[calc(100dvh-72px)] overflow-y-auto border-b border-t border-line bg-white px-6 pb-6 pt-3 shadow-[0_20px_32px_-24px_rgba(15,23,42,.45)] md:hidden">
+        <div className="menu-pop absolute inset-x-0 top-full max-h-[calc(100dvh-72px)] overflow-y-auto rounded-b-[26px] border-t border-line bg-white px-6 pb-6 pt-3 shadow-[0_22px_40px_-24px_rgba(15,23,42,.5)] md:hidden">
           <div className="flex flex-col">
             {LINKS.map((l) => (
               <NavLink

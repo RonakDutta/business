@@ -5,6 +5,7 @@ import AvatarStack from "./AvatarStack.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { Orb, ConnectionMesh } from "./Decor.jsx";
+import Spinner from "./Spinner.jsx";
 import { CheckIcon, ShieldIcon, UsersIcon, CalendarIcon } from "./icons.jsx";
 
 /* ===========================================================================
@@ -57,6 +58,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const nextEvent = upcomingEvents.find((e) => !e.cancelled);
   const totalAttendees = useMemo(
@@ -67,7 +69,8 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   /* Coming from an RSVP? Say so — otherwise the redirect back looks random. */
   const returning = next.startsWith("/events/");
 
-  const submit = () => {
+  const submit = async () => {
+    if (submitting) return;
     if (isSignup && !name.trim()) return setError("Tell us your name.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       return setError("That email doesn't look right.");
@@ -75,8 +78,17 @@ export default function AuthForm({ mode = "login", onSubmit }) {
       return setError("Password needs to be at least 6 characters.");
 
     setError("");
-    onSubmit({ name: name.trim(), email: email.trim() });
-    navigate(next, { replace: true });
+    setSubmitting(true);
+    try {
+      // onSubmit may be async (real API) or sync (stub) — await handles both,
+      // and we only navigate once it resolves, so a failed sign-in stays put.
+      await onSubmit({ name: name.trim(), email: email.trim(), password });
+      navigate(next, { replace: true });
+    } catch (err) {
+      setError(err?.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const field =
@@ -214,9 +226,17 @@ export default function AuthForm({ mode = "login", onSubmit }) {
 
               <button
                 type="submit"
-                className="mt-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)]"
+                disabled={submitting}
+                className="mt-2 flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
               >
-                {isSignup ? "Create account" : "Sign in"}
+                {submitting && <Spinner className="h-4 w-4" />}
+                {submitting
+                  ? isSignup
+                    ? "Creating account…"
+                    : "Signing in…"
+                  : isSignup
+                    ? "Create account"
+                    : "Sign in"}
               </button>
             </form>
 

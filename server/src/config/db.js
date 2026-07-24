@@ -12,6 +12,15 @@ import { env } from "./env.js";
 
 const { Pool } = pg;
 
+/*
+  Return DATE columns (oid 1082) as the raw "YYYY-MM-DD" string instead of a JS
+  Date. pg's default parser builds a Date at the server's LOCAL midnight, and a
+  later toISOString() shifts it to the previous UTC day on any machine ahead of
+  UTC (e.g. IST, +5:30) — which is exactly the "date is one day earlier" bug.
+  event_date has no time component, so a plain string is what we want anyway.
+*/
+pg.types.setTypeParser(1082, (value) => value);
+
 export const pool = new Pool({
   connectionString: env.databaseUrl,
   // Neon terminates TLS; without this pg rejects the self-described cert chain.

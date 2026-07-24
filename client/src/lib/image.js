@@ -86,3 +86,19 @@ export const mb = (bytes) =>
 
 /** An uploaded image, versus a filename sitting in public/. */
 export const isUploaded = (s) => typeof s === "string" && s.startsWith("data:");
+
+/**
+ * Turn a `data:` URL (what readImageFile produces in the browser) into a Blob,
+ * so it can be sent to the backend as a real multipart file upload — the API
+ * streams it on to Cloudinary. No-op guard: returns null for anything that
+ * isn't a data URL.
+ */
+export function dataUrlToBlob(dataUrl) {
+  if (!isUploaded(dataUrl)) return null;
+  const [head, body] = dataUrl.split(",");
+  const mime = head.match(/data:(.*?);base64/)?.[1] || "image/jpeg";
+  const binary = atob(body);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}

@@ -16,6 +16,42 @@ hosting on **Cloudinary**, stateless auth with **JWT**.
 | Database       | Neon (Postgres) via `pg`                |
 | Images         | Cloudinary (`multer` memory → stream)   |
 | Auth           | JWT (`jsonwebtoken`) + `bcryptjs`       |
+| Sheets export  | Google Sheets API (`googleapis`)        |
+
+## Google Sheets export (optional)
+
+Contact-form submissions and RSVPs are mirrored into a Google Sheet. It's
+optional — without the vars below the app just skips the mirror and everything
+still lands in Postgres.
+
+Setup:
+1. In Google Cloud, **enable the Google Sheets API** and create a **service
+   account**; download its **JSON key**.
+2. Create a spreadsheet, and **share it with the service account's
+   `client_email` as Editor** (the most-missed step).
+3. Add two tabs:
+   - **`Contact`** — Timestamp, Name, Email, Topic, Message
+   - **`RSVPs`** — Timestamp, Name, Email, Event, Date, Amount, Reference, Proof
+4. Set the env vars — either point at the JSON file, or paste the two fields:
+
+```bash
+GOOGLE_SHEETS_ID=<the id from the spreadsheet URL>
+
+# Option A: path to the downloaded key file
+GOOGLE_APPLICATION_CREDENTIALS=./google-service-account.json
+
+# Option B: the two fields straight from the JSON (keep the quotes; \n stays escaped)
+GOOGLE_SHEETS_CLIENT_EMAIL=svc@project.iam.gserviceaccount.com
+GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# optional, default to "Contact" / "RSVPs"
+GOOGLE_SHEETS_CONTACT_TAB=Contact
+GOOGLE_SHEETS_RSVP_TAB=RSVPs
+```
+
+`/api/health` reports `"sheets": true` once it's configured. If a write fails
+(usually the sheet isn't shared with the service account) it's logged and
+skipped — the contact submission still succeeds.
 
 ## Getting started
 

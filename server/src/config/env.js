@@ -47,4 +47,21 @@ export const env = {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
   },
+
+  /*
+    Google Sheets (service account). Two ways to supply the key:
+      - GOOGLE_APPLICATION_CREDENTIALS = path to the downloaded JSON key file, or
+      - GOOGLE_SHEETS_CLIENT_EMAIL + GOOGLE_SHEETS_PRIVATE_KEY (the two fields
+        from that JSON). In a .env the private key's newlines are written as
+        literal "\n", so we turn them back into real newlines here.
+    Either way you also need GOOGLE_SHEETS_ID (from the spreadsheet URL).
+  */
+  sheets: {
+    id: process.env.GOOGLE_SHEETS_ID,
+    keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+    privateKey: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    contactTab: process.env.GOOGLE_SHEETS_CONTACT_TAB || "Contact",
+    rsvpTab: process.env.GOOGLE_SHEETS_RSVP_TAB || "RSVPs",
+  },
 };
