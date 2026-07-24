@@ -50,9 +50,22 @@ export const listEvents = asyncHandler(async (req, res) => {
   const photosByEvent = {};
   for (const p of photoRows.rows) (photosByEvent[p.event_id] ??= []).push(p.url);
 
+  // Real attendees (names only — no email publicly), grouped by event, so the
+  // cards and "who's going" show who actually RSVP'd instead of placeholders.
+  const attendeeRows = await query(
+    `select r.event_id, u.id, u.name
+       from rsvps r join users u on u.id = r.user_id
+      where r.status = 'going'
+      order by r.created_at`,
+  );
+  const attendeesByEvent = {};
+  for (const a of attendeeRows.rows)
+    (attendeesByEvent[a.event_id] ??= []).push({ id: a.id, name: a.name });
+
   let events = rows.map((r) => ({
     ...withStatus(r),
     photos: photosByEvent[r.id] || [],
+    attendees: attendeesByEvent[r.id] || [],
   }));
 
   const status = req.query.status;
@@ -74,8 +87,18 @@ export const getEvent = asyncHandler(async (req, res) => {
     [req.params.id],
   );
 
+  const attendeeRows = await query(
+    `select u.id, u.name from rsvps r join users u on u.id = r.user_id
+      where r.event_id = $1 and r.status = 'going' order by r.created_at`,
+    [req.params.id],
+  );
+
   res.json({
-    event: { ...withStatus(rows[0]), photos: photoRows.rows.map((p) => p.url) },
+    event: {
+      ...withStatus(rows[0]),
+      photos: photoRows.rows.map((p) => p.url),
+      attendees: attendeeRows.rows.map((a) => ({ id: a.id, name: a.name })),
+    },
   });
 });
 

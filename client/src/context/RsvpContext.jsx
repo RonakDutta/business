@@ -86,6 +86,11 @@ export function RsvpProvider({ children }) {
 
   const isGoing = useCallback((id) => ids.includes(id), [ids]);
 
+  // The signed-in person, shaped for the attendee list (initials, no avatar).
+  const mePerson = user
+    ? { id: user.id || user.email, name: user.name || user.email, role: "Member" }
+    : null;
+
   /*
     confirm(date, submission?) — async, resolves to { ok, error }.
     `submission` is the object AttendDialog assembles (payer + payment +
@@ -118,7 +123,7 @@ export function RsvpProvider({ children }) {
           await eventsApi.rsvp(apiId, submission?.payment?.reference);
 
           setIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
-          addAttendee(id, +1);
+          addAttendee(id, +1, mePerson);
           return { ok: true };
         } catch (err) {
           return {
@@ -130,10 +135,10 @@ export function RsvpProvider({ children }) {
 
       // Stub mode: local only.
       setIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
-      addAttendee(id, +1);
+      addAttendee(id, +1, mePerson);
       return { ok: true };
     },
-    [ids, getRecord, addAttendee],
+    [ids, getRecord, addAttendee, mePerson],
   );
 
   const cancel = useCallback(
@@ -142,7 +147,7 @@ export function RsvpProvider({ children }) {
 
       // Optimistic: update the UI first, then tell the server (best effort).
       setIds((prev) => prev.filter((x) => x !== id));
-      addAttendee(id, -1);
+      addAttendee(id, -1, mePerson);
 
       if (hasApi) {
         const apiId = getRecord(id)?.apiId;
@@ -156,7 +161,7 @@ export function RsvpProvider({ children }) {
       }
       return { ok: true };
     },
-    [ids, getRecord, addAttendee],
+    [ids, getRecord, addAttendee, mePerson],
   );
 
   const value = useMemo(

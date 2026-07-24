@@ -74,7 +74,18 @@ export function buildEvent(m, now = Date.now()) {
     image: m.image ?? "/images/events/eventtemp.jpg",
 
     attendeeCount,
-    attendees: POOL.slice(0, Math.min(attendeeCount, POOL.length)),
+    // Real RSVP'd people when the record carries them (from the API); the POOL
+    // is only a placeholder for the seed/demo data that has counts but no
+    // actual attendee list. Real users have no avatar, so Avatar shows their
+    // initials rather than a stock face.
+    attendees: m.attendees?.length
+      ? m.attendees.map((p) => ({
+          id: p.id,
+          name: p.name,
+          role: p.role || "Member",
+          avatar: p.avatar,
+        }))
+      : POOL.slice(0, Math.min(attendeeCount, POOL.length)),
     gallery: album(m.date, m.photos ?? []),
   };
 }
