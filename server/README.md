@@ -20,17 +20,18 @@ hosting on **Cloudinary**, stateless auth with **JWT**.
 
 ## Google Sheets export (optional)
 
-Contact-form submissions are mirrored into a Google Sheet (and RSVPs will be,
-next). It's optional — without the vars below the app just skips the mirror and
-everything still lands in Postgres.
+Contact-form submissions and RSVPs are mirrored into a Google Sheet. It's
+optional — without the vars below the app just skips the mirror and everything
+still lands in Postgres.
 
 Setup:
 1. In Google Cloud, **enable the Google Sheets API** and create a **service
    account**; download its **JSON key**.
 2. Create a spreadsheet, and **share it with the service account's
    `client_email` as Editor** (the most-missed step).
-3. Add a tab named **`Contact`** (columns: Timestamp, Name, Email, Topic,
-   Message).
+3. Add two tabs:
+   - **`Contact`** — Timestamp, Name, Email, Topic, Message
+   - **`RSVPs`** — Timestamp, Name, Email, Event, Date, Amount, Reference, Proof
 4. Set the env vars — either point at the JSON file, or paste the two fields:
 
 ```bash
@@ -43,8 +44,9 @@ GOOGLE_APPLICATION_CREDENTIALS=./google-service-account.json
 GOOGLE_SHEETS_CLIENT_EMAIL=svc@project.iam.gserviceaccount.com
 GOOGLE_SHEETS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
-# optional, defaults to "Contact"
+# optional, default to "Contact" / "RSVPs"
 GOOGLE_SHEETS_CONTACT_TAB=Contact
+GOOGLE_SHEETS_RSVP_TAB=RSVPs
 ```
 
 `/api/health` reports `"sheets": true` once it's configured. If a write fails

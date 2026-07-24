@@ -62,5 +62,6 @@ export const env = {
     clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
     privateKey: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n"),
     contactTab: process.env.GOOGLE_SHEETS_CONTACT_TAB || "Contact",
+    rsvpTab: process.env.GOOGLE_SHEETS_RSVP_TAB || "RSVPs",
   },
 };
