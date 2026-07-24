@@ -1,12 +1,62 @@
 import { query, getClient } from "../config/db.js";
 import { asyncHandler, ApiError } from "../utils/asyncHandler.js";
+import { appendRow } from "../config/sheets.js";
+import { env } from "../config/env.js";
 
 /* ---------------------------------------------------------------------------
    RSVPS — who's attending which meetup (frontend RsvpContext).
 
    Creating/cancelling an RSVP also moves the event's attendee_count in the
    same transaction, so the count the site shows never drifts from the rows.
+   Every new RSVP is also mirrored to the Google Sheet (RSVPs tab).
    --------------------------------------------------------------------------- */
+
+/*
+  Gather the human-readable RSVP details and append one row to the Sheet.
+  Runs after the RSVP is committed; best-effort (appendRow never throws), so a
+  Sheets problem can't affect the booking. The payment proof URL is looked up
+  from the payments table by reference — the frontend uploads the proof just
+  before the RSVP, so the row already exists for paid events.
+  Columns: Timestamp | Name | Email | Event | Date | Amount | Reference | Proof
+*/
+async function mirrorRsvpToSheet(userId, eventId, paymentRef) {
+  try {
+    const { rows } = await query(
+      `select u.name, u.email, e.event_date, e.title, e.entry_fee
+         from users u cross join events e
+        where u.id = $1 and e.id = $2`,
+      [userId, eventId],
+    );
+    const info = rows[0];
+    if (!info) return;
+
+    let proofUrl = "";
+    let amount = info.entry_fee === 0 ? "Free" : `₹${info.entry_fee}`;
+    if (paymentRef) {
+      const pay = await query(
+        "select proof_url, amount from payments where payment_ref = $1 order by created_at desc limit 1",
+        [paymentRef],
+      );
+      if (pay.rows[0]) {
+        proofUrl = pay.rows[0].proof_url || "";
+        if (pay.rows[0].amount != null) amount = `₹${pay.rows[0].amount}`;
+      }
+    }
+
+    await appendRow(env.sheets.rsvpTab, [
+      new Date().toISOString(),
+      info.name,
+      info.email,
+      info.title,
+      info.event_date,
+      amount,
+      paymentRef || "",
+      proofUrl,
+    ]);
+  } catch (err) {
+    console.error("[sheets] rsvp mirror failed:", err.message);
+  }
+}
 
 // GET /api/rsvps/me   (auth) — the caller's RSVPs
 export const listMyRsvps = asyncHandler(async (req, res) => {
@@ -54,6 +104,9 @@ export const createRsvp = asyncHandler(async (req, res) => {
 
     await client.query("commit");
     res.status(201).json({ rsvp: rows[0] });
+
+    // Mirror only a genuinely new booking, so re-RSVPs don't duplicate rows.
+    if (!wasGoing) mirrorRsvpToSheet(req.user.id, eventId, req.body.paymentRef);
   } catch (err) {
     await client.query("rollback");
     throw err;
