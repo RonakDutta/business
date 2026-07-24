@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ping } from "../config/db.js";
 import { isCloudinaryConfigured } from "../config/cloudinary.js";
+import { isSheetsConfigured } from "../config/sheets.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 import authRoutes from "./auth.routes.js";
@@ -51,6 +52,7 @@ router.get(
       ok: true,
       db,
       cloudinary: isCloudinaryConfigured,
+      sheets: isSheetsConfigured,
       time: new Date().toISOString(),
     });
   }),

@@ -1,8 +1,11 @@
 import { query } from "../config/db.js";
 import { asyncHandler, ApiError } from "../utils/asyncHandler.js";
+import { appendRow } from "../config/sheets.js";
+import { env } from "../config/env.js";
 
 /* CONTACT — the form on /contact (frontend opens a mailto today; this stores
-   the message so nothing is lost and an admin can triage). */
+   the message so nothing is lost and an admin can triage). Every message is
+   also mirrored into the Google Sheet (Contact tab) when Sheets is configured. */
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,6 +24,18 @@ export const submitMessage = asyncHandler(async (req, res) => {
     "insert into contact_messages (name, email, topic, message) values ($1,$2,$3,$4)",
     [name, email, topic, message],
   );
+
+  // Mirror to the Sheet — fire-and-forget so a Sheets hiccup never fails the
+  // submission (the message is already safe in Postgres). Columns:
+  // Timestamp | Name | Email | Topic | Message
+  appendRow(env.sheets.contactTab, [
+    new Date().toISOString(),
+    name,
+    email,
+    topic || "",
+    message,
+  ]);
+
   res.status(201).json({ ok: true });
 });
 
