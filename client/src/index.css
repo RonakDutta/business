@@ -178,6 +178,22 @@
 }
 
 @layer components {
+  /* Skeleton placeholder — a shimmering grey block shown while data loads,
+     especially a cold backend (e.g. Render free-tier waking from sleep). */
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  .skeleton {
+    background: linear-gradient(100deg, #e7eaf0 30%, #f2f4f8 50%, #e7eaf0 70%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+
   /* Scroll reveal , driven by useReveal() */
   /*
     Elements that also carry a `transition-[...]` utility (cards with hover
@@ -234,6 +250,10 @@
     opacity: 1;
     translate: none;
     transition: none;
+  }
+  .skeleton {
+    animation: none;
+    background: #e7eaf0;
   }
   *,
   *::before,

@@ -1,18 +1,19 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
-import Loader from "./Loader.jsx";
+import AppSkeleton from "./AppSkeleton.jsx";
 
 /*
-  Holds the full-screen Loader over the app until the core contexts have
+  Holds a full-screen skeleton over the app until the core contexts have
   settled — the session restore (AuthContext) and the events load
-  (EventsContext). Today both resolve almost instantly (localStorage / seed);
-  once they're wired to the API this is where the real fetch time is covered,
-  so nothing renders half-loaded. Must live inside the providers it reads.
+  (EventsContext). In stub mode both resolve almost instantly; against the API
+  this covers the real fetch time, including a cold Render backend waking from
+  sleep (30-60s), where a layout-shaped skeleton beats a spinner. Must live
+  inside the providers it reads.
 */
 export default function AppGate({ children }) {
   const { ready: authReady } = useAuth();
   const { ready: eventsReady } = useEvents();
 
-  if (!authReady || !eventsReady) return <Loader />;
+  if (!authReady || !eventsReady) return <AppSkeleton />;
   return children;
 }
