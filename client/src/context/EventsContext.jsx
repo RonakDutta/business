@@ -44,6 +44,9 @@ function apiEventToRecord(e) {
     // Cloudinary URLs from the API; events-model treats absolute URLs as
     // already-resolved, so the gallery renders them straight through.
     photos: Array.isArray(e.photos) ? e.photos : [],
+    // Real RSVP'd people (names). events-model uses these instead of the
+    // placeholder POOL when present.
+    attendees: Array.isArray(e.attendees) ? e.attendees : undefined,
   };
 }
 
@@ -235,17 +238,29 @@ export function EventsProvider({ children }) {
      an RSVP isn't an edit of the meetup, it's an arrival, and it comes from the
      public site rather than the admin form. RsvpContext owns the "have I
      already counted this person" question — see the note there. */
+  /*
+    Moves the count when someone RSVPs, and — given the person — keeps the
+    attendee list in step so the new arrival's name/initial shows up straight
+    away instead of only after the next fetch. `person` is optional; without it
+    only the count moves.
+  */
   const addAttendee = useCallback(
-    (id, delta = 1) =>
+    (id, delta = 1, person = null) =>
       persist(
-        meetups.map((m) =>
-          m.date === id
-            ? {
-                ...m,
-                attendeeCount: Math.max(0, (Number(m.attendeeCount) || 0) + delta),
-              }
-            : m
-        )
+        meetups.map((m) => {
+          if (m.date !== id) return m;
+          const attendeeCount = Math.max(0, (Number(m.attendeeCount) || 0) + delta);
+          let attendees = m.attendees;
+          if (person && delta > 0) {
+            const list = Array.isArray(m.attendees) ? m.attendees : [];
+            attendees = list.some((p) => p.id === person.id)
+              ? list
+              : [...list, person];
+          } else if (person && delta < 0 && Array.isArray(m.attendees)) {
+            attendees = m.attendees.filter((p) => p.id !== person.id);
+          }
+          return { ...m, attendeeCount, attendees };
+        })
       ),
     [meetups, persist]
   );

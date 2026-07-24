@@ -29,7 +29,7 @@ export default function Avatar({
       className={`relative shrink-0 overflow-hidden rounded-full bg-line ${ringCls} ${className}`}
       style={{ width: size, height: size }}
     >
-      {failed ? (
+      {failed || !person.avatar ? (
         <span className="flex h-full w-full items-center justify-center text-[11px] font-bold text-subtle">
           {initials(person.name)}
         </span>
