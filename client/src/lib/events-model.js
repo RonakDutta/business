@@ -1,6 +1,7 @@
 import { VENUE } from "../data/venue.js";
 import { POOL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../data/events.js";
 import { eventDateLabel, eventWhenHeadline } from "./format.js";
+import { isResolvedSrc } from "./image.js";
 
 /* ===========================================================================
    Pure event model. No React, no storage — just record in, event out.
@@ -15,10 +16,8 @@ import { eventDateLabel, eventWhenHeadline } from "./format.js";
   bare filename gets the folder prefix — prefixing a data URL would produce a
   broken image, which is exactly what happened the first time uploads landed.
 */
-const isResolved = (name) => /^(data:|blob:|https?:|\/)/i.test(name);
-
 const photoSrc = (eventId, name) =>
-  isResolved(name) ? name : `/images/gallery/${eventId}/${name}`;
+  isResolvedSrc(name) ? name : `/images/gallery/${eventId}/${name}`;
 
 const album = (eventId, files = []) =>
   files.filter(Boolean).map((name, i) => ({

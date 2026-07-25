@@ -88,6 +88,19 @@ export const mb = (bytes) =>
 export const isUploaded = (s) => typeof s === "string" && s.startsWith("data:");
 
 /**
+ * Is this image reference already a usable src, rather than a bare filename
+ * that needs a folder prefix? Covers in-browser uploads (`data:`/`blob:`),
+ * hosted images (Cloudinary `https:`) and absolute paths (`/images/...`).
+ *
+ * One source of truth on purpose: the admin form used to test only for
+ * `data:`/`/`, so a Cloudinary URL fell through and got prefixed into
+ * `/images/gallery/<date>/https://...`, which is why saved gallery photos
+ * showed as broken when re-editing an event.
+ */
+export const isResolvedSrc = (s) =>
+  typeof s === "string" && /^(data:|blob:|https?:|\/)/i.test(s);
+
+/**
  * Turn a `data:` URL (what readImageFile produces in the browser) into a Blob,
  * so it can be sent to the backend as a real multipart file upload — the API
  * streams it on to Cloudinary. No-op guard: returns null for anything that

@@ -7,7 +7,7 @@ import BackLink from "../../components/BackLink.jsx";
 import CoverImage from "../../components/CoverImage.jsx";
 import ImagePicker, { SizeNote } from "../../components/ImagePicker.jsx";
 import Spinner from "../../components/Spinner.jsx";
-import { dataUrlBytes, isUploaded } from "../../lib/image.js";
+import { dataUrlBytes, isUploaded, isResolvedSrc } from "../../lib/image.js";
 import { priceLabel } from "../../lib/format.js";
 import { CheckIcon, CloseIcon, UsersIcon } from "../../components/icons.jsx";
 
@@ -139,10 +139,10 @@ export default function EventForm() {
      say so rather than letting someone wonder where their photos went. */
   const isPast = built?.isPast;
 
+  /* Hosted (Cloudinary) URLs, uploads and absolute paths are used as-is; only
+     a bare filename gets the public/images prefix. */
   const photoSrc = (photo) =>
-    isUploaded(photo) || photo.startsWith("/")
-      ? photo
-      : `/images/gallery/${form.date}/${photo}`;
+    isResolvedSrc(photo) ? photo : `/images/gallery/${form.date}/${photo}`;
 
   return (
     <>

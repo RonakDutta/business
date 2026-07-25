@@ -128,6 +128,19 @@ create table if not exists payments (
 );
 create index if not exists payments_event_id_idx on payments (event_id);
 
+-- ---- Comments on a meetup --------------------------------------------------
+-- Signed-in members can leave a note on an edition once it's been held (the
+-- "how was it" thread). Deleting the event or the author removes the comment.
+create table if not exists comments (
+  id         uuid primary key default gen_random_uuid(),
+  event_id   uuid not null references events(id) on delete cascade,
+  user_id    uuid not null references users(id) on delete cascade,
+  body       text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists comments_event_id_idx on comments (event_id, created_at desc);
+
 -- ---- Newsletter subscribers ------------------------------------------------
 create table if not exists subscribers (
   id         uuid primary key default gen_random_uuid(),

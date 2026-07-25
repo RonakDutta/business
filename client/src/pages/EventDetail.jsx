@@ -8,6 +8,7 @@ import EventActionBar from "../components/EventActionBar.jsx";
 import MapEmbed from "../components/MapEmbed.jsx";
 import MetroRoute from "../components/MetroRoute.jsx";
 import AttendeeList from "../components/AttendeeList.jsx";
+import EventComments from "../components/EventComments.jsx";
 import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { HOST } from "../data/events.js";
@@ -235,6 +236,14 @@ export default function EventDetail() {
               bare
             />
           </Row>
+
+          {/* Only on editions that have actually happened — there's nothing to
+              say about a room nobody has sat in yet. */}
+          {isPast && !event.cancelled && (
+            <Row label="Comments">
+              <EventComments event={event} />
+            </Row>
+          )}
         </div>
       </article>
 
