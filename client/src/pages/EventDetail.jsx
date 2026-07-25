@@ -12,8 +12,6 @@ import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { HOST } from "../data/events.js";
 import { useEvents } from "../context/EventsContext.jsx";
-import { useRsvp } from "../context/RsvpContext.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
 
 /* ===========================================================================
    EVENT DETAIL
@@ -58,8 +56,6 @@ function Row({ label, count, children }) {
 export default function EventDetail() {
   const { id } = useParams();
   const { getEventById } = useEvents();
-  const { isGoing } = useRsvp();
-  const { user } = useAuth();
   const event = getEventById(id);
 
   useReveal([id]);
@@ -236,7 +232,6 @@ export default function EventDetail() {
               total={event.attendeeCount}
               past={isPast}
               host={HOST}
-              you={user && isGoing(event.id) ? user : null}
               bare
             />
           </Row>

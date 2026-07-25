@@ -99,7 +99,13 @@ async function ensureTab(sheets, tabName) {
  */
 export async function appendRow(tabName, values) {
   const sheets = getSheets();
-  if (!sheets) return false;
+  if (!sheets) {
+    console.warn(
+      `[sheets] skipped "${tabName}" — Sheets isn't configured ` +
+        `(need GOOGLE_SHEETS_ID + a key).`,
+    );
+    return false;
+  }
 
   try {
     await ensureTab(sheets, tabName);
@@ -110,9 +116,28 @@ export async function appendRow(tabName, values) {
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [values] },
     });
+    console.log(`[sheets] appended a row to "${tabName}"`);
     return true;
   } catch (err) {
-    console.error(`[sheets] append to "${tabName}" failed:`, err.message);
+    // Google nests the useful message; err.message alone is often just the code.
+    const detail =
+      err?.response?.data?.error?.message || err?.errors?.[0]?.message || "";
+    console.error(
+      `[sheets] append to "${tabName}" failed:`,
+      err.message,
+      detail ? `— ${detail}` : "",
+    );
     return false;
   }
+}
+
+/** Tab names currently in the spreadsheet — used by the sheets:test script. */
+export async function listTabs() {
+  const sheets = getSheets();
+  if (!sheets) return null;
+  const meta = await sheets.spreadsheets.get({
+    spreadsheetId: env.sheets.id,
+    fields: "sheets.properties.title",
+  });
+  return (meta.data.sheets || []).map((s) => s.properties.title);
 }
