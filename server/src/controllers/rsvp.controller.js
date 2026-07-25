@@ -107,6 +107,10 @@ export const createRsvp = asyncHandler(async (req, res) => {
 
     // Mirror only a genuinely new booking, so re-RSVPs don't duplicate rows.
     if (!wasGoing) mirrorRsvpToSheet(req.user.id, eventId, req.body.paymentRef);
+    else
+      console.log(
+        "[sheets] rsvp mirror skipped — this user was already going to this event",
+      );
   } catch (err) {
     await client.query("rollback");
     throw err;

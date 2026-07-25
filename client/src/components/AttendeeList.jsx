@@ -20,19 +20,19 @@ export default function AttendeeList({
   attendees = [],
   total = 0,
   past = false,
-  you = null,
   host = null,
   bare = false,
 }) {
-  if (!attendees.length && !you && !host) return null;
+  if (!attendees.length && !host) return null;
 
   /* The host runs every edition, so he's always in the room — he just isn't in
      the attendee pool. He leads the list rather than being counted into it,
-     which is why he's subtracted from the overflow along with you. */
-  const overflow = Math.max(
-    0,
-    total - attendees.length - (you ? 1 : 0) - (host ? 1 : 0),
-  );
+     which is why he's subtracted from the overflow.
+
+     There's no separate "You" card: the attendee list comes from the real
+     RSVPs now, so the signed-in member is already in it by name — showing both
+     listed the same person twice. */
+  const overflow = Math.max(0, total - attendees.length - (host ? 1 : 0));
 
   // Tense follows the event, not just the heading.
   const copy = past
@@ -69,22 +69,6 @@ export default function AttendeeList({
                 }`}
               >
                 {host.role}
-              </span>
-            </div>
-          </li>
-        )}
-
-        {/* Then you. Seeing yourself in the list is the whole point of having
-            RSVP'd. */}
-        {you && (
-          <li className="flex items-center gap-2.5">
-            <span className="account-avatar grid h-9 w-9 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white ring-2 ring-accent ring-offset-2 ring-offset-white">
-              {(you.name || you.email || "?").charAt(0).toUpperCase()}
-            </span>
-            <div className="min-w-0">
-              <div className="truncate text-[13px] font-bold text-ink sm:text-sm">You</div>
-              <span className="mt-0.5 inline-block rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.04em] text-white sm:mt-1 sm:px-2 sm:text-[10px]">
-                {past ? "Attended" : "Going"}
               </span>
             </div>
           </li>

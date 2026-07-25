@@ -108,6 +108,7 @@ files in `client/src`). Full DDL in [`src/db/schema.sql`](src/db/schema.sql).
 | `rsvps`            | who's attending which meetup                   | `context/RsvpContext.jsx`      |
 | `saved_events`     | the "Saved" tab                                | `context/SavedEventsContext`   |
 | `photos`           | gallery photos, per event                      | `pages/GalleryPage.jsx`        |
+| `comments`         | members' notes on a held meetup                | `components/EventComments`     |
 | `team_members`     | the organisers                                 | `data/team.js`                 |
 | `payments`         | UPI entry-fee proofs (pending/verified)        | `lib/payment-submission.js`    |
 | `venues`           | the meetup location (one default)              | `data/venue.js`                |
