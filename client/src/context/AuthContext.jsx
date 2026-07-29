@@ -10,23 +10,6 @@ import { auth as authApi, getToken } from "../api";
 const KEY = "b4:user";
 const AuthContext = createContext(null);
 
-/* ===========================================================================
-   AUTH — real when a backend is configured, stub otherwise.
-
-   `VITE_API_URL` is the switch:
-
-   - Set  → real auth. signIn/signUp hit the API (JWT stored by api/auth.js),
-            the session is restored from the token via /auth/me on load, and
-            wrong-password / duplicate-email errors surface to the caller.
-   - Unset → the original localStorage stub, so the app, the preview and
-            reviews keep working with no server. No password is checked.
-
-   This is the "graceful fallback" from the wiring plan: nothing breaks without
-   a backend, and it switches to real auth the moment VITE_API_URL is present.
-   We deliberately do NOT fall back to the stub when the API returns an auth
-   error — a 401 must fail, not silently log someone in.
-   =========================================================================== */
-
 const hasApi = Boolean(import.meta.env.VITE_API_URL);
 
 export function AuthProvider({ children }) {
