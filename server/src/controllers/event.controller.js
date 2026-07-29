@@ -1,202 +1,187 @@
 import { query } from "../config/db.js";
 import { asyncHandler, ApiError } from "../utils/asyncHandler.js";
-import { uploadBuffer, destroyAsset } from "../config/cloudinary.js";
+import { uploadImage, deleteImage } from "../config/cloudinary.js";
 
-// Mirrors the schema column default and the frontend's DEFAULT_TITLE, so a
-// blank title falls back to the standard meetup name instead of NULL.
 const DEFAULT_TITLE = "Business4.0 Meetup (Entry Fee Applicable)";
 
-/* ---------------------------------------------------------------------------
-   EVENTS (meetups).
+// Meetups run 11am-1pm IST, so an event is "past" once 1pm on its date has gone.
+function isPastEvent(eventDate) {
+  const endTime = new Date(`${eventDate}T13:00:00+05:30`);
+  return endTime.getTime() < Date.now();
+}
 
-   Public: list + get. Admin: create / update / delete / cancel.
-   Status is derived from the date, exactly like the frontend's events-model:
-   a meetup that hasn't ended yet is "upcoming", otherwise "past"; `cancelled`
-   overrides both. Meetups run 11:00-13:00 IST, so "ended" is date + 13:00 IST.
-   --------------------------------------------------------------------------- */
+function formatEvent(row, photos = [], attendees = []) {
+  const past = isPastEvent(row.event_date);
 
-function withStatus(row) {
-  const endsAt = new Date(`${toISODate(row.event_date)}T13:00:00+05:30`);
-  const isPast = endsAt.getTime() < Date.now();
   return {
     id: row.id,
-    date: toISODate(row.event_date),
+    date: row.event_date,
     title: row.title,
     entryFee: row.entry_fee,
     description: row.description || [],
     image: row.image_url,
     attendeeCount: row.attendee_count,
     cancelled: row.cancelled,
-    venueId: row.venue_id,
-    locationOverride: row.location_override,
-    status: row.cancelled ? "cancelled" : isPast ? "past" : "upcoming",
-    isPast,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    isPast: past,
+    status: row.cancelled ? "cancelled" : past ? "past" : "upcoming",
+    photos,
+    attendees,
   };
 }
 
-const toISODate = (d) => (d instanceof Date ? d.toISOString().slice(0, 10) : d);
+// Description can arrive as a real array, a JSON string, or plain paragraphs.
+function toParagraphs(description) {
+  if (description === undefined || description === null) return null;
+  if (Array.isArray(description)) return description;
 
-// GET /api/events?status=upcoming|past|all
+  try {
+    const parsed = JSON.parse(description);
+    if (Array.isArray(parsed)) return parsed;
+  } catch {
+    // not JSON, treat it as text below
+  }
+
+  return String(description)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
+
+// GET /api/events
 export const listEvents = asyncHandler(async (req, res) => {
-  const { rows } = await query("select * from events order by event_date desc");
-
-  // One extra query for every event's photo URLs, grouped by event — so the
-  // client gets galleries in the same round-trip instead of one call per event.
+  const eventRows = await query("select * from events order by event_date desc");
   const photoRows = await query(
     "select event_id, url from photos order by position, created_at",
   );
-  const photosByEvent = {};
-  for (const p of photoRows.rows) (photosByEvent[p.event_id] ??= []).push(p.url);
-
-  // Real attendees (names only — no email publicly), grouped by event, so the
-  // cards and "who's going" show who actually RSVP'd instead of placeholders.
   const attendeeRows = await query(
     `select r.event_id, u.id, u.name
-       from rsvps r join users u on u.id = r.user_id
-      where r.status = 'going'
-      order by r.created_at`,
+     from rsvps r
+     join users u on u.id = r.user_id
+     where r.status = 'going'
+     order by r.created_at`,
   );
-  const attendeesByEvent = {};
-  for (const a of attendeeRows.rows)
-    (attendeesByEvent[a.event_id] ??= []).push({ id: a.id, name: a.name });
 
-  let events = rows.map((r) => ({
-    ...withStatus(r),
-    photos: photosByEvent[r.id] || [],
-    attendees: attendeesByEvent[r.id] || [],
-  }));
+  const events = eventRows.rows.map((row) => {
+    const photos = photoRows.rows
+      .filter((photo) => photo.event_id === row.id)
+      .map((photo) => photo.url);
 
-  const status = req.query.status;
-  if (status === "upcoming")
-    events = events.filter((e) => !e.isPast).sort((a, b) => a.date.localeCompare(b.date));
-  else if (status === "past")
-    events = events.filter((e) => e.isPast && !e.cancelled);
+    const attendees = attendeeRows.rows
+      .filter((attendee) => attendee.event_id === row.id)
+      .map((attendee) => ({ id: attendee.id, name: attendee.name }));
+
+    return formatEvent(row, photos, attendees);
+  });
 
   res.json({ events });
 });
 
 // GET /api/events/:id
 export const getEvent = asyncHandler(async (req, res) => {
-  const { rows } = await query("select * from events where id = $1", [req.params.id]);
-  if (!rows[0]) throw new ApiError(404, "Event not found.");
+  const eventRows = await query("select * from events where id = $1", [req.params.id]);
+  if (eventRows.rows.length === 0) throw new ApiError(404, "Event not found.");
 
   const photoRows = await query(
     "select url from photos where event_id = $1 order by position, created_at",
     [req.params.id],
   );
-
   const attendeeRows = await query(
-    `select u.id, u.name from rsvps r join users u on u.id = r.user_id
-      where r.event_id = $1 and r.status = 'going' order by r.created_at`,
+    `select u.id, u.name
+     from rsvps r
+     join users u on u.id = r.user_id
+     where r.event_id = $1 and r.status = 'going'
+     order by r.created_at`,
     [req.params.id],
   );
 
-  res.json({
-    event: {
-      ...withStatus(rows[0]),
-      photos: photoRows.rows.map((p) => p.url),
-      attendees: attendeeRows.rows.map((a) => ({ id: a.id, name: a.name })),
-    },
-  });
+  const photos = photoRows.rows.map((photo) => photo.url);
+  const attendees = attendeeRows.rows.map((row) => ({ id: row.id, name: row.name }));
+
+  res.json({ event: formatEvent(eventRows.rows[0], photos, attendees) });
 });
 
-// POST /api/events   (admin) — optional cover image via multipart "image"
+// POST /api/events  (admin). The cover image is optional.
 export const createEvent = asyncHandler(async (req, res) => {
-  const { date, title, entryFee, description, attendeeCount, venueId } = req.body;
+  const { date, title, entryFee, description, attendeeCount } = req.body;
   if (!date) throw new ApiError(400, "A meetup needs a date.");
 
-  let image = {};
-  if (req.file) image = await uploadBuffer(req.file.buffer, "events");
+  let image = { url: null, publicId: null };
+  if (req.file) image = await uploadImage(req.file.buffer, "events");
 
-  const { rows } = await query(
+  const result = await query(
     `insert into events
-       (event_date, title, entry_fee, description, attendee_count, image_url, image_public_id, venue_id)
-     values ($1, $2, coalesce($3, 150), $4, coalesce($5, 0), $6, $7, $8)
+       (event_date, title, entry_fee, description, attendee_count, image_url, image_public_id)
+     values ($1, $2, $3, $4, $5, $6, $7)
      returning *`,
     [
       date,
       (title || "").trim() || DEFAULT_TITLE,
-      entryFee != null ? Number(entryFee) : null,
-      parseDescription(description),
-      attendeeCount != null ? Number(attendeeCount) : null,
-      image.url || null,
-      image.publicId || null,
-      venueId || null,
+      Number(entryFee) || 0,
+      toParagraphs(description),
+      Number(attendeeCount) || 0,
+      image.url,
+      image.publicId,
     ],
   );
-  res.status(201).json({ event: withStatus(rows[0]) });
+
+  res.status(201).json({ event: formatEvent(result.rows[0]) });
 });
 
-// PATCH /api/events/:id   (admin)
+// PATCH /api/events/:id  (admin). Only the fields that were sent are changed.
 export const updateEvent = asyncHandler(async (req, res) => {
-  const { rows: existing } = await query("select * from events where id = $1", [
-    req.params.id,
-  ]);
-  if (!existing[0]) throw new ApiError(404, "Event not found.");
+  const existing = await query("select * from events where id = $1", [req.params.id]);
+  if (existing.rows.length === 0) throw new ApiError(404, "Event not found.");
 
-  const current = existing[0];
-  let imageUrl = current.image_url;
-  let imagePublicId = current.image_public_id;
+  const event = existing.rows[0];
+  let imageUrl = event.image_url;
+  let imagePublicId = event.image_public_id;
+
   if (req.file) {
-    if (imagePublicId) await destroyAsset(imagePublicId);
-    const uploaded = await uploadBuffer(req.file.buffer, "events");
-    imageUrl = uploaded.url;
-    imagePublicId = uploaded.publicId;
+    await deleteImage(imagePublicId);
+    const image = await uploadImage(req.file.buffer, "events");
+    imageUrl = image.url;
+    imagePublicId = image.publicId;
   }
 
-  const b = req.body;
-  const { rows } = await query(
+  const { date, title, entryFee, description, attendeeCount, cancelled } = req.body;
+
+  const result = await query(
     `update events set
-       event_date     = coalesce($2, event_date),
-       title          = coalesce($3, title),
-       entry_fee      = coalesce($4, entry_fee),
-       description    = coalesce($5, description),
-       attendee_count = coalesce($6, attendee_count),
-       cancelled      = coalesce($7, cancelled),
-       venue_id       = coalesce($8, venue_id),
-       image_url      = $9,
-       image_public_id = $10,
-       updated_at     = now()
+       event_date = $2,
+       title = $3,
+       entry_fee = $4,
+       description = $5,
+       attendee_count = $6,
+       cancelled = $7,
+       image_url = $8,
+       image_public_id = $9,
+       updated_at = now()
      where id = $1
      returning *`,
     [
       req.params.id,
-      b.date || null,
-      b.title || null,
-      b.entryFee != null ? Number(b.entryFee) : null,
-      b.description != null ? parseDescription(b.description) : null,
-      b.attendeeCount != null ? Number(b.attendeeCount) : null,
-      b.cancelled != null ? Boolean(b.cancelled) : null,
-      b.venueId || null,
+      date || event.event_date,
+      (title || "").trim() || event.title,
+      entryFee === undefined ? event.entry_fee : Number(entryFee),
+      toParagraphs(description) || event.description,
+      attendeeCount === undefined ? event.attendee_count : Number(attendeeCount),
+      cancelled === undefined ? event.cancelled : cancelled === true || cancelled === "true",
       imageUrl,
       imagePublicId,
     ],
   );
-  res.json({ event: withStatus(rows[0]) });
+
+  res.json({ event: formatEvent(result.rows[0]) });
 });
 
-// DELETE /api/events/:id   (admin)
+// DELETE /api/events/:id  (admin)
 export const deleteEvent = asyncHandler(async (req, res) => {
-  const { rows } = await query(
+  const result = await query(
     "delete from events where id = $1 returning image_public_id",
     [req.params.id],
   );
-  if (!rows[0]) throw new ApiError(404, "Event not found.");
-  if (rows[0].image_public_id) await destroyAsset(rows[0].image_public_id);
+  if (result.rows.length === 0) throw new ApiError(404, "Event not found.");
+
+  await deleteImage(result.rows[0].image_public_id);
   res.status(204).end();
 });
-
-/** Accept description as a JSON array, a real array, or newline-split text. */
-function parseDescription(value) {
-  if (value == null) return null;
-  if (Array.isArray(value)) return value;
-  try {
-    const parsed = JSON.parse(value);
-    if (Array.isArray(parsed)) return parsed;
-  } catch {
-    /* not JSON — treat as text */
-  }
-  return String(value).split("\n").map((s) => s.trim()).filter(Boolean);
-}

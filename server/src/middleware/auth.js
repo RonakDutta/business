@@ -1,51 +1,44 @@
-import { verifyToken } from "../utils/jwt.js";
+import { readToken } from "../utils/jwt.js";
 import { ApiError } from "../utils/asyncHandler.js";
 
-/*
-  Auth gates.
-
-  - `authenticate` reads a Bearer token and attaches { id, role } to req.user,
-    or 401s. Use on any route that needs to know who's calling.
-  - `requireAdmin` runs authenticate first, then 403s non-admins. Use on the
-    admin-only mutations (create/edit/delete events, verify payments, etc.).
-  - `optionalAuth` attaches req.user when a valid token is present but never
-    blocks — handy for endpoints that personalise but also work signed-out.
-*/
-
-function readToken(req) {
+function getTokenFromRequest(req) {
   const header = req.headers.authorization || "";
-  return header.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!header.startsWith("Bearer ")) return null;
+  return header.replace("Bearer ", "");
 }
 
-export function authenticate(req, _res, next) {
-  const token = readToken(req);
+// Blocks the request unless a valid token is sent, and remembers who it is.
+export function requireLogin(req, res, next) {
+  const token = getTokenFromRequest(req);
   if (!token) return next(new ApiError(401, "Sign in to continue."));
+
   try {
-    const payload = verifyToken(token);
-    req.user = { id: payload.sub, role: payload.role };
+    const user = readToken(token);
+    req.user = { id: user.id, role: user.role };
     next();
   } catch {
     next(new ApiError(401, "Your session has expired. Sign in again."));
   }
 }
 
+// Same as above, then blocks anyone who is not an admin.
 export function requireAdmin(req, res, next) {
-  authenticate(req, res, (err) => {
-    if (err) return next(err);
-    if (req.user.role !== "admin")
-      return next(new ApiError(403, "Admins only."));
+  requireLogin(req, res, (error) => {
+    if (error) return next(error);
+    if (req.user.role !== "admin") return next(new ApiError(403, "Admins only."));
     next();
   });
 }
 
-export function optionalAuth(req, _res, next) {
-  const token = readToken(req);
+// Remembers the user if a token was sent, but never blocks the request.
+export function optionalLogin(req, res, next) {
+  const token = getTokenFromRequest(req);
   if (token) {
     try {
-      const payload = verifyToken(token);
-      req.user = { id: payload.sub, role: payload.role };
+      const user = readToken(token);
+      req.user = { id: user.id, role: user.role };
     } catch {
-      /* ignore a bad token on an optional route */
+      // ignore a bad token here
     }
   }
   next();

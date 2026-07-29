@@ -1,130 +1,56 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { auth as authApi, getToken } from "../api";
+import { createContext, useContext, useEffect, useState } from "react";
+import { authApi } from "../api";
+import { getToken } from "../api/client.js";
 
-const KEY = "b4:user";
 const AuthContext = createContext(null);
-
-/* ===========================================================================
-   AUTH — real when a backend is configured, stub otherwise.
-
-   `VITE_API_URL` is the switch:
-
-   - Set  → real auth. signIn/signUp hit the API (JWT stored by api/auth.js),
-            the session is restored from the token via /auth/me on load, and
-            wrong-password / duplicate-email errors surface to the caller.
-   - Unset → the original localStorage stub, so the app, the preview and
-            reviews keep working with no server. No password is checked.
-
-   This is the "graceful fallback" from the wiring plan: nothing breaks without
-   a backend, and it switches to real auth the moment VITE_API_URL is present.
-   We deliberately do NOT fall back to the stub when the API returns an auth
-   error — a 401 must fail, not silently log someone in.
-   =========================================================================== */
-
-const hasApi = Boolean(import.meta.env.VITE_API_URL);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
 
-  // Restore a session on load.
+  // On page load, if we still have a token, ask the server who it belongs to.
   useEffect(() => {
-    let active = true;
-
-    (async () => {
-      if (hasApi) {
-        // Real mode: a stored token means we can ask who we are.
-        if (getToken()) {
-          const current = await authApi.me(); // null if the token's dead
-          if (active && current) setUser(current);
-        }
-      } else {
-        // Stub mode: trust whatever's in localStorage.
+    async function loadUser() {
+      if (getToken()) {
         try {
-          const raw = localStorage.getItem(KEY);
-          if (raw) setUser(JSON.parse(raw));
+          const currentUser = await authApi.getCurrentUser();
+          setUser(currentUser);
         } catch {
-          /* storage unavailable or corrupt */
+          setUser(null);
         }
       }
-      if (active) setReady(true);
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  // Stub-mode persistence. In API mode the token (not b4:user) is the session.
-  const persist = useCallback((next) => {
-    setUser(next);
-    try {
-      if (next) localStorage.setItem(KEY, JSON.stringify(next));
-      else localStorage.removeItem(KEY);
-    } catch {
-      /* storage unavailable */
+      setReady(true);
     }
+
+    loadUser();
   }, []);
 
-  /*
-    Admin check. Real users carry a server-assigned `role`; the stub keeps its
-    old rule (any admin@… address) so admin screens stay reachable offline.
-    Client-side gating only — the server enforces the real thing.
-  */
-  const isAdmin = user?.role
-    ? user.role === "admin"
-    : Boolean(user?.email?.toLowerCase().startsWith("admin@"));
+  async function signIn(email, password) {
+    const loggedInUser = await authApi.login(email, password);
+    setUser(loggedInUser);
+    return loggedInUser;
+  }
 
-  const signIn = useCallback(
-    async (email, password) => {
-      if (hasApi) {
-        const current = await authApi.login({ email, password });
-        setUser(current);
-        return current;
-      }
-      const next = { email, name: email.split("@")[0] };
-      persist(next);
-      return next;
-    },
-    [persist],
-  );
+  async function signUp(name, email, password) {
+    const newUser = await authApi.register(name, email, password);
+    setUser(newUser);
+    return newUser;
+  }
 
-  const signUp = useCallback(
-    async (name, email, password) => {
-      if (hasApi) {
-        const current = await authApi.register({ name, email, password });
-        setUser(current);
-        return current;
-      }
-      const next = { email, name: name || email.split("@")[0] };
-      persist(next);
-      return next;
-    },
-    [persist],
-  );
+  function signOut() {
+    authApi.logout();
+    setUser(null);
+  }
 
-  const signOut = useCallback(() => {
-    if (hasApi) authApi.logout(); // clears the token
-    persist(null); // clears state + any stub copy
-  }, [persist]);
+  const isAdmin = user?.role === "admin";
 
   return (
-    <AuthContext.Provider
-      value={{ user, ready, isAdmin, signIn, signUp, signOut }}
-    >
+    <AuthContext.Provider value={{ user, ready, isAdmin, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
-  return ctx;
+  return useContext(AuthContext);
 }

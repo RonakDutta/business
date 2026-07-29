@@ -7,7 +7,7 @@ import BackLink from "../../components/BackLink.jsx";
 import CoverImage from "../../components/CoverImage.jsx";
 import ImagePicker, { SizeNote } from "../../components/ImagePicker.jsx";
 import Spinner from "../../components/Spinner.jsx";
-import { dataUrlBytes, isUploaded, isResolvedSrc } from "../../lib/image.js";
+import { getDataUrlSize, isUploadedImage, isResolvedImage } from "../../lib/image.js";
 import { priceLabel } from "../../lib/format.js";
 import { CheckIcon, CloseIcon, UsersIcon } from "../../components/icons.jsx";
 
@@ -49,31 +49,30 @@ function Card({ title, note, children }) {
 export default function EventForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getRecord, getEventById, addEvent, updateEvent } = useEvents();
+  const { getEventById, addEvent, updateEvent } = useEvents();
 
   const editing = Boolean(id);
-  const record = editing ? getRecord(id) : null;
   const built = editing ? getEventById(id) : null;
 
   const [form, setForm] = useState(() => ({
-    date: record?.date ?? "",
-    title: record?.title ?? "",
-    entryFee: String(record?.entryFee ?? 150),
-    attendeeCount: String(record?.attendeeCount ?? 0),
-    image: record?.image ?? "",
-    description: (record?.description ?? DEFAULT_DESCRIPTION).join("\n\n"),
-    photos: record?.photos ?? [],
-    cancelled: Boolean(record?.cancelled),
+    date: built?.id ?? "",
+    title: built?.title ?? "",
+    entryFee: String(built?.entryFee ?? 150),
+    attendeeCount: String(built?.attendeeCount ?? 0),
+    image: built?.image ?? "",
+    description: (built?.description ?? DEFAULT_DESCRIPTION).join("\n\n"),
+    photos: built?.photos ?? [],
+    cancelled: Boolean(built?.cancelled),
   }));
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   /* What these images cost in the only storage we have. */
   const uploadBytes =
-    dataUrlBytes(form.image) +
-    form.photos.reduce((n, p) => n + dataUrlBytes(p), 0);
+    getDataUrlSize(form.image) +
+    form.photos.reduce((n, p) => n + getDataUrlSize(p), 0);
 
-  if (editing && !record) {
+  if (editing && !built) {
     return (
       <div className="rounded-card border border-line bg-white p-12 text-center">
         <p className="font-bold text-ink">No meetup with that date.</p>
@@ -114,11 +113,9 @@ export default function EventForm() {
     setError("");
     setSaving(true);
     try {
-      // Mutators are async now (they may upload images to the backend) — await
-      // and only leave the form once it actually saved.
-      const res = editing ? await updateEvent(id, next) : await addEvent(next);
-      if (!res.ok) {
-        setError(res.error);
+      const result = editing ? await updateEvent(id, next) : await addEvent(next);
+      if (!result.ok) {
+        setError(result.error);
         return;
       }
       navigate("/admin");
@@ -142,7 +139,7 @@ export default function EventForm() {
   /* Hosted (Cloudinary) URLs, uploads and absolute paths are used as-is; only
      a bare filename gets the public/images prefix. */
   const photoSrc = (photo) =>
-    isResolvedSrc(photo) ? photo : `/images/gallery/${form.date}/${photo}`;
+    isResolvedImage(photo) ? photo : `/images/gallery/${form.date}/${photo}`;
 
   return (
     <>
@@ -407,7 +404,7 @@ export default function EventForm() {
               <div className="flex justify-between gap-3">
                 <dt className="text-subtle">Header</dt>
                 <dd className="truncate text-right font-mono text-[11.5px] text-muted">
-                  {isUploaded(form.image)
+                  {isUploadedImage(form.image)
                     ? "uploaded"
                     : form.image.trim() || "default"}
                 </dd>

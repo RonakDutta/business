@@ -1,15 +1,15 @@
 import { Router } from "express";
 import {
-  submitProof,
+  submitPayment,
   listPayments,
   reviewPayment,
 } from "../controllers/payment.controller.js";
-import { optionalAuth, requireAdmin } from "../middleware/auth.js";
+import { optionalLogin, requireAdmin } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
 
 const router = Router();
 
-router.post("/", optionalAuth, upload.single("proof"), submitProof);
+router.post("/", optionalLogin, upload.single("proof"), submitPayment);
 router.get("/", requireAdmin, listPayments);
 router.patch("/:id", requireAdmin, reviewPayment);
 

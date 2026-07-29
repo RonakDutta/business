@@ -1,12 +1,9 @@
 import bcrypt from "bcryptjs";
-import { env } from "../config/env.js";
 
-/* Password hashing lives here so the cost factor is set in exactly one place. */
-
-export function hashPassword(plain) {
-  return bcrypt.hash(plain, env.bcryptRounds);
+export function hashPassword(password) {
+  return bcrypt.hash(password, 10);
 }
 
-export function verifyPassword(plain, hash) {
-  return bcrypt.compare(plain, hash);
+export function checkPassword(password, hash) {
+  return bcrypt.compare(password, hash);
 }

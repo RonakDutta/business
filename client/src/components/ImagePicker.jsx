@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { readImageFile, mb } from "../lib/image.js";
+import { readImageFile, formatBytes } from "../lib/image.js";
 import { ImageIcon, PlusIcon } from "./icons.jsx";
 
 /**
@@ -112,7 +112,7 @@ export function SizeNote({ bytes, budget = 4 * 1024 * 1024 }) {
     <p
       className={`text-[11.5px] leading-relaxed ${over ? "font-semibold text-red-600" : "text-subtle"}`}
     >
-      {mb(bytes)} of images on this meetup.
+      {formatBytes(bytes)} of images on this meetup.
       {over
         ? " Getting close to what this browser will hold — trim some, or wait for the backend."
         : " Stored in this browser until the backend lands."}

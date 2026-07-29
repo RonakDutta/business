@@ -182,7 +182,7 @@ function Spotlight({ event }) {
 }
 
 export default function Dashboard() {
-  const { allEvents, upcomingEvents, pastEvents, setCancelled, removeEvent } =
+  const { allEvents, upcomingEvents, pastEvents, setEventCancelled, removeEvent } =
     useEvents();
 
   const [filter, setFilter] = useState("all");
@@ -422,7 +422,7 @@ export default function Dashboard() {
 
                           <button
                             type="button"
-                            onClick={() => setCancelled(e.id, !e.cancelled)}
+                            onClick={() => setEventCancelled(e.id, !e.cancelled)}
                             aria-label={
                               e.cancelled
                                 ? `Restore ${e.title}`

@@ -1,117 +1,88 @@
-/* ===========================================================================
-   IMAGE INTAKE
+// Photos are picked in the browser, shrunk here, and only then sent to the
+// server. A phone photo is 3-6 MB, which is slow to upload and wasteful to
+// store, so we redraw it smaller on a canvas first.
 
-   There's no upload server, so a picked file is decoded, resized and re-encoded
-   in the browser, and the resulting data URL is stored on the meetup record
-   like any other field. Everything that already renders `image`/`photos`
-   renders these without knowing the difference.
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
-   The resize isn't a nicety — it's the whole reason this works. A phone photo
-   is 3-6MB, base64 inflates it by a third, and localStorage gives us about 5MB
-   for the entire site. Downscaling to a sane width first is what keeps a
-   meetup's worth of photos inside the budget.
-
-   WHEN THE BACKEND LANDS: replace readImageFile with a POST that returns a URL.
-   Nothing else has to change — the record just holds a shorter string.
-   =========================================================================== */
-
-/** Anything past this is a mistake or a RAW file — reject before decoding. */
-const MAX_INPUT_BYTES = 25 * 1024 * 1024;
-
-const PRESETS = {
-  /* The cover fills a 440px-tall band on a wide screen, so it needs the pixels. */
-  header: { maxW: 1600, maxH: 1000, quality: 0.72 },
-  /* Gallery photos are viewed in a lightbox but there can be dozens of them. */
-  gallery: { maxW: 1280, maxH: 1280, quality: 0.68 },
+const SIZES = {
+  header: { maxWidth: 1600, maxHeight: 1000, quality: 0.72 },
+  gallery: { maxWidth: 1280, maxHeight: 1280, quality: 0.68 },
 };
 
-const isImage = (file) => /^image\/(jpeg|png|webp|gif|avif)$/i.test(file.type);
-
-/**
- * Decode a picked file, downscale it to fit the preset, and return a JPEG data
- * URL. Always JPEG: PNG screenshots of photos are enormous for no benefit, and
- * we're not keeping transparency on a cover image.
- *
- * @returns {Promise<{ dataUrl: string, bytes: number, width: number, height: number }>}
- * @throws {Error} with a message meant to be shown to the person
- */
-export async function readImageFile(file, preset = "gallery") {
-  if (!isImage(file)) {
-    throw new Error(`${file.name} isn't an image we can read — use JPG, PNG or WebP.`);
+export async function readImageFile(file, sizeName = "gallery") {
+  if (!file.type.startsWith("image/")) {
+    throw new Error(`${file.name} is not an image. Use JPG, PNG or WebP.`);
   }
-  if (file.size > MAX_INPUT_BYTES) {
-    throw new Error(`${file.name} is ${mb(file.size)} — that's too big to handle here.`);
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(`${file.name} is too big to handle here.`);
   }
 
-  const { maxW, maxH, quality } = PRESETS[preset] ?? PRESETS.gallery;
+  const size = SIZES[sizeName] || SIZES.gallery;
 
-  let bitmap;
+  let picture;
   try {
-    // from-image honours EXIF, so phone photos don't land on their side.
-    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    // "from-image" keeps phone photos the right way up.
+    picture = await createImageBitmap(file, { imageOrientation: "from-image" });
   } catch {
-    throw new Error(`${file.name} looks corrupt — the browser couldn't decode it.`);
+    throw new Error(`${file.name} could not be opened.`);
   }
 
-  const scale = Math.min(1, maxW / bitmap.width, maxH / bitmap.height);
-  const width = Math.max(1, Math.round(bitmap.width * scale));
-  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const scale = Math.min(
+    1,
+    size.maxWidth / picture.width,
+    size.maxHeight / picture.height,
+  );
+  const width = Math.round(picture.width * scale);
+  const height = Math.round(picture.height * scale);
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
 
-  const ctx = canvas.getContext("2d");
-  ctx.imageSmoothingQuality = "high";
-  /* Flatten onto white — a transparent PNG would otherwise go black as JPEG. */
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(bitmap, 0, 0, width, height);
-  bitmap.close?.();
+  const context = canvas.getContext("2d");
+  // Fill white first, otherwise see-through PNGs turn black as JPEG.
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, width, height);
+  context.drawImage(picture, 0, 0, width, height);
 
-  const dataUrl = canvas.toDataURL("image/jpeg", quality);
-  return { dataUrl, bytes: dataUrlBytes(dataUrl), width, height };
+  const dataUrl = canvas.toDataURL("image/jpeg", size.quality);
+  return { dataUrl, bytes: getDataUrlSize(dataUrl), width, height };
 }
 
-/** Rough decoded size of a data URL — base64 is 4 characters per 3 bytes. */
-export const dataUrlBytes = (s) =>
-  typeof s === "string" && s.startsWith("data:")
-    ? Math.round((s.length - s.indexOf(",") - 1) * 0.75)
-    : 0;
+// Base64 uses 4 characters for every 3 bytes.
+export function getDataUrlSize(dataUrl) {
+  if (!isUploadedImage(dataUrl)) return 0;
+  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  return Math.round(base64.length * 0.75);
+}
 
-export const mb = (bytes) =>
-  bytes >= 1024 * 1024
-    ? `${(bytes / 1024 / 1024).toFixed(1)} MB`
-    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+export function formatBytes(bytes) {
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
 
-/** An uploaded image, versus a filename sitting in public/. */
-export const isUploaded = (s) => typeof s === "string" && s.startsWith("data:");
+// An image just picked in the browser, not yet uploaded.
+export function isUploadedImage(value) {
+  return typeof value === "string" && value.startsWith("data:");
+}
 
-/**
- * Is this image reference already a usable src, rather than a bare filename
- * that needs a folder prefix? Covers in-browser uploads (`data:`/`blob:`),
- * hosted images (Cloudinary `https:`) and absolute paths (`/images/...`).
- *
- * One source of truth on purpose: the admin form used to test only for
- * `data:`/`/`, so a Cloudinary URL fell through and got prefixed into
- * `/images/gallery/<date>/https://...`, which is why saved gallery photos
- * showed as broken when re-editing an event.
- */
-export const isResolvedSrc = (s) =>
-  typeof s === "string" && /^(data:|blob:|https?:|\/)/i.test(s);
+// An address we can put straight into <img src>, rather than a bare filename.
+export function isResolvedImage(value) {
+  return typeof value === "string" && /^(data:|blob:|https?:|\/)/i.test(value);
+}
 
-/**
- * Turn a `data:` URL (what readImageFile produces in the browser) into a Blob,
- * so it can be sent to the backend as a real multipart file upload — the API
- * streams it on to Cloudinary. No-op guard: returns null for anything that
- * isn't a data URL.
- */
+// Converts a picked image into a file we can upload to the server.
 export function dataUrlToBlob(dataUrl) {
-  if (!isUploaded(dataUrl)) return null;
-  const [head, body] = dataUrl.split(",");
-  const mime = head.match(/data:(.*?);base64/)?.[1] || "image/jpeg";
-  const binary = atob(body);
+  if (!isUploadedImage(dataUrl)) return null;
+
+  const [header, base64] = dataUrl.split(",");
+  const type = header.match(/data:(.*?);base64/)?.[1] || "image/jpeg";
+  const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return new Blob([bytes], { type: mime });
+
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return new Blob([bytes], { type });
 }
