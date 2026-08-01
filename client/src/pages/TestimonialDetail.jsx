@@ -3,7 +3,7 @@ import Avatar from "../components/Avatar.jsx";
 import BackLink from "../components/BackLink.jsx";
 import NotFound from "./NotFound.jsx";
 import { Orb, Rings } from "../components/Decor.jsx";
-import { ArrowRightIcon } from "../components/icons.jsx";
+import { ArrowRightIcon, SparkleIcon } from "../components/icons.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { getTestimonial, testimonials } from "../data/testimonials.js";
 
@@ -35,6 +35,13 @@ export default function TestimonialDetail() {
           </p>
         </div>
       </header>
+
+      {person.outcome && (
+        <div className="clay-inset reveal mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-[13px] font-bold text-accent">
+          <SparkleIcon className="h-4 w-4" />
+          {person.outcome}
+        </div>
+      )}
 
       <blockquote
         data-delay="0.06"
