@@ -27,10 +27,8 @@ const LINKS = [
  * gives the bar a shape of its own instead of five loose words.
  */
 const pill = ({ isActive }) =>
-  `rounded-full px-3.5 py-1.5 text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ease-smooth ${
-    isActive
-      ? "bg-white text-ink shadow-[0_1px_2px_rgba(15,23,42,.10),0_4px_10px_-6px_rgba(15,23,42,.30)]"
-      : "text-muted hover:text-ink"
+  `rounded-full px-3.5 py-2 text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ease-smooth ${
+    isActive ? "clay bg-white text-ink" : "text-muted hover:text-ink"
   }`;
 
 /* ---------------------------------------------------------------------------
@@ -73,10 +71,8 @@ function AccountMenu({ user, isAdmin, signOut }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`flex h-10 items-center gap-2 rounded-full border p-1 pr-2.5 transition-colors duration-200 ${
-          open
-            ? "border-transparent bg-line"
-            : "border-line-strong hover:border-ink/25 hover:bg-line/60"
+        className={`clay-press flex h-10 items-center gap-2 rounded-full p-1 pr-2.5 transition-[background,box-shadow] duration-200 ${
+          open ? "clay-inset bg-canvas" : "clay bg-white"
         }`}
       >
         <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white">
@@ -95,7 +91,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
       {open && (
         <div
           role="menu"
-          className="menu-pop absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card border border-line bg-white shadow-[0_24px_50px_-24px_rgba(15,23,42,.45)]"
+          className="menu-pop clay absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card bg-white"
         >
           <div className="flex items-center gap-3 border-b border-line p-4">
             <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
@@ -170,7 +166,7 @@ export default function Navbar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // The hairline only earns its keep once there's content behind the bar.
+  // The bar only lifts off the page once there is something behind it.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -180,12 +176,10 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/85 backdrop-blur-[14px] transition-[box-shadow,border-radius] duration-300 ${
-        open ? "" : "rounded-b-[26px]"
+      className={`sticky top-0 z-50 backdrop-blur-[14px] transition-[background,box-shadow,border-radius] duration-300 ${
+        open ? "bg-white" : "rounded-b-[26px] bg-white/85"
       } ${
-        scrolled
-          ? "shadow-[0_10px_30px_-20px_rgba(15,23,42,.45)] ring-1 ring-line/70"
-          : ""
+        scrolled && !open ? "clay-bar" : ""
       }`}
     >
       <nav className="mx-auto flex max-w-shell items-center justify-between gap-4 px-6 py-3.5 md:px-10">
@@ -193,7 +187,7 @@ export default function Navbar() {
           <Wordmark />
         </Link>
 
-        <div className="hidden items-center gap-1 rounded-full bg-[#f4f5f8] p-1 md:flex">
+        <div className="clay-inset hidden items-center gap-1 rounded-full bg-canvas p-1 md:flex">
           {LINKS.map((l) => (
             <NavLink
               key={l.label}
@@ -215,13 +209,13 @@ export default function Navbar() {
             <>
               <Link
                 to="/login"
-                className="flex h-10 items-center rounded-btn px-3 text-sm font-bold text-muted transition-colors duration-200 hover:text-ink"
+                className="flex h-10 items-center rounded-btn px-3.5 text-sm font-bold text-muted transition-colors duration-200 hover:text-ink"
               >
                 Log in
               </Link>
               <Link
                 to="/signup"
-                className="flex h-10 items-center whitespace-nowrap rounded-btn bg-ink px-5 text-sm font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:text-white"
+                className="clay clay-press flex h-10 items-center whitespace-nowrap rounded-btn bg-ink px-5 text-sm font-bold text-white transition-[background,box-shadow,transform] duration-300 ease-smooth hover:bg-accent hover:text-white"
               >
                 Sign up
               </Link>
@@ -237,7 +231,7 @@ export default function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
-            className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink"
+            className="clay clay-press grid h-10 w-10 place-items-center rounded-full bg-white text-ink"
           >
             {open ? (
               <CloseIcon className="h-4.5 w-4.5" />
@@ -257,8 +251,8 @@ export default function Navbar() {
                 to={l.to}
                 end={l.to === "/"}
                 className={({ isActive }) =>
-                  `rounded-xl px-3 py-3 text-[15px] font-bold transition-colors duration-150 ${
-                    isActive ? "bg-line text-ink" : "text-muted"
+                  `rounded-[14px] px-3.5 py-3 text-[15px] font-bold transition-colors duration-150 ${
+                    isActive ? "clay bg-white text-ink" : "text-muted"
                   }`
                 }
               >
@@ -293,7 +287,7 @@ export default function Navbar() {
                   {isAdmin && (
                     <Link
                       to="/admin"
-                      className="rounded-btn bg-accent/10 px-5.5 py-2.75 text-center text-sm font-bold text-accent"
+                      className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-accent"
                     >
                       Organiser console
                     </Link>
@@ -304,7 +298,7 @@ export default function Navbar() {
                       signOut();
                       setOpen(false);
                     }}
-                    className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-muted"
+                    className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-muted"
                   >
                     Log out
                   </button>
@@ -314,13 +308,13 @@ export default function Navbar() {
               <div className="flex flex-col gap-2">
                 <Link
                   to="/login"
-                  className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-ink"
+                  className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-ink"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
+                  className="clay clay-press rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
                 >
                   Sign up
                 </Link>
