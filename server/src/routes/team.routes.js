@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   listTeam,
-  createMember,
+  addMember,
   updateMember,
   deleteMember,
 } from "../controllers/team.controller.js";
@@ -11,7 +11,7 @@ import { upload } from "../middleware/upload.js";
 const router = Router();
 
 router.get("/", listTeam);
-router.post("/", requireAdmin, upload.single("image"), createMember);
+router.post("/", requireAdmin, upload.single("image"), addMember);
 router.patch("/:id", requireAdmin, upload.single("image"), updateMember);
 router.delete("/:id", requireAdmin, deleteMember);
 

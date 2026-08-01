@@ -1,12 +1,10 @@
-/*
-  Wraps an async route handler so a rejected promise is forwarded to Express's
-  error middleware instead of crashing the process. Every controller is wrapped
-  in this, so controllers can just `throw` and let middleware/error.js respond.
-*/
-export const asyncHandler = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
+// Express 4 does not catch errors thrown inside async functions, so every
+// controller is wrapped in this and errors are passed to the error middleware.
+export const asyncHandler = (handler) => (req, res, next) => {
+  handler(req, res, next).catch(next);
+};
 
-/** A thrown ApiError carries an HTTP status the error handler will honour. */
+// Throw this when you want a specific HTTP status, e.g. new ApiError(404, "...")
 export class ApiError extends Error {
   constructor(status, message) {
     super(message);

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Newsletter from "./Newsletter.jsx";
 import Wordmark from "./Wordmark.jsx";
 import { SOCIALS } from "../data/socials.js";
 import {
@@ -107,11 +106,9 @@ function Socials() {
 
 export default function Footer() {
   return (
-    <footer className="mx-auto max-w-shell px-6 pb-12 md:px-10">
-      <div className="reveal overflow-hidden rounded-panel bg-ink text-white">
-        <Newsletter />
-
-        <div className="grid grid-cols-1 gap-8 p-8 sm:grid-cols-2 md:p-14 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+    <footer className="bg-ink text-white">
+      <div className="mx-auto max-w-shell px-5 sm:px-6 md:px-10">
+        <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>
             <Wordmark tone="light" />
             <p className="mt-3.5 max-w-[260px] text-sm leading-relaxed opacity-60">
@@ -139,7 +136,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-8 py-6 text-[13px] opacity-55 md:px-14">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-6 text-[13px] opacity-55">
           <span>
             © {new Date().getFullYear()} Business 4.0 Community. All rights
             reserved.

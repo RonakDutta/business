@@ -8,7 +8,6 @@ import { MusicProvider } from "./context/MusicContext.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { EventsProvider } from "./context/EventsContext.jsx";
 import { RsvpProvider } from "./context/RsvpContext.jsx";
-import AppGate from "./components/AppGate.jsx";
 import "./index.css";
 
 /* RsvpProvider reads and writes attendee counts, so it has to sit inside
@@ -22,9 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <RsvpProvider>
               <SavedEventsProvider>
                 <MusicProvider>
-                  <AppGate>
-                    <App />
-                  </AppGate>
+                  <App />
                 </MusicProvider>
               </SavedEventsProvider>
             </RsvpProvider>

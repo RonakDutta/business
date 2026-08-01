@@ -18,8 +18,10 @@ export default function MusicToggle({ className = "" }) {
       aria-pressed={enabled}
       aria-label={enabled ? "Turn music off" : "Turn music on"}
       title={enabled ? "Music on" : "Music off"}
-      className={`flex h-10 w-10 items-center justify-center rounded-full transition-[scale,color,background] duration-200 ease-smooth hover:scale-105 active:scale-95 ${
-        enabled ? "bg-accent/10 text-accent" : "text-subtle hover:bg-line hover:text-ink"
+      className={`clay-press flex h-10 w-10 items-center justify-center rounded-full transition-[color,background,box-shadow] duration-200 ease-smooth ${
+        enabled
+          ? "clay-inset bg-accent/10 text-accent"
+          : "clay bg-white text-subtle hover:text-ink"
       } ${className}`}
     >
       {enabled ? (

@@ -241,3 +241,183 @@ export function RoutePath({ className = "" }) {
     </svg>
   );
 }
+
+/* A flat illustration of someone speaking to a group — the "explaining what
+   Business 4.0 is" idea from the sketch. The figures are clipped to the round
+   backdrop so the composition reads as deliberate rather than cut off, and the
+   speech bubble floats outside it. Brand-coloured; decorative only. */
+export function PersonTalking({ className = "" }) {
+  const accent = "var(--b4-accent)";
+  const clipId = `talk-${useId().replace(/:/g, "")}`;
+
+  return (
+    <svg viewBox="0 0 420 420" className={className} aria-hidden="true" fill="none">
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx="196" cy="230" r="160" />
+        </clipPath>
+      </defs>
+
+      <circle cx="196" cy="230" r="160" fill={accent} opacity="0.07" />
+
+      <g clipPath={`url(#${clipId})`}>
+        {/* the speaker */}
+        <circle cx="150" cy="196" r="52" fill={accent} opacity="0.9" />
+        <path d="M56 400c0-52 42-94 94-94s94 42 94 94z" fill={accent} opacity="0.9" />
+
+        {/* two listeners, further back */}
+        <g opacity="0.32">
+          <circle cx="286" cy="256" r="34" fill={accent} />
+          <path d="M224 400c0-34 28-62 62-62s62 28 62 62z" fill={accent} />
+        </g>
+        <g opacity="0.18">
+          <circle cx="348" cy="286" r="26" fill={accent} />
+          <path d="M300 400c0-27 21-48 48-48s48 21 48 48z" fill={accent} />
+        </g>
+      </g>
+
+      {/* what they're saying, floating clear of the circle */}
+      <g>
+        <rect x="212" y="20" width="196" height="118" rx="24" fill="#fff" />
+        <rect
+          x="212"
+          y="20"
+          width="196"
+          height="118"
+          rx="24"
+          fill={accent}
+          opacity="0.14"
+        />
+        <path d="M244 138v34l36-34z" fill={accent} opacity="0.14" />
+        <rect x="240" y="54" width="142" height="10" rx="5" fill={accent} opacity="0.55" />
+        <rect x="240" y="80" width="112" height="10" rx="5" fill={accent} opacity="0.3" />
+        <rect x="240" y="106" width="80" height="10" rx="5" fill={accent} opacity="0.3" />
+      </g>
+    </svg>
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   CLAY DECOR
+
+   Soft moulded shapes rather than flat washes. Each one has a lit top edge and
+   a shaded underside, so it reads as an object sitting behind the content
+   instead of a coloured rectangle. All decorative.
+   --------------------------------------------------------------------------- */
+
+/* Floating clay pebbles — a squircle, a pill and a couple of balls, drifting
+   behind a section to give the flat canvas some depth. */
+export function ClayShapes({ className = "" }) {
+  const id = useId();
+
+  return (
+    <svg viewBox="0 0 400 400" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id={`${id}-a`} x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0%" stopColor="var(--b4-accent)" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="var(--b4-accent)" stopOpacity="0.06" />
+        </linearGradient>
+        <linearGradient id={`${id}-b`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor="var(--color-meetup)" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="var(--color-meetup)" stopOpacity="0.04" />
+        </linearGradient>
+      </defs>
+
+      <rect x="40" y="46" width="150" height="150" rx="52" fill={`url(#${id}-a)`} />
+      <rect x="62" y="62" width="108" height="24" rx="12" fill="#fff" opacity="0.5" />
+
+      <rect x="212" y="150" width="146" height="66" rx="33" fill={`url(#${id}-b)`} />
+      <circle cx="120" cy="286" r="58" fill={`url(#${id}-b)`} />
+      <circle cx="104" cy="266" r="18" fill="#fff" opacity="0.45" />
+      <circle cx="286" cy="300" r="34" fill={`url(#${id}-a)`} />
+    </svg>
+  );
+}
+
+/* A clay calendar with a ringed date and a couple of marked days. Sits beside
+   the upcoming-event copy so that column is not just text and a button. */
+export function ClayCalendar({ className = "" }) {
+  const id = useId();
+
+  return (
+    <svg viewBox="0 0 260 240" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id={`${id}-page`} x1="0" y1="0" x2="0.2" y2="1">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#eef1f9" />
+        </linearGradient>
+        <linearGradient id={`${id}-band`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--b4-accent)" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="var(--b4-accent)" stopOpacity="0.72" />
+        </linearGradient>
+      </defs>
+
+      {/* soft cast shadow */}
+      <ellipse cx="132" cy="222" rx="86" ry="12" fill="var(--color-ink)" opacity="0.07" />
+
+      <rect x="26" y="34" width="208" height="176" rx="34" fill={`url(#${id}-page)`} />
+      <path d="M26 68a34 34 0 0 1 34-34h140a34 34 0 0 1 34 34v10H26z" fill={`url(#${id}-band)`} />
+
+      {/* rings */}
+      <rect x="72" y="16" width="14" height="34" rx="7" fill="var(--color-ink)" opacity="0.35" />
+      <rect x="174" y="16" width="14" height="34" rx="7" fill="var(--color-ink)" opacity="0.35" />
+
+      {/* day grid , one Saturday circled */}
+      {[0, 1, 2, 3].map((row) =>
+        [0, 1, 2, 3, 4].map((col) => {
+          const cx = 60 + col * 36;
+          const cy = 104 + row * 30;
+          const isMarked = row === 1 && col === 4;
+          const isNext = row === 3 && col === 4;
+          if (isNext) return null;
+          return (
+            <circle
+              key={`${row}-${col}`}
+              cx={cx}
+              cy={cy}
+              r="7"
+              fill="var(--color-ink)"
+              opacity={isMarked ? 0.22 : 0.1}
+            />
+          );
+        })
+      )}
+
+      <circle cx="204" cy="194" r="17" fill="var(--b4-accent)" opacity="0.16" />
+      <circle cx="204" cy="194" r="9" fill="var(--b4-accent)" />
+    </svg>
+  );
+}
+
+/* Three stacked speech bubbles , the "room where people talk" motif. */
+export function ClayChat({ className = "" }) {
+  const id = useId();
+
+  return (
+    <svg viewBox="0 0 240 200" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id={`${id}-one`} x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor="var(--b4-accent)" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="var(--b4-accent)" stopOpacity="0.6" />
+        </linearGradient>
+      </defs>
+
+      <ellipse cx="120" cy="184" rx="74" ry="10" fill="var(--color-ink)" opacity="0.06" />
+
+      <path
+        d="M28 34h122a26 26 0 0 1 26 26v34a26 26 0 0 1-26 26H74l-26 22V120h-20a26 26 0 0 1-26-26V60a26 26 0 0 1 26-26z"
+        fill={`url(#${id}-one)`}
+        transform="translate(14 0)"
+      />
+      <rect x="60" y="58" width="86" height="10" rx="5" fill="#fff" opacity="0.75" />
+      <rect x="60" y="78" width="58" height="10" rx="5" fill="#fff" opacity="0.5" />
+
+      <path
+        d="M126 96h74a22 22 0 0 1 22 22v26a22 22 0 0 1-22 22h-14l-18 16v-16h-42a22 22 0 0 1-22-22v-26a22 22 0 0 1 22-22z"
+        fill="#fff"
+      />
+      <rect x="140" y="118" width="60" height="9" rx="4.5" fill="var(--color-ink)" opacity="0.18" />
+      <rect x="140" y="135" width="38" height="9" rx="4.5" fill="var(--color-ink)" opacity="0.12" />
+    </svg>
+  );
+}

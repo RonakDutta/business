@@ -15,7 +15,7 @@ export default function Newsletter() {
   };
 
   return (
-    <div className="grid grid-cols-1 items-center gap-10 border-b border-white/10 px-8 py-16 md:grid-cols-2 md:px-14">
+    <div className="grid grid-cols-1 items-center gap-10 border-b border-white/10 py-14 md:grid-cols-2 md:py-16">
       <div>
         <div className="mb-2.5 text-[26px] font-extrabold tracking-[-0.025em] md:text-[30px]">
           Join the community

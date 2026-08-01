@@ -12,12 +12,13 @@ import {
   ShieldIcon,
 } from "./icons.jsx";
 
+// Gallery and Guidelines are reachable from buttons inside the page instead
+// of the nav, so the bar stays down to the four things people look for.
 const LINKS = [
   { label: "Home", to: "/" },
+  { label: "Team", to: "/team" },
   { label: "Events", to: "/events" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "Guidelines", to: "/guidelines" },
-  { label: "Contact", to: "/contact" },
+  { label: "Contacts", to: "/contact" },
 ];
 
 /**
@@ -26,10 +27,8 @@ const LINKS = [
  * gives the bar a shape of its own instead of five loose words.
  */
 const pill = ({ isActive }) =>
-  `rounded-full px-3.5 py-1.5 text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ease-smooth ${
-    isActive
-      ? "bg-white text-ink shadow-[0_1px_2px_rgba(15,23,42,.10),0_4px_10px_-6px_rgba(15,23,42,.30)]"
-      : "text-muted hover:text-ink"
+  `rounded-full px-3.5 py-2 text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ease-smooth ${
+    isActive ? "clay bg-white text-ink" : "text-muted hover:text-ink"
   }`;
 
 /* ---------------------------------------------------------------------------
@@ -72,10 +71,8 @@ function AccountMenu({ user, isAdmin, signOut }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`flex h-10 items-center gap-2 rounded-full border p-1 pr-2.5 transition-colors duration-200 ${
-          open
-            ? "border-transparent bg-line"
-            : "border-line-strong hover:border-ink/25 hover:bg-line/60"
+        className={`clay-press flex h-10 items-center gap-2 rounded-full p-1 pr-2.5 transition-[background,box-shadow] duration-200 ${
+          open ? "clay-inset bg-canvas" : "clay bg-white"
         }`}
       >
         <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white">
@@ -94,7 +91,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
       {open && (
         <div
           role="menu"
-          className="menu-pop absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card border border-line bg-white shadow-[0_24px_50px_-24px_rgba(15,23,42,.45)]"
+          className="menu-pop clay absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card bg-white"
         >
           <div className="flex items-center gap-3 border-b border-line p-4">
             <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
@@ -169,165 +166,174 @@ export default function Navbar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // The hairline only earns its keep once there's content behind the bar.
+  // Symmetrical scroll transition trigger
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-50 bg-white/85 backdrop-blur-[14px] transition-[box-shadow,border-radius] duration-300 ${
-        open ? "" : "rounded-b-[26px]"
-      } ${
-        scrolled
-          ? "shadow-[0_10px_30px_-20px_rgba(15,23,42,.45)] ring-1 ring-line/70"
-          : ""
-      }`}
-    >
-      <nav className="mx-auto flex max-w-shell items-center justify-between gap-4 px-6 py-3.5 md:px-10">
-        <Link to="/" aria-label="Business 4.0 , home">
-          <Wordmark />
-        </Link>
+    <header className="sticky top-0 z-50 w-full">
+      {/* Inner navbar container with smooth 2-way animation and zero black border */}
+      <div
+        className={`pointer-events-auto mx-auto w-full bg-white transition-all duration-300 ease-smooth ${
+          scrolled
+            ? "mt-2.5 max-w-[1240px] clay rounded-full py-1.5 px-4 shadow-xl border border-white/80"
+            : "mt-0 max-w-[2000px] rounded-none border-b border-line py-3 px-5 sm:px-6 md:px-10 shadow-xs"
+        }`}
+      >
+        <div className="mx-auto max-w-shell">
+          <nav className="flex items-center justify-between gap-4">
+            {/* Logo */}
+            <Link to="/" aria-label="Business 4.0 , home" className="flex items-center">
+              <Wordmark />
+            </Link>
 
-        <div className="hidden items-center gap-1 rounded-full bg-[#f4f5f8] p-1 md:flex">
-          {LINKS.map((l) => (
-            <NavLink
-              key={l.label}
-              to={l.to}
-              end={l.to === "/"}
-              className={pill}
-            >
-              {l.label}
-            </NavLink>
-          ))}
-        </div>
+            {/* Desktop Nav Track */}
+            <div className="clay-inset hidden items-center gap-1 rounded-full bg-canvas p-1 md:flex">
+              {LINKS.map((l) => (
+                <NavLink
+                  key={l.label}
+                  to={l.to}
+                  end={l.to === "/"}
+                  className={pill}
+                >
+                  {l.label}
+                </NavLink>
+              ))}
+            </div>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <MusicToggle />
+            {/* Desktop Actions (Buttons Untouched) */}
+            <div className="hidden items-center gap-2.5 md:flex">
+              <MusicToggle />
 
-          {user ? (
-            <AccountMenu user={user} isAdmin={isAdmin} signOut={signOut} />
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="flex h-10 items-center rounded-btn px-3 text-sm font-bold text-muted transition-colors duration-200 hover:text-ink"
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="flex h-10 items-center whitespace-nowrap rounded-btn bg-ink px-5 text-sm font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:text-white"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Mobile */}
-        <div className="flex items-center gap-1 md:hidden">
-          <MusicToggle />
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-            className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink"
-          >
-            {open ? (
-              <CloseIcon className="h-4.5 w-4.5" />
-            ) : (
-              <MenuIcon className="h-4.5 w-4.5" />
-            )}
-          </button>
-        </div>
-      </nav>
-
-      {open && (
-        <div className="menu-pop absolute inset-x-0 top-full max-h-[calc(100dvh-72px)] overflow-y-auto rounded-b-[26px] border-t border-line bg-white px-6 pb-6 pt-3 shadow-[0_22px_40px_-24px_rgba(15,23,42,.5)] md:hidden">
-          <div className="flex flex-col">
-            {LINKS.map((l) => (
-              <NavLink
-                key={l.label}
-                to={l.to}
-                end={l.to === "/"}
-                className={({ isActive }) =>
-                  `rounded-xl px-3 py-3 text-[15px] font-bold transition-colors duration-150 ${
-                    isActive ? "bg-line text-ink" : "text-muted"
-                  }`
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </div>
-
-          <div className="mt-4 border-t border-line pt-4">
-            {user ? (
-              <>
-                <div className="mb-4 flex items-center gap-3 px-3">
-                  <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
-                    {(user.name || user.email).charAt(0).toUpperCase()}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate text-[13.5px] font-bold text-ink">
-                      {user.name}
-                    </div>
-                    <div className="truncate text-[12px] text-subtle">
-                      {user.email}
-                    </div>
-                  </div>
-                  {isAdmin && (
-                    <span className="ml-auto rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.07em] text-accent">
-                      Organiser
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  {isAdmin && (
-                    <Link
-                      to="/admin"
-                      className="rounded-btn bg-accent/10 px-5.5 py-2.75 text-center text-sm font-bold text-accent"
-                    >
-                      Organiser console
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      signOut();
-                      setOpen(false);
-                    }}
-                    className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-muted"
+              {user ? (
+                <AccountMenu user={user} isAdmin={isAdmin} signOut={signOut} />
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="flex h-10 items-center rounded-btn px-3.5 text-sm font-bold text-muted transition-colors duration-200 hover:text-ink"
                   >
-                    Log out
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <Link
-                  to="/login"
-                  className="rounded-btn border border-line-strong px-5.5 py-2.75 text-center text-sm font-bold text-ink"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
-                >
-                  Sign up
-                </Link>
-              </div>
-            )}
-          </div>
+                    Log in
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="clay clay-press flex h-10 items-center whitespace-nowrap rounded-btn bg-ink px-5 text-sm font-bold text-white transition-[background,box-shadow,transform] duration-300 ease-smooth hover:bg-accent hover:text-white"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Toggle & Actions (Buttons Untouched) */}
+            <div className="flex items-center gap-1.5 md:hidden">
+              <MusicToggle />
+              <button
+                type="button"
+                aria-label={open ? "Close menu" : "Open menu"}
+                aria-expanded={open}
+                onClick={() => setOpen((o) => !o)}
+                className="clay clay-press grid h-10 w-10 place-items-center rounded-full bg-white text-ink"
+              >
+                {open ? (
+                  <CloseIcon className="h-4.5 w-4.5" />
+                ) : (
+                  <MenuIcon className="h-4.5 w-4.5" />
+                )}
+              </button>
+            </div>
+          </nav>
         </div>
-      )}
+
+        {/* Mobile Dropdown Floating Menu Panel */}
+        {open && (
+          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-line bg-white p-5 shadow-2xl md:hidden sm:left-6 sm:right-6">
+            <div className="flex flex-col gap-1.5">
+              {LINKS.map((l) => (
+                <NavLink
+                  key={l.label}
+                  to={l.to}
+                  end={l.to === "/"}
+                  className={({ isActive }) =>
+                    `rounded-xl px-4 py-3 text-[15px] font-bold transition-all duration-150 ${
+                      isActive
+                        ? "clay bg-white text-ink font-extrabold"
+                        : "text-muted hover:text-ink"
+                    }`
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="mt-4 border-t border-line pt-4">
+              {user ? (
+                <>
+                  <div className="mb-4 flex items-center gap-3 px-3">
+                    <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
+                      {(user.name || user.email).charAt(0).toUpperCase()}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="truncate text-[13.5px] font-bold text-ink">
+                        {user.name}
+                      </div>
+                      <div className="truncate text-[12px] text-subtle">
+                        {user.email}
+                      </div>
+                    </div>
+                    {isAdmin && (
+                      <span className="ml-auto rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.07em] text-accent">
+                        Organiser
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-accent"
+                      >
+                        Organiser console
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        signOut();
+                        setOpen(false);
+                      }}
+                      className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-muted"
+                    >
+                      Log out
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to="/login"
+                    className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-ink"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="clay clay-press rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

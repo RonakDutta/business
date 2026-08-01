@@ -122,7 +122,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
         aria-modal="true"
         aria-labelledby="attend-title"
         tabIndex={-1}
-        className="relative max-h-[calc(100dvh-0.75rem)] w-full max-w-[420px] overflow-y-auto rounded-t-panel bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_40px_80px_-30px_rgba(15,23,42,.5)] outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-[calc(100dvh-3rem)] sm:rounded-panel sm:p-6"
+        className="relative clay max-h-[calc(100dvh-0.75rem)] w-full max-w-[420px] overflow-y-auto rounded-t-panel bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-[calc(100dvh-3rem)] sm:rounded-panel sm:p-6"
       >
         <button
           type="button"

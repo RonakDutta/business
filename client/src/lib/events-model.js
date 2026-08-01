@@ -1,128 +1,65 @@
 import { VENUE } from "../data/venue.js";
-import { POOL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../data/events.js";
+import { DEFAULT_DESCRIPTION } from "../data/events.js";
 import { eventDateLabel, eventWhenHeadline } from "./format.js";
-import { isResolvedSrc } from "./image.js";
+import { isResolvedImage } from "./image.js";
 
-/* ===========================================================================
-   Pure event model. No React, no storage — just record in, event out.
-
-   Kept separate so the admin, the public site and (later) the API can all
-   agree on what an event *is* without importing each other.
-   =========================================================================== */
-
-/*
-  A photo is either a filename sitting in public/images/gallery/<date>/, or a
-  whole image the admin uploaded (a data URL) or an absolute path/URL. Only the
-  bare filename gets the folder prefix — prefixing a data URL would produce a
-  broken image, which is exactly what happened the first time uploads landed.
-*/
-const photoSrc = (eventId, name) =>
-  isResolvedSrc(name) ? name : `/images/gallery/${eventId}/${name}`;
-
-const album = (eventId, files = []) =>
-  files.filter(Boolean).map((name, i) => ({
-    id: `${eventId}-${i + 1}`,
-    src: photoSrc(eventId, name),
-    alt: "",
-  }));
-
-/*
-  Status comes from the clock, not a hand-set field.
-
-  These meetups run fortnightly, so an event that is "upcoming" today is
-  "past" a week later. Deriving it means nobody has to remember to flip it —
-  and `cancelled` stays a separate flag so a cancelled meetup doesn't lose
-  track of whether it has also already been and gone.
-*/
-export function buildEvent(m, now = Date.now()) {
-  const startsAt = `${m.date}T11:00:00+05:30`;
-  const endsAt = `${m.date}T13:00:00+05:30`;
-  const past = new Date(endsAt).getTime() < now;
-  const location = m.location ?? VENUE;
-  const venueName = location.shortName ?? location.name;
-  const cancelled = Boolean(m.cancelled);
-  const attendeeCount = Number(m.attendeeCount) || 0;
+// Turns one event from the API into the shape the pages use.
+// The date doubles as the id, because that is what the URL shows
+// (/events/2026-07-18). serverId is the real database id used for API calls.
+export function buildEvent(eventFromApi) {
+  const date = eventFromApi.date;
+  const attendeeCount = eventFromApi.attendeeCount || 0;
+  const isPast = eventFromApi.isPast;
+  const photos = eventFromApi.photos || [];
 
   return {
-    id: m.date,
-    cancelled,
-    status: cancelled ? "cancelled" : past ? "past" : "upcoming",
-    isPast: past,
-    title: m.title?.trim() || DEFAULT_TITLE,
-    entryFee: Number(m.entryFee ?? 150),
+    id: date,
+    serverId: eventFromApi.id,
 
-    startsAt,
-    endsAt,
-    date: eventDateLabel(m.date, past),
+    title: eventFromApi.title,
+    entryFee: eventFromApi.entryFee,
+    description: eventFromApi.description?.length
+      ? eventFromApi.description
+      : DEFAULT_DESCRIPTION,
+    image: eventFromApi.image || "/images/events/eventtemp.jpg",
+
+    cancelled: eventFromApi.cancelled,
+    status: eventFromApi.status,
+    isPast,
+
+    startsAt: `${date}T11:00:00+05:30`,
+    endsAt: `${date}T13:00:00+05:30`,
+    date: eventDateLabel(date, isPast),
     when: {
-      headline: eventWhenHeadline(m.date),
-      repeat: cancelled
+      headline: eventWhenHeadline(date),
+      repeat: eventFromApi.cancelled
         ? "This edition was cancelled"
-        : past
+        : isPast
           ? "This edition has ended"
           : "Every 2 weeks on Saturday",
     },
 
-    location,
-    place: past
-      ? `${venueName} · ${attendeeCount} attended`
-      : `${venueName} · In person`,
-    helpline: location.helpline,
-
-    description: m.description?.length ? m.description : DEFAULT_DESCRIPTION,
-    image: m.image ?? "/images/events/eventtemp.jpg",
+    location: VENUE,
+    place: isPast
+      ? `${VENUE.shortName} · ${attendeeCount} attended`
+      : `${VENUE.shortName} · In person`,
+    helpline: VENUE.helpline,
 
     attendeeCount,
-    // Real RSVP'd people when the record carries them (from the API); the POOL
-    // is only a placeholder for the seed/demo data that has counts but no
-    // actual attendee list. Real users have no avatar, so Avatar shows their
-    // initials rather than a stock face.
-    attendees: m.attendees?.length
-      ? m.attendees.map((p) => ({
-          id: p.id,
-          name: p.name,
-          role: p.role || "Member",
-          avatar: p.avatar,
-        }))
-      : POOL.slice(0, Math.min(attendeeCount, POOL.length)),
-    gallery: album(m.date, m.photos ?? []),
+    attendees: (eventFromApi.attendees || []).map((person) => ({
+      id: person.id,
+      name: person.name,
+      role: "Member",
+    })),
+
+    photos,
+    gallery: photos.map((url, index) => ({
+      id: `${date}-${index + 1}`,
+      src: isResolvedImage(url) ? url : `/images/gallery/${date}/${url}`,
+      alt: "",
+    })),
   };
 }
 
-export const byDateAsc = (a, b) => a.startsAt.localeCompare(b.startsAt);
-export const byDateDesc = (a, b) => b.startsAt.localeCompare(a.startsAt);
-
-/** One pass over the records -> every list the app needs. */
-export function deriveCollections(meetups, now = Date.now()) {
-  const allEvents = meetups.map((m) => buildEvent(m, now)).sort(byDateDesc);
-
-  /* Cancelled meetups stay in the upcoming list on purpose — members need to
-     see that it's off. They're dropped from the past list, where they'd just
-     be noise. */
-  const upcomingEvents = allEvents
-    .filter((e) => !e.isPast)
-    .sort(byDateAsc);
-
-  const pastEvents = allEvents.filter((e) => e.isPast && !e.cancelled);
-
-  const albums = allEvents
-    .filter((e) => e.gallery?.length && !e.cancelled)
-    .map((e) => ({
-      id: e.id,
-      title: e.title,
-      date: e.date,
-      place: e.place,
-      status: e.status,
-      cover: e.image,
-      photos: e.gallery,
-      count: e.gallery.length,
-    }));
-
-  return {
-    allEvents,
-    upcomingEvents,
-    pastEvents,
-    albums,
-    photos: albums.flatMap((a) => a.photos).slice(0, 6),
-  };
-}
+export const sortByDateAsc = (a, b) => a.startsAt.localeCompare(b.startsAt);
+export const sortByDateDesc = (a, b) => b.startsAt.localeCompare(a.startsAt);

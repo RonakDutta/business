@@ -15,12 +15,7 @@ import {
 } from "../components/icons.jsx";
 import { Rings, Orb, Scatter } from "../components/Decor.jsx";
 import Spinner from "../components/Spinner.jsx";
-import { contact as contactApi } from "../api";
-
-// When the backend is configured, the form posts to it (which saves the
-// message and mirrors it to the Google Sheet). Otherwise it falls back to the
-// original mail-app behaviour so the page still works with no server.
-const hasApi = Boolean(import.meta.env.VITE_API_URL);
+import { contactApi } from "../api";
 
 /* ===========================================================================
    CONTACT
@@ -112,33 +107,21 @@ export default function Contact() {
       return setError("Tell us a bit more so we can actually answer.");
 
     setError("");
+    setSending(true);
 
-    if (hasApi) {
-      // Post to the backend, which stores it and appends it to the Sheet.
-      try {
-        setSending(true);
-        await contactApi.submit({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          topic: form.topic,
-          message: form.message.trim(),
-        });
-        setSent(true);
-      } catch (err) {
-        setError(err?.message || "Couldn't send your message. Please try again.");
-      } finally {
-        setSending(false);
-      }
-      return;
+    try {
+      await contactApi.sendMessage(
+        form.name.trim(),
+        form.email.trim(),
+        form.topic,
+        form.message.trim(),
+      );
+      setSent(true);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setSending(false);
     }
-
-    // Fallback: open the visitor's own mail app with the message drafted.
-    const body = `${form.message.trim()}\n\n, ${form.name.trim()}\n${form.email.trim()}`;
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(
-      `${form.topic} , Business 4.0`,
-    )}&body=${encodeURIComponent(body)}`;
-
-    setSent(true);
   };
 
   const field =
@@ -245,12 +228,10 @@ export default function Contact() {
                   <MailIcon className="h-7 w-7" />
                 </span>
                 <h2 className="mt-5 text-[22px] font-extrabold tracking-[-0.03em]">
-                  {hasApi ? "Message sent" : "Your mail app is open"}
+                  Message sent
                 </h2>
                 <p className="mx-auto mt-2.5 max-w-[300px] text-[14.5px] leading-relaxed text-muted">
-                  {hasApi
-                    ? `Thanks , we've got it and we'll reply to ${form.email} soon.`
-                    : `The message is drafted and addressed to ${EMAIL} , hit send there and it's on its way.`}
+                  Thanks , we've got it and we'll reply to {form.email} soon.
                 </p>
                 <button
                   type="button"
@@ -266,9 +247,7 @@ export default function Contact() {
                   Send us a message
                 </h2>
                 <p className="mt-2 text-[13.5px] leading-relaxed text-subtle">
-                  {hasApi
-                    ? "Send it straight to the organisers , we read everything."
-                    : "This opens your own mail app with the message ready to go."}
+                  Send it straight to the organisers , we read everything.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3">

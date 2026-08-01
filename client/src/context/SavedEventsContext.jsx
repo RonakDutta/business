@@ -1,68 +1,40 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const KEY = "b4:saved-events";
+const STORAGE_KEY = "b4:saved";
 const SavedEventsContext = createContext(null);
 
-function read() {
-  try {
-    const raw = localStorage.getItem(KEY);
-    return Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
+// The hearts on event cards. Kept in this browser only, so it works
+// whether or not someone is signed in.
 export function SavedEventsProvider({ children }) {
-  const [saved, setSaved] = useState(read);
-
-  // Persist. Wrapped because Safari private mode throws on setItem.
-  useEffect(() => {
+  const [saved, setSaved] = useState(() => {
     try {
-      localStorage.setItem(KEY, JSON.stringify(saved));
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      return Array.isArray(stored) ? stored : [];
     } catch {
-      /* storage unavailable , saves stay in-memory for this session */
+      return [];
     }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
   }, [saved]);
 
-  // Keep other open tabs in sync.
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key === KEY) setSaved(read());
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  function toggle(eventId) {
+    if (saved.includes(eventId)) setSaved(saved.filter((id) => id !== eventId));
+    else setSaved([...saved, eventId]);
+  }
 
-  const toggle = useCallback((id) => {
-    setSaved((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  }, []);
-
-  const isSaved = useCallback((id) => saved.includes(id), [saved]);
-
-  const value = useMemo(
-    () => ({ saved, toggle, isSaved, count: saved.length }),
-    [saved, toggle, isSaved],
-  );
+  function isSaved(eventId) {
+    return saved.includes(eventId);
+  }
 
   return (
-    <SavedEventsContext.Provider value={value}>
+    <SavedEventsContext.Provider value={{ saved, toggle, isSaved, count: saved.length }}>
       {children}
     </SavedEventsContext.Provider>
   );
 }
 
 export function useSavedEvents() {
-  const ctx = useContext(SavedEventsContext);
-  if (!ctx)
-    throw new Error("useSavedEvents must be used inside <SavedEventsProvider>");
-  return ctx;
+  return useContext(SavedEventsContext);
 }

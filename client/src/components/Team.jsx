@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { ArrowUpRightIcon, UsersIcon } from "./icons.jsx";
-import { Orb } from "./Decor.jsx";
 
 /**
- * Portraits sit in a 4/5 frame, desaturated until hover , keeps the row calm
- * when four different photos have four different colour casts.
+ * Helper to get initials from full name
  */
 function initials(name) {
   return name
@@ -20,19 +18,21 @@ function TeamPortrait({ person }) {
 
   if (!person.image || failed) {
     return (
-      <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-[#27344f] to-accent text-white">
+      <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-[#1e293b] to-accent/80 p-4 text-white">
+        {/* Soft decorative background shapes */}
         <div
           aria-hidden="true"
-          className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/10"
+          className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/5 blur-xs"
         />
         <div
           aria-hidden="true"
-          className="absolute -bottom-16 -left-12 h-44 w-44 rounded-full border border-white/10"
+          className="absolute -bottom-12 -left-10 h-40 w-40 rounded-full border border-white/10"
         />
-        <span className="relative grid h-20 w-20 place-items-center rounded-full border border-white/20 bg-white/10 text-[27px] font-extrabold tracking-[-0.05em] backdrop-blur-sm">
+
+        <span className="relative grid h-20 w-20 place-items-center rounded-full border border-white/20 bg-white/10 text-[26px] font-extrabold tracking-[-0.03em] text-white shadow-inner backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
           {initials(person.name)}
         </span>
-        <span className="relative mt-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white/55">
+        <span className="relative mt-4 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white/70 backdrop-blur-xs">
           Business 4.0
         </span>
       </div>
@@ -52,33 +52,29 @@ function TeamPortrait({ person }) {
 
 function TeamMember({ person }) {
   const inner = (
-    <>
-      <div className=" relative overflow-hidden rounded-card border border-line">
-        <div className="aspect-[4/5] transition-[scale,filter] duration-[600ms] ease-smooth grayscale-[0.25] group-hover:scale-[1.04] group-hover:grayscale-0">
+    <div className="clay clay-squish group relative flex flex-col overflow-hidden rounded-[20px] bg-white isolate">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900 isolate">
+        <div className="h-full w-full">
           <TeamPortrait person={person} />
         </div>
-
-        {/* accent hairline on hover */}
-        <div className="pointer-events-none absolute inset-0 rounded-card ring-0 ring-accent transition-all duration-300 group-hover:ring-2" />
-
         {person.linkedin && (
-          <span className="absolute right-3 top-3 flex h-8 w-8 translate-y-1 items-center justify-center rounded-full bg-white/95 text-ink opacity-0 shadow-[0_2px_8px_-2px_rgba(15,23,42,.3)] transition-[translate,opacity] duration-300 ease-smooth group-hover:translate-y-0 group-hover:opacity-100">
+          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-white hover:text-accent">
             <ArrowUpRightIcon className="h-4 w-4" />
           </span>
         )}
       </div>
 
-      <div className="flex justify-center mt-4 text-[19px] font-extrabold leading-tight tracking-[-0.02em] text-ink md:text-[21px]">
-        {person.name}
+      <div className="flex flex-col items-center p-5 text-center">
+        <h3 className="text-[19px] font-extrabold tracking-[-0.02em] text-ink sm:text-[20px]">
+          {person.name}
+        </h3>
+        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+          {person.role}
+        </div>
       </div>
-      <div className="flex justify-center mt-1.5 items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
-        <span className="h-1 w-1 rounded-full bg-accent" aria-hidden="true" />
-        {person.role}
-      </div>
-    </>
+    </div>
   );
-
-  const shared = "reveal group block text-left";
 
   return person.linkedin ? (
     <a
@@ -86,43 +82,40 @@ function TeamMember({ person }) {
       target="_blank"
       rel="noopener noreferrer"
       data-stagger
-      className={shared}
+      className="reveal block text-left"
     >
       {inner}
     </a>
   ) : (
-    <div data-stagger className={shared}>
+    <div data-stagger className="reveal block text-left">
       {inner}
     </div>
   );
 }
 
-export default function Team({ members = [] }) {
+export default function Team({ members = [], showHeader = true }) {
   if (!members.length) return null;
 
   return (
-    <section
-      id="team"
-      className="relative mx-auto max-w-shell overflow-hidden px-6 pb-20 pt-4 md:px-10"
-    >
-      <Orb className="pointer-events-none absolute -left-24 top-0 -z-10 h-72 w-72 text-accent blur-2xl" />
-
-      <div className="reveal mb-10 text-center">
-        <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-          <UsersIcon className="h-3.5 w-3.5" />
-          The organisers
+    <section id="team" className="relative mx-auto w-full">
+      {showHeader && (
+        <div className="reveal mb-10 text-center">
+          <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+            <UsersIcon className="h-3.5 w-3.5" />
+            The organisers
+          </div>
+          <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
+            Meet the organising team
+          </h2>
+          <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
+          <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
+            The people who show up early, stack the chairs, and make sure you
+            leave knowing someone new.
+          </p>
         </div>
-        <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
-          Meet the organising team
-        </h2>
-        <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
-        <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
-          The people who show up early, stack the chairs, and make sure you
-          leave knowing someone new.
-        </p>
-      </div>
+      )}
 
-      <div className="grid grid-cols-2 gap-5 md:gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {members.map((person) => (
           <TeamMember key={person.id} person={person} />
         ))}

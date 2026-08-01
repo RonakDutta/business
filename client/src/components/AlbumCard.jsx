@@ -7,7 +7,7 @@ export default function AlbumCard({ album }) {
     <Link
       to={`/gallery/${album.id}`}
       data-stagger
-      className="reveal group relative block aspect-[4/3] overflow-hidden rounded-card border border-line transition-[opacity,translate,box-shadow] duration-[400ms] ease-smooth hover:-translate-y-1.5 hover:shadow-[0_18px_34px_-24px_rgba(15,23,42,.45)]"
+      className="reveal clay group relative block aspect-[4/3] overflow-hidden rounded-card transition-shadow duration-300 hover:shadow-lg"
     >
       {/* Cover zooms; the scrim above it does not */}
       <div className="absolute inset-0 transition-[scale] duration-[600ms] ease-smooth group-hover:scale-[1.06]">

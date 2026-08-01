@@ -7,7 +7,7 @@ const CORNER_MAP = {
 };
 
 const DEFAULTS = {
-  accent: "#1d4ed8",
+  accent: "#2563eb",
   corners: "Soft", // Sharp | Soft | Rounded
   motion: "Lively", // Calm | Lively
   meetupUrl: "https://www.meetup.com/business4-0",

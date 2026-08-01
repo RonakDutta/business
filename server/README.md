@@ -3,10 +3,8 @@
 Express API for the Business 4.0 community site. Postgres on **Neon**, image
 hosting on **Cloudinary**, stateless auth with **JWT**.
 
-> Status: **scaffold**. The structure, schema, routes and controllers are in
-> place and the server runs, but nothing here is wired to the frontend yet —
-> the React app still uses its localStorage stubs. Connecting them is a later
-> step.
+The React app in `client/` talks to this API for everything: signing in,
+listing events, RSVPs, the admin console and the contact form.
 
 ## Stack
 
@@ -58,7 +56,7 @@ skipped — the contact submission still succeeds.
 ```bash
 cd server
 npm install
-cp .env.example .env      # then fill in DATABASE_URL, JWT_SECRET, CLOUDINARY_*
+# create .env with DATABASE_URL, JWT_SECRET, CLOUDINARY_* and ADMIN_*
 npm run db:migrate        # create tables (idempotent)
 npm run db:seed           # default venue + first admin (from ADMIN_* vars)
 npm run dev               # http://localhost:4000  (health: /api/health)
@@ -71,35 +69,34 @@ so you can verify the wiring before touching anything else.
 
 ```
 server/
-├─ .env.example            every variable the server reads, documented
 └─ src/
    ├─ index.js             boots the HTTP server + graceful shutdown
    ├─ app.js               express app: middleware + route mounting
    ├─ config/
-   │  ├─ env.js            reads & validates process.env (single source)
-   │  ├─ db.js             Neon Postgres pool + query()/getClient()/ping()
-   │  └─ cloudinary.js     Cloudinary config + uploadBuffer()/destroyAsset()
+   │  ├─ env.js            reads .env in one place
+   │  ├─ db.js             Postgres connection + query()
+   │  ├─ cloudinary.js     uploadImage() / deleteImage()
+   │  └─ sheets.js         addRowToSheet()
    ├─ db/
-   │  ├─ schema.sql        table definitions (idempotent)
-   │  ├─ migrate.js        applies schema.sql   (npm run db:migrate)
-   │  └─ seed.js           default venue + admin (npm run db:seed)
+   │  ├─ schema.sql        every table (safe to run again)
+   │  ├─ migrate.js        creates the tables    (npm run db:migrate)
+   │  ├─ seed.js           default venue + admin (npm run db:seed)
+   │  └─ sheets-test.js    checks Google Sheets  (npm run sheets:test)
    ├─ middleware/
-   │  ├─ auth.js           authenticate / requireAdmin / optionalAuth
-   │  ├─ upload.js         multer (in-memory) for image uploads
-   │  ├─ error.js          central error handler
-   │  └─ notFound.js       404 fallthrough
+   │  ├─ auth.js           requireLogin / requireAdmin / optionalLogin
+   │  ├─ upload.js         multer, keeps the image in memory
+   │  └─ error.js          404 + one place that turns errors into JSON
    ├─ utils/
-   │  ├─ asyncHandler.js   async wrapper + ApiError
-   │  ├─ password.js       bcrypt hash/verify
-   │  └─ jwt.js            sign/verify tokens
+   │  ├─ asyncHandler.js   catches errors in async controllers, + ApiError
+   │  ├─ password.js       hashPassword / checkPassword (bcrypt)
+   │  └─ jwt.js            createToken / readToken
    ├─ routes/              one router per resource, mounted in routes/index.js
    └─ controllers/         one controller per resource (request → db → json)
 ```
 
 ## Data model
 
-Modelled straight off what the frontend already renders (see the referenced
-files in `client/src`). Full DDL in [`src/db/schema.sql`](src/db/schema.sql).
+Full SQL in [`src/db/schema.sql`](src/db/schema.sql).
 
 | Table              | Purpose                                        | Frontend source                |
 | ------------------ | ---------------------------------------------- | ------------------------------ |
@@ -110,7 +107,7 @@ files in `client/src`). Full DDL in [`src/db/schema.sql`](src/db/schema.sql).
 | `photos`           | gallery photos, per event                      | `pages/GalleryPage.jsx`        |
 | `comments`         | members' notes on a held meetup                | `components/EventComments`     |
 | `team_members`     | the organisers                                 | `data/team.js`                 |
-| `payments`         | UPI entry-fee proofs (pending/verified)        | `lib/payment-submission.js`    |
+| `payments`         | UPI entry-fee proofs (pending/verified)        | `components/AttendDialog`      |
 | `venues`           | the meetup location (one default)              | `data/venue.js`                |
 | `subscribers`      | footer newsletter signups                      | `components/Footer.jsx`        |
 | `contact_messages` | the contact form                               | `pages/Contact.jsx`            |
@@ -148,9 +145,8 @@ GET    /api/venue                PATCH /api/venue/:id                           
 Image uploads (`events`, `team`, `photos`, `payments`) are `multipart/form-data`
 with the file under the field named in the route (`image` or `proof`).
 
-## Not done yet (intentionally)
+## Not done yet
 
-- No frontend wiring — the React contexts still use localStorage.
+- Comments have a table but no routes; the UI keeps them in the browser.
 - No rate limiting, email sending, or refresh tokens.
-- Single flat `schema.sql` rather than ordered migrations — swap in
-  `node-pg-migrate` or Prisma when the schema starts changing in production.
+- One `schema.sql` instead of ordered migrations, which is fine at this size.
