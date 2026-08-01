@@ -98,32 +98,23 @@ function AccountMenu({ user, isAdmin, signOut }) {
               {initial}
             </span>
             <div className="min-w-0">
-              <div className="truncate text-[13.5px] font-bold text-ink">
+              <div className="truncate text-sm font-bold text-ink">
                 {user.name}
               </div>
-              <div className="mt-0.5 truncate text-[12px] text-subtle">
+              <div className="truncate text-xs font-semibold text-subtle">
                 {user.email}
               </div>
             </div>
           </div>
 
-          {isAdmin && (
-            <div className="border-b border-line px-4 py-2.5">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.07em] text-accent">
-                <ShieldIcon className="h-3 w-3" />
-                Organiser
-              </span>
-            </div>
-          )}
-
-          <div className="p-1.5">
+          <div className="p-2">
             <Link
-              to="/events?tab=saved"
+              to="/saved"
               role="menuitem"
               onClick={() => setOpen(false)}
-              className={`${item} text-muted hover:bg-line hover:text-ink`}
+              className={`${item} text-muted hover:bg-canvas hover:text-ink`}
             >
-              <HeartIcon className="h-4 w-4" />
+              <HeartIcon className="h-4 w-4 text-subtle" />
               Saved events
             </Link>
 
@@ -132,10 +123,10 @@ function AccountMenu({ user, isAdmin, signOut }) {
                 to="/admin"
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className={`${item} text-ink hover:bg-line`}
+                className={`${item} text-accent hover:bg-accent-tint`}
               >
-                <ShieldIcon className="h-4 w-4" />
-                Organiser console
+                <ShieldIcon className="h-4 w-4 text-accent" />
+                Organiser Hub
               </Link>
             )}
 
@@ -146,10 +137,10 @@ function AccountMenu({ user, isAdmin, signOut }) {
                 setOpen(false);
                 signOut();
               }}
-              className={`${item} w-full text-muted hover:bg-line hover:text-ink`}
+              className={`${item} w-full text-red-600 hover:bg-red-50`}
             >
-              <LogOutIcon className="h-4 w-4" />
-              Log out
+              <LogOutIcon className="h-4 w-4 text-red-500" />
+              Sign out
             </button>
           </div>
         </div>

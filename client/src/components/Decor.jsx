@@ -84,12 +84,12 @@ export function Blobs({ className = "" }) {
     >
       <path
         fill="var(--b4-accent)"
-        opacity="0.10"
+        opacity="0.14"
         d="M420 120c58 34 104 88 108 152s-34 128-92 168-142 56-208 34-118-82-120-150 44-134 106-176 148-62 206-28z"
       />
       <path
         fill="var(--color-meetup)"
-        opacity="0.08"
+        opacity="0.10"
         d="M180 90c46 8 78 52 96 100s28 104-2 142-96 52-152 36-104-64-108-118 22-118 68-150 54-18 98-10z"
       />
     </svg>
