@@ -223,6 +223,17 @@
   );
 }
 
+/* The navbar. Lighter than .clay , it is a wide surface, so the same shadow
+   would read as a slab hanging over the page. Lit along the top edge, shaded
+   along the bottom, with a soft spread underneath. */
+@utility clay-bar {
+  box-shadow:
+    0 12px 30px -18px rgba(15, 23, 42, 0.3),
+    0 2px 6px -3px rgba(15, 23, 42, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -3px 6px rgba(15, 23, 42, 0.045);
+}
+
 /* A pressed-in surface , the hollow counterpart to .clay. Used for grouped
    rows inside a clay panel so they read as one moulded object. */
 @utility clay-inset {
