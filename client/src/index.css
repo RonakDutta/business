@@ -242,6 +242,62 @@
 }
 
 @layer components {
+  /*
+    Infinite marquee , the testimonials row.
+
+    The track holds the same cards twice and slides exactly half its width, so
+    the moment it finishes the second copy is sitting where the first started
+    and the loop is invisible. Transform-only, so it runs on the compositor.
+
+    It pauses on hover and on keyboard focus: the cards are links, and a target
+    that keeps moving is unusable.
+  */
+  @keyframes marquee-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-drift var(--marquee-duration, 70s) linear infinite;
+  }
+
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Fade the row out at both ends instead of cutting the cards off. The fade
+     is shorter on a phone, where 72px is a third of a card. */
+  .marquee-mask {
+    --mask-fade: 36px;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 var(--mask-fade),
+      #000 calc(100% - var(--mask-fade)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 var(--mask-fade),
+      #000 calc(100% - var(--mask-fade)),
+      transparent 100%
+    );
+  }
+
+  @media (min-width: 768px) {
+    .marquee-mask {
+      --mask-fade: 72px;
+    }
+  }
+
   /* Scroll reveal , driven by useReveal() */
   /*
     Elements that also carry a `transition-[...]` utility (cards with hover
@@ -298,6 +354,14 @@
     opacity: 1;
     translate: none;
     transition: none;
+  }
+
+  /* The marquee stops moving, and the row becomes a normal side-scroller. */
+  .marquee-track {
+    animation: none;
+  }
+  .marquee {
+    overflow-x: auto;
   }
   *,
   *::before,
