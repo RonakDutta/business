@@ -241,3 +241,58 @@ export function RoutePath({ className = "" }) {
     </svg>
   );
 }
+
+/* A flat illustration of someone speaking to a group — the "explaining what
+   Business 4.0 is" idea from the sketch. The figures are clipped to the round
+   backdrop so the composition reads as deliberate rather than cut off, and the
+   speech bubble floats outside it. Brand-coloured; decorative only. */
+export function PersonTalking({ className = "" }) {
+  const accent = "var(--b4-accent)";
+  const clipId = `talk-${useId().replace(/:/g, "")}`;
+
+  return (
+    <svg viewBox="0 0 420 420" className={className} aria-hidden="true" fill="none">
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx="196" cy="230" r="160" />
+        </clipPath>
+      </defs>
+
+      <circle cx="196" cy="230" r="160" fill={accent} opacity="0.07" />
+
+      <g clipPath={`url(#${clipId})`}>
+        {/* the speaker */}
+        <circle cx="150" cy="196" r="52" fill={accent} opacity="0.9" />
+        <path d="M56 400c0-52 42-94 94-94s94 42 94 94z" fill={accent} opacity="0.9" />
+
+        {/* two listeners, further back */}
+        <g opacity="0.32">
+          <circle cx="286" cy="256" r="34" fill={accent} />
+          <path d="M224 400c0-34 28-62 62-62s62 28 62 62z" fill={accent} />
+        </g>
+        <g opacity="0.18">
+          <circle cx="348" cy="286" r="26" fill={accent} />
+          <path d="M300 400c0-27 21-48 48-48s48 21 48 48z" fill={accent} />
+        </g>
+      </g>
+
+      {/* what they're saying, floating clear of the circle */}
+      <g>
+        <rect x="212" y="20" width="196" height="118" rx="24" fill="#fff" />
+        <rect
+          x="212"
+          y="20"
+          width="196"
+          height="118"
+          rx="24"
+          fill={accent}
+          opacity="0.14"
+        />
+        <path d="M244 138v34l36-34z" fill={accent} opacity="0.14" />
+        <rect x="240" y="54" width="142" height="10" rx="5" fill={accent} opacity="0.55" />
+        <rect x="240" y="80" width="112" height="10" rx="5" fill={accent} opacity="0.3" />
+        <rect x="240" y="106" width="80" height="10" rx="5" fill={accent} opacity="0.3" />
+      </g>
+    </svg>
+  );
+}
