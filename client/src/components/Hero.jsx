@@ -41,10 +41,16 @@ export default function Hero() {
         <Blobs className="pointer-events-none absolute -left-40 -top-24 -z-10 h-[560px] w-[560px] blur-[6px]" />
 
         <div className="mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-2 lg:gap-12">
-          <div>
+          <div className="relative isolate">
+            {/* Vibrant blue glowing ambient orb behind text */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-16 -top-16 z-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_center,#2563eb_0%,#60a5fa_45%,transparent_70%)] opacity-30 blur-3xl sm:h-[480px] sm:w-[480px]"
+            />
+
             <h1
               data-delay="0.06"
-              className="reveal text-[34px] font-extrabold leading-[1.1] tracking-[-0.03em] sm:text-[46px] md:text-[56px]"
+              className="reveal relative z-10 text-[34px] font-extrabold leading-[1.1] tracking-[-0.03em] sm:text-[46px] md:text-[56px]"
             >
               What is{" "}
               <span className="relative whitespace-nowrap text-accent">
@@ -59,7 +65,7 @@ export default function Hero() {
 
             <p
               data-delay="0.12"
-              className="reveal mt-5 max-w-[540px] text-[16px] leading-[1.7] text-muted sm:text-[18px]"
+              className="reveal relative z-10 mt-5 max-w-[540px] text-[16px] leading-[1.7] text-muted sm:text-[18px]"
             >
               A room full of marketers, founders and freelancers who meet every
               second Saturday to swap what actually worked , and what didn't.
@@ -69,7 +75,7 @@ export default function Hero() {
             <a
               href="#about"
               data-delay="0.18"
-              className="clay clay-press reveal mt-8 inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:text-white"
+              className="clay clay-press reveal relative z-10 mt-8 inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:text-white"
             >
               Know more
               <ArrowRightIcon className="h-4 w-4" />
