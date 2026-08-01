@@ -21,6 +21,10 @@
   --color-line-strong: #e4e7ed;
   --color-accent: var(--b4-accent);
 
+  /* The page never sits on pure white , clay needs a tinted canvas for the
+     white cards on top of it to read as raised objects. */
+  --color-canvas: #f1f3fa;
+
   /* Meetup brand pink ("Wild Watermelon"), per meetup.com's current brand
      assets. Their older red was #ED1C40 if you prefer that. */
   --color-meetup: #ff4a79;
@@ -52,7 +56,7 @@
   }
 
   body {
-    background: #fff;
+    background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -201,6 +205,32 @@
     inset 0 -6px 12px rgba(0, 0, 0, 0.28);
 }
 
+/* ---------------------------------------------------------------------------
+   SECTION BANDS
+
+   The page alternates between the tinted canvas and a white band so each
+   section announces itself. The band fades in and out at its edges rather than
+   stopping on a hard line, which is what made the old blocks look like stray
+   rectangles.
+   --------------------------------------------------------------------------- */
+@utility band-white {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fff 0%, transparent) 0%,
+    #fff 7%,
+    #fff 93%,
+    color-mix(in srgb, #fff 0%, transparent) 100%
+  );
+}
+
+/* A pressed-in surface , the hollow counterpart to .clay. Used for grouped
+   rows inside a clay panel so they read as one moulded object. */
+@utility clay-inset {
+  box-shadow:
+    inset 0 2px 6px rgba(15, 23, 42, 0.07),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.9);
+}
+
 /* Presses squash slightly, the way a soft object would. */
 @utility clay-press {
   transition:
@@ -212,22 +242,6 @@
 }
 
 @layer components {
-  /* Skeleton placeholder — a shimmering grey block shown while data loads,
-     especially a cold backend (e.g. Render free-tier waking from sleep). */
-  @keyframes skeleton-shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-  .skeleton {
-    background: linear-gradient(100deg, #e7eaf0 30%, #f2f4f8 50%, #e7eaf0 70%);
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.4s ease-in-out infinite;
-  }
-
   /* Scroll reveal , driven by useReveal() */
   /*
     Elements that also carry a `transition-[...]` utility (cards with hover
@@ -284,10 +298,6 @@
     opacity: 1;
     translate: none;
     transition: none;
-  }
-  .skeleton {
-    animation: none;
-    background: #e7eaf0;
   }
   *,
   *::before,
