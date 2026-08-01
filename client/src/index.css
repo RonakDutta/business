@@ -346,14 +346,14 @@
   .reveal {
     opacity: 0;
     translate: 0 var(--reveal-dist, 26px);
-    transition:
-      opacity var(--reveal-dur, 0.75s) var(--ease-reveal),
-      translate var(--reveal-dur, 0.75s) var(--ease-reveal);
+    transition-property: opacity, translate, box-shadow, transform;
+    transition-duration: var(--reveal-dur, 0.75s);
+    transition-timing-function: var(--ease-reveal);
   }
 
   .reveal.is-visible {
     opacity: 1;
-    translate: none;
+    translate: 0 0;
   }
 
   /*

@@ -55,7 +55,7 @@ export default function EventCard({ event, variant = "upcoming" }) {
   return (
     <div
       data-stagger
-      className="reveal clay group flex flex-col overflow-hidden rounded-card bg-white transition-shadow duration-300 hover:shadow-lg"
+      className="reveal clay group flex flex-col overflow-hidden rounded-card bg-white transition-[opacity,translate,box-shadow] duration-300 hover:shadow-lg"
     >
       {/* Media. The link covers the tile; the buttons sit above it. */}
       <div className="relative h-[168px] shrink-0 overflow-hidden">

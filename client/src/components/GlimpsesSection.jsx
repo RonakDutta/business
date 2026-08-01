@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import CoverImage from "./CoverImage.jsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "./icons.jsx";
@@ -7,18 +7,47 @@ import { ArrowLeftIcon, ArrowRightIcon } from "./icons.jsx";
 // beside it, and arrows to step through the other albums.
 export default function GlimpsesSection({ albums = [] }) {
   const [index, setIndex] = useState(0);
+  const [isFading, setIsFading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const fadeTimeoutRef = useRef(null);
 
   const album = albums[index];
   const photo = album?.photos?.[0];
 
-  function step(direction) {
-    setIndex(
-      (current) => (current + direction + albums.length) % albums.length,
-    );
-  }
+  const step = useCallback(
+    (direction) => {
+      if (isFading || albums.length <= 1) return;
+
+      setIsFading(true);
+      if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
+
+      fadeTimeoutRef.current = setTimeout(() => {
+        setIndex((current) => (current + direction + albums.length) % albums.length);
+        setIsFading(false);
+      }, 220);
+    },
+    [albums.length, isFading],
+  );
+
+  // Auto-switch to next album every 5 seconds (5000ms), paused on hover
+  useEffect(() => {
+    if (albums.length <= 1 || isPaused) return;
+
+    const timer = setInterval(() => {
+      step(1);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [albums.length, isPaused, step]);
+
+  useEffect(() => {
+    return () => {
+      if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
+    };
+  }, []);
 
   const arrowButton =
-    "clay clay-press grid h-11 w-11 place-items-center rounded-full bg-white text-ink";
+    "clay clay-press grid h-11 w-11 place-items-center rounded-full bg-white text-ink transition-transform duration-200 active:scale-95";
 
   return (
     <section id="gallery" className="px-5 py-16 sm:px-6 md:px-10 md:py-24">
@@ -32,9 +61,17 @@ export default function GlimpsesSection({ albums = [] }) {
           </h2>
         </div>
 
-        <div className="reveal clay mt-9 overflow-hidden rounded-panel bg-white md:mt-12">
+        <div
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          className="reveal clay mt-9 overflow-hidden rounded-panel bg-white md:mt-12"
+        >
           {album ? (
-            <div className="grid items-stretch lg:grid-cols-2">
+            <div
+              className={`grid items-stretch lg:grid-cols-2 transition-all duration-300 ease-smooth ${
+                isFading ? "opacity-0 scale-[0.99] blur-[2px]" : "opacity-100 scale-100 blur-0"
+              }`}
+            >
               <div className="h-[260px] sm:h-[380px] lg:h-[520px]">
                 <CoverImage
                   src={photo?.src}

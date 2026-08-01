@@ -100,26 +100,27 @@ export function MusicProvider({ children, src = SRC, volume = VOLUME }) {
 
   /*
     Autoplay is blocked until the visitor interacts with the page, so arm a
-    listener for the first click/tap/key and start then. Listeners are attached
-    whenever we want sound but aren't producing any , that removes the race
-    where a rejected play() hadn't flipped a flag yet before the user clicked.
+    listener for the first click/tap/key and start then.
   */
   useEffect(() => {
     if (!enabled || playing) return;
 
-    const go = () => start();
-    const opts = { passive: true };
+    let attempted = false;
+    const go = () => {
+      if (attempted) return;
+      attempted = true;
+      start();
+    };
+    const opts = { passive: true, once: true };
 
     window.addEventListener("pointerdown", go, opts);
     window.addEventListener("touchstart", go, opts);
-    window.addEventListener("keydown", go);
-    window.addEventListener("scroll", go, opts);
+    window.addEventListener("keydown", go, { once: true });
 
     return () => {
       window.removeEventListener("pointerdown", go);
       window.removeEventListener("touchstart", go);
       window.removeEventListener("keydown", go);
-      window.removeEventListener("scroll", go);
     };
   }, [enabled, playing, start]);
 
