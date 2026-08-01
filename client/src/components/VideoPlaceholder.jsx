@@ -10,7 +10,9 @@ export default function VideoPlaceholder({
   videoUrl = "",
   label = "Watch: what is Business 4.0",
   aspectClass = "aspect-video",
+  fullBleed = false,
 }) {
+  const shape = fullBleed ? "" : "rounded-panel clay-dark";
   const [playing, setPlaying] = useState(false);
   const [noVideoYet, setNoVideoYet] = useState(false);
 
@@ -21,7 +23,7 @@ export default function VideoPlaceholder({
 
   if (playing) {
     return (
-      <div className={`relative w-full overflow-hidden rounded-panel bg-ink ${aspectClass}`}>
+      <div className={`relative w-full overflow-hidden bg-ink ${shape} ${aspectClass}`}>
         <iframe
           src={videoUrl}
           title={label}
@@ -38,7 +40,7 @@ export default function VideoPlaceholder({
       type="button"
       onClick={handlePlay}
       aria-label={label}
-      className={`group relative block w-full overflow-hidden rounded-panel bg-ink shadow-[0_30px_60px_-40px_rgba(15,23,42,.7)] ${aspectClass}`}
+      className={`group relative block w-full overflow-hidden bg-ink ${shape} ${aspectClass}`}
     >
       {poster ? (
         <img
@@ -64,7 +66,7 @@ export default function VideoPlaceholder({
       />
 
       <span className="absolute inset-0 grid place-items-center">
-        <span className="grid h-16 w-16 place-items-center rounded-full bg-white/95 text-ink shadow-[0_10px_30px_-8px_rgba(15,23,42,.6)] transition-transform duration-300 ease-smooth group-hover:scale-110 sm:h-20 sm:w-20 lg:h-24 lg:w-24">
+        <span className="clay clay-press grid h-16 w-16 place-items-center rounded-full bg-white text-ink group-hover:scale-105 sm:h-20 sm:w-20 lg:h-24 lg:w-24">
           <svg viewBox="0 0 24 24" className="h-7 w-7 sm:h-9 sm:w-9" fill="currentColor">
             <path d="M8 5.5v13l11-6.5-11-6.5z" />
           </svg>
