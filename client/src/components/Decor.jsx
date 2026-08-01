@@ -421,3 +421,34 @@ export function ClayChat({ className = "" }) {
     </svg>
   );
 }
+
+/* Glowing orbital rings with accent gradient & pulse aura - fresh vector decor */
+export function GlowingRings({ className = "" }) {
+  const id = useId().replace(/:/g, "");
+  return (
+    <svg viewBox="0 0 300 300" className={className} aria-hidden="true" fill="none">
+      <defs>
+        <radialGradient id={`glow-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="var(--b4-accent)" stopOpacity="0.35" />
+          <stop offset="60%" stopColor="var(--b4-accent)" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="var(--b4-accent)" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={`ring-grad-${id}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="var(--b4-accent)" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="var(--color-meetup)" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="var(--b4-accent)" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+
+      <circle cx="150" cy="150" r="140" fill={`url(#glow-${id})`} />
+      <circle cx="150" cy="150" r="110" stroke={`url(#ring-grad-${id})`} strokeWidth="1.5" strokeDasharray="6 8" opacity="0.6" />
+      <circle cx="150" cy="150" r="82" stroke="var(--b4-accent)" strokeWidth="1" opacity="0.35" />
+      <circle cx="150" cy="150" r="54" stroke={`url(#ring-grad-${id})`} strokeWidth="2" opacity="0.7" />
+      <circle cx="150" cy="150" r="28" stroke="var(--b4-accent)" strokeWidth="1" strokeDasharray="3 4" opacity="0.5" />
+
+      <circle cx="150" cy="40" r="5" fill="var(--b4-accent)" opacity="0.85" />
+      <circle cx="232" cy="150" r="4.5" fill="var(--color-meetup)" opacity="0.85" />
+      <circle cx="96" cy="204" r="6" fill="var(--b4-accent)" opacity="0.9" />
+    </svg>
+  );
+}

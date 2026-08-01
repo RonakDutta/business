@@ -1,6 +1,6 @@
 import { useState } from "react";
 import VideoPlaceholder from "./VideoPlaceholder.jsx";
-import { Blobs, PersonTalking } from "./Decor.jsx";
+import { Blobs, PersonTalking, GlowingRings } from "./Decor.jsx";
 import { ArrowRightIcon } from "./icons.jsx";
 
 const ILLUSTRATION = "/images/illustration/what-is-business-4.png";
@@ -11,13 +11,16 @@ function HeroIllustration() {
   if (failed) return <PersonTalking className="h-auto w-full max-w-[480px] sm:max-w-[520px]" />;
 
   return (
-    <div className="clay overflow-hidden rounded-[26px] bg-white p-2.5 sm:p-3.5 max-w-[520px] sm:max-w-[580px] lg:max-w-[620px] w-full border border-line">
-      <img
-        src={ILLUSTRATION}
-        alt="What is Business 4.0 illustration"
-        onError={() => setFailed(true)}
-        className="h-auto w-full rounded-[18px] object-cover"
-      />
+    <div className="relative isolate max-w-[520px] sm:max-w-[580px] lg:max-w-[620px] w-full">
+      <GlowingRings className="pointer-events-none absolute -right-10 -top-10 z-0 h-[280px] w-[280px] sm:h-[340px] sm:w-[340px]" />
+      <div className="clay relative z-10 overflow-hidden rounded-[26px] bg-white p-2.5 sm:p-3.5 w-full border border-line">
+        <img
+          src={ILLUSTRATION}
+          alt="What is Business 4.0 illustration"
+          onError={() => setFailed(true)}
+          className="h-auto w-full rounded-[18px] object-cover"
+        />
+      </div>
     </div>
   );
 }

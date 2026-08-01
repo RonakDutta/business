@@ -1,5 +1,5 @@
 import CoverImage from "./CoverImage.jsx";
-import { ClayShapes } from "./Decor.jsx";
+import { ClayShapes, GlowingRings } from "./Decor.jsx";
 import {
   LightbulbIcon,
   ChartIcon,
@@ -36,6 +36,7 @@ export default function PositioningSection() {
   return (
     <section className="relative isolate py-16 md:py-24">
       <ClayShapes className="pointer-events-none absolute -left-24 top-10 -z-10 h-[420px] w-[420px] opacity-70 md:-left-10" />
+      <GlowingRings className="pointer-events-none absolute -right-10 top-12 z-0 h-[300px] w-[300px] opacity-90" />
 
       <div className="mx-auto grid max-w-shell items-stretch gap-8 px-5 sm:px-6 md:px-10 lg:grid-cols-2 lg:gap-12">
         <div className="reveal clay flex h-full min-h-[320px] overflow-hidden rounded-panel bg-white p-3">
