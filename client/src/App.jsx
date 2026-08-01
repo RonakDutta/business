@@ -4,6 +4,7 @@ import Home from "./pages/Home.jsx";
 import Events from "./pages/Events.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
 import GalleryPage from "./pages/GalleryPage.jsx";
+import TeamPage from "./pages/TeamPage.jsx";
 import AlbumDetail from "./pages/AlbumDetail.jsx";
 import Guidelines from "./pages/Guidelines.jsx";
 import Contact from "./pages/Contact.jsx";
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/team" element={<TeamPage />} />
         <Route path="/gallery/:id" element={<AlbumDetail />} />
         <Route path="/guidelines" element={<Guidelines />} />
         <Route path="/contact" element={<Contact />} />

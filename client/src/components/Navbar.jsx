@@ -12,12 +12,13 @@ import {
   ShieldIcon,
 } from "./icons.jsx";
 
+// Gallery and Guidelines are reachable from buttons inside the page instead
+// of the nav, so the bar stays down to the four things people look for.
 const LINKS = [
   { label: "Home", to: "/" },
+  { label: "Team", to: "/team" },
   { label: "Events", to: "/events" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "Guidelines", to: "/guidelines" },
-  { label: "Contact", to: "/contact" },
+  { label: "Contacts", to: "/contact" },
 ];
 
 /**
