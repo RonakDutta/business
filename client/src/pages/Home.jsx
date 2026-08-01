@@ -1,4 +1,5 @@
 import Hero from "../components/Hero.jsx";
+import AboutSection from "../components/AboutSection.jsx";
 import EventsSection from "../components/EventsSection.jsx";
 import Team from "../components/Team.jsx";
 import GalleryPreview from "../components/GalleryPreview.jsx";
@@ -15,6 +16,8 @@ export default function Home() {
   return (
     <>
       <Hero />
+
+      <AboutSection />
 
       {/* Tinted events band — waves blend it into the white above and below, a
           faint dot-field gives the block texture. Purely presentational. */}

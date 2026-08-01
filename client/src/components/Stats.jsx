@@ -4,14 +4,12 @@ function Stat({ value, suffix, label, decimals = 0 }) {
   const [ref, current] = useCountUp(value, { decimals });
 
   return (
-    <div className="flex flex-col items-center gap-1.5 px-2 py-6 text-center sm:px-4 sm:py-8 md:py-10">
-      {/*
-        tabular-nums keeps every digit the same width , without it the number
-        visibly jitters while counting up from 0.
-      */}
+    <div className="flex flex-col items-center gap-1.5 px-3 py-7 text-center sm:px-4 sm:py-9 md:py-11">
+      {/* tabular-nums keeps every digit the same width, so the number does not
+          jitter while it counts up. */}
       <div
         ref={ref}
-        className="text-[24px] font-extrabold tabular-nums leading-none tracking-[-0.03em] text-accent sm:text-[32px] md:text-[42px]"
+        className="text-[26px] font-extrabold tabular-nums leading-none tracking-[-0.03em] text-accent sm:text-[36px] md:text-[44px]"
       >
         {current.toLocaleString("en-IN", {
           minimumFractionDigits: decimals,
@@ -20,7 +18,7 @@ function Stat({ value, suffix, label, decimals = 0 }) {
         {suffix}
       </div>
 
-      <div className="text-[9px] font-bold uppercase tracking-[0.07em] text-subtle sm:text-[11px] sm:tracking-[0.1em] md:text-xs">
+      <div className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-subtle sm:text-[11px] sm:tracking-[0.1em] md:text-xs">
         {label}
       </div>
     </div>
@@ -29,10 +27,10 @@ function Stat({ value, suffix, label, decimals = 0 }) {
 
 export default function Stats({ items }) {
   return (
-    <div className="reveal mx-auto mt-10 max-w-[860px] overflow-hidden rounded-panel border border-line bg-gradient-to-b from-white to-[#f8f9fc] shadow-[0_16px_40px_-32px_rgba(15,23,42,.5)] sm:mt-14">
+    <div className="reveal clay mt-14 overflow-hidden rounded-panel bg-white sm:mt-16">
       <div className="grid grid-cols-3 divide-x divide-line">
-        {items.map((s) => (
-          <Stat key={s.id} {...s} />
+        {items.map((item) => (
+          <Stat key={item.id} {...item} />
         ))}
       </div>
     </div>

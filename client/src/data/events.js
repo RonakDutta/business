@@ -22,16 +22,19 @@ export const heroSlides = [
   },
 ];
 
+// Placeholder figures for now , swap them for the real ones.
 export const stats = [
+  { id: "editions", value: 180, suffix: "+", label: "Editions hosted" },
   { id: "members", value: 1200, suffix: "+", label: "Community members" },
-  { id: "editions", value: 190, suffix: "+", label: "Editions hosted" },
-  {
-    id: "rating",
-    value: 4.7,
-    decimals: 1,
-    suffix: "★",
-    label: "Rating on Meetup.com",
-  },
+  { id: "connections", value: 1500, suffix: "+", label: "Connections made" },
+];
+
+// Who the meetup is for , shown under the explanation.
+export const audience = [
+  "Side hustlers",
+  "Entrepreneurs",
+  "Aspiring start-ups",
+  "Dreamers who follow through",
 ];
 
 // Every meetup is run by the same person, so this is not stored per event.
