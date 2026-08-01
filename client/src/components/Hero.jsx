@@ -27,7 +27,10 @@ export default function Hero() {
     <section id="top" className="relative isolate">
       {/* The film runs edge to edge, with no rounding and nothing beside it. */}
       <div className="reveal" data-delay="0">
-        <VideoPlaceholder aspectClass="aspect-video lg:aspect-[21/9]" fullBleed />
+        <VideoPlaceholder
+          aspectClass="aspect-video lg:aspect-[23/10]"
+          fullBleed
+        />
       </div>
 
       <div className="relative overflow-hidden px-5 py-14 sm:px-6 md:px-10 md:py-20">
