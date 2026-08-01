@@ -5,8 +5,6 @@ import { ArrowRightIcon } from "./icons.jsx";
 
 const ILLUSTRATION = "/images/illustration/what-is-business-4.png";
 
-// Falls back to the drawn vector until the artwork is added, so a missing
-// file never leaves a hole in the page.
 function HeroIllustration() {
   const [failed, setFailed] = useState(false);
 
