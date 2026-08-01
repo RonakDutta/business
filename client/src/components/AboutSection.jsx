@@ -1,5 +1,5 @@
 import Stats from "./Stats.jsx";
-import { Orb } from "./Decor.jsx";
+import { ClayChat } from "./Decor.jsx";
 import { CheckIcon } from "./icons.jsx";
 import { audience, stats } from "../data/events.js";
 
@@ -7,9 +7,10 @@ import { audience, stats } from "../data/events.js";
 // is for, and the numbers behind it.
 export default function AboutSection() {
   return (
-    <section id="about" className="relative overflow-hidden px-5 pb-16 sm:px-6 md:px-10 md:pb-24">
-      <Orb className="pointer-events-none absolute -right-24 top-0 -z-10 h-72 w-72 text-accent blur-3xl" />
-
+    <section
+      id="about"
+      className="relative px-5 py-16 sm:px-6 md:px-10 md:py-24"
+    >
       <div className="mx-auto max-w-shell">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="reveal">
@@ -59,6 +60,14 @@ export default function AboutSection() {
               <p className="mt-6 border-t border-line pt-5 text-[14px] leading-relaxed text-muted">
                 If you are building something , or seriously plan to , you are
                 in the right room.
+              </p>
+            </div>
+
+            <div className="mt-8 flex items-center gap-5">
+              <ClayChat className="pointer-events-none h-auto w-[150px] shrink-0 sm:w-[180px]" />
+              <p className="text-[15px] font-bold leading-[1.5] tracking-[-0.01em] text-ink sm:text-[16px]">
+                No stage. No sales deck. Just the room and whatever you brought
+                to it.
               </p>
             </div>
           </div>

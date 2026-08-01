@@ -1,44 +1,83 @@
 import CoverImage from "./CoverImage.jsx";
+import { ClayShapes } from "./Decor.jsx";
+import {
+  LightbulbIcon,
+  ChartIcon,
+  CompassIcon,
+  LifebuoyIcon,
+} from "./icons.jsx";
 
-const PILLARS = ["Ideas", "Insights", "Exploration", "Business support"];
+const PILLARS = [
+  {
+    label: "Ideas",
+    note: "Say the half-formed one out loud and let the room shape it.",
+    Icon: LightbulbIcon,
+  },
+  {
+    label: "Insights",
+    note: "What actually worked last quarter, numbers and all.",
+    Icon: ChartIcon,
+  },
+  {
+    label: "Exploration",
+    note: "Sit in on a trade you know nothing about.",
+    Icon: CompassIcon,
+  },
+  {
+    label: "Business support",
+    note: "A supplier, a first hire, a second opinion before you sign.",
+    Icon: LifebuoyIcon,
+  },
+];
 
-// Page 2 of the sketch: a wide picture on the left, and what the room is for
-// on the right.
+// The branding block: the name gets the big type, and the four things the room
+// is for sit together in one panel rather than four floating cards.
 export default function PositioningSection() {
   return (
-    <section className="px-5 py-14 sm:px-6 md:px-10 md:py-20">
-      <div className="mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-        <div className="reveal clay overflow-hidden rounded-panel">
+    <section className="relative isolate py-16 md:py-24">
+      <ClayShapes className="pointer-events-none absolute -left-24 top-10 -z-10 h-[420px] w-[420px] opacity-70 md:-left-10" />
+
+      <div className="mx-auto grid max-w-shell items-center gap-10 px-5 sm:px-6 md:px-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+        <div className="reveal clay overflow-hidden rounded-panel bg-white p-2.5">
           <CoverImage
             src="/images/gallery/2026-06-06/03.jpg"
             alt="Members talking at a Business 4.0 meetup"
             label="MEETUP PHOTO"
-            className="aspect-[4/3] w-full"
+            className="aspect-[4/3] w-full rounded-[16px]"
           />
         </div>
 
         <div className="reveal" data-delay="0.1">
-          <div className="text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            Business 4.0
-          </div>
-
-          <h2 className="mt-3 text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
-            A place for
+          <h2 className="text-[42px] font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-[56px] md:text-[68px]">
+            Business <span className="text-accent">4.0</span>
           </h2>
 
-          <ul className="mt-7 flex flex-col gap-3">
-            {PILLARS.map((pillar) => (
-              <li
-                key={pillar}
-                className="clay flex items-center gap-4 rounded-card bg-white px-5 py-4"
-              >
-                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-accent" />
-                <span className="text-[17px] font-extrabold tracking-[-0.01em] text-ink sm:text-[19px]">
-                  {pillar}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <p className="mt-4 text-[17px] font-bold tracking-[-0.01em] text-subtle sm:text-[19px]">
+            A place for
+          </p>
+
+          <div className="clay mt-6 rounded-panel bg-white p-2 sm:p-3">
+            <div className="grid sm:grid-cols-2">
+              {PILLARS.map(({ label, note, Icon }) => (
+                <div
+                  key={label}
+                  className="flex gap-3.5 rounded-[16px] p-4 transition-colors duration-200 hover:bg-canvas sm:p-5"
+                >
+                  <span className="clay-inset grid h-10 w-10 shrink-0 place-items-center rounded-[13px] bg-accent/10 text-accent">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-[16px] font-extrabold tracking-[-0.01em] text-ink sm:text-[17px]">
+                      {label}
+                    </div>
+                    <p className="mt-1 text-[13.5px] leading-[1.6] text-muted">
+                      {note}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

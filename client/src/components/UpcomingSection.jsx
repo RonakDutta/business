@@ -1,16 +1,27 @@
 import { Link } from "react-router-dom";
 import EventCard from "./EventCard.jsx";
-import { ArrowRightIcon } from "./icons.jsx";
+import { ClayCalendar } from "./Decor.jsx";
+import { ArrowRightIcon, CalendarIcon, ClockIcon, MapPinIcon } from "./icons.jsx";
+import { VENUE } from "../data/venue.js";
 
-// Page 2 of the sketch: the pitch and the buttons on the left, the next
-// meetup's card on the right, with "See all" sitting above it.
+const FACTS = [
+  { Icon: CalendarIcon, label: "Every second Saturday" },
+  { Icon: ClockIcon, label: "11:00 AM , 1:00 PM" },
+  { Icon: MapPinIcon, label: VENUE.shortName },
+];
+
+// Page 2 of the sketch: the pitch, how the meetup runs and the buttons on the
+// left, the next meetup's card on the right.
 export default function UpcomingSection({ events = [] }) {
   const nextEvent = events.find((event) => !event.cancelled) || events[0];
 
   return (
-    <section id="events" className="px-5 py-14 sm:px-6 md:px-10 md:py-20">
+    <section
+      id="events"
+      className="band-white relative px-5 py-16 sm:px-6 md:px-10 md:py-24"
+    >
       <div className="mx-auto max-w-shell">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <div className="reveal">
             <h2 className="text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
               Upcoming events
@@ -20,7 +31,24 @@ export default function UpcomingSection({ events = [] }) {
               Attend the next event and feel supported.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex items-center gap-6">
+              <ul className="flex flex-col gap-3">
+                {FACTS.map(({ Icon, label }) => (
+                  <li key={label} className="flex items-center gap-3.5">
+                    <span className="clay grid h-10 w-10 shrink-0 place-items-center rounded-[13px] bg-white text-accent">
+                      <Icon className="h-[18px] w-[18px]" />
+                    </span>
+                    <span className="text-[15px] font-bold text-ink sm:text-[16px]">
+                      {label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <ClayCalendar className="pointer-events-none hidden h-auto w-[170px] shrink-0 sm:block" />
+            </div>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
                 to={nextEvent ? `/events/${nextEvent.id}` : "/events"}
                 className="clay clay-press inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-7 py-4 text-[15px] font-bold text-white hover:text-white"
@@ -52,10 +80,8 @@ export default function UpcomingSection({ events = [] }) {
             {nextEvent ? (
               <EventCard event={nextEvent} variant="upcoming" />
             ) : (
-              <div className="reveal rounded-card border border-dashed border-line-strong py-16 text-center">
-                <p className="text-[16px] font-bold text-ink">
-                  No dates up yet
-                </p>
+              <div className="reveal clay rounded-panel bg-white py-16 text-center">
+                <p className="text-[16px] font-bold text-ink">No dates up yet</p>
                 <p className="mx-auto mt-2 max-w-[300px] text-sm leading-relaxed text-muted">
                   The next edition has not been announced. It runs every second
                   Saturday , check back in a few days.

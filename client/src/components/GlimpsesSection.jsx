@@ -20,7 +20,7 @@ export default function GlimpsesSection({ albums = [] }) {
     "clay clay-press grid h-11 w-11 place-items-center rounded-full bg-white text-ink";
 
   return (
-    <section id="gallery" className="py-14 md:py-20">
+    <section id="gallery" className="py-16 md:py-24">
       <div className="mx-auto max-w-shell px-5 sm:px-6 md:px-10">
         <div className="reveal">
           <div className="text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
@@ -32,7 +32,7 @@ export default function GlimpsesSection({ albums = [] }) {
         </div>
       </div>
 
-      <div className="reveal mt-9 bg-[#f4f6fb] md:mt-12">
+      <div className="reveal clay mt-9 bg-white md:mt-12">
         {album ? (
           <div className="grid items-stretch lg:grid-cols-2">
             <div className="h-[260px] sm:h-[380px] lg:h-[520px]">

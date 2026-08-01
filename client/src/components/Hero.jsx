@@ -31,9 +31,9 @@ export default function Hero() {
         />
       </div>
 
-      <div className="relative overflow-hidden px-5 py-14 sm:px-6 md:px-10 md:py-20">
+      <div className="band-white relative px-5 py-16 sm:px-6 md:px-10 md:py-24">
         <div aria-hidden className="hero-grid absolute inset-0 -z-10" />
-        <Blobs className="absolute -left-40 -top-24 -z-10 h-[560px] w-[560px] blur-[6px]" />
+        <Blobs className="pointer-events-none absolute -left-40 -top-24 -z-10 h-[560px] w-[560px] blur-[6px]" />
 
         <div className="mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
           <div>

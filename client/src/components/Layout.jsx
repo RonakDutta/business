@@ -16,7 +16,7 @@ import ScrollToTop from "./ScrollToTop.jsx";
 */
 export default function Layout() {
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-canvas">
       <ScrollToTop />
       <Navbar />
       <main>

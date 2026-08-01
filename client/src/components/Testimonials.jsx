@@ -19,7 +19,7 @@ export default function Testimonials() {
     "clay clay-press grid h-10 w-10 place-items-center rounded-full bg-white text-ink disabled:opacity-40";
 
   return (
-    <section className="px-5 py-14 sm:px-6 md:px-10 md:py-20">
+    <section className="band-white px-5 py-16 sm:px-6 md:px-10 md:py-24">
       <div className="mx-auto max-w-shell">
         <div className="reveal mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -61,7 +61,7 @@ export default function Testimonials() {
             <Link
               key={person.id}
               to={`/testimonials/${person.id}`}
-              className="clay clay-press group flex w-[280px] shrink-0 snap-start flex-col justify-between rounded-panel bg-white p-6 sm:w-[320px]"
+              className="clay clay-press group flex w-[280px] shrink-0 snap-start flex-col justify-between rounded-panel bg-canvas p-6 sm:w-[320px]"
             >
               <p className="text-[15px] leading-[1.7] text-muted">
                 “{person.quote}”
