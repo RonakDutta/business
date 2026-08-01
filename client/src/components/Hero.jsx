@@ -64,7 +64,7 @@ export default function Hero() {
             </p>
 
             <a
-              href="#events"
+              href="#about"
               data-delay="0.18"
               className="clay clay-press reveal mt-8 inline-flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:text-white"
             >
