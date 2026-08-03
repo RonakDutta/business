@@ -116,9 +116,9 @@ export default function Hero() {
               data-delay="0.12"
               className="reveal mt-5 max-w-[540px] text-[16px] leading-[1.7] text-muted sm:text-[18px]"
             >
-              A room full of marketers, founders and freelancers who meet every
-              second Saturday to swap what actually worked , and what didn't.
-              Watch the two-minute story, then come and see for yourself.
+              A room full of marketers, founders, and freelancers who meet every
+              second Saturday to drive real growth, network genuinely, and share what
+              actually worked. Watch the story, then come see for yourself.
             </p>
 
             <a
