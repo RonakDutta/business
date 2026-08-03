@@ -16,7 +16,7 @@ import {
 // of the nav, so the bar stays down to the four things people look for.
 const LINKS = [
   { label: "Home", to: "/" },
-  { label: "Team", to: "/team" },
+  { label: "Guidelines", to: "/guidelines" },
   { label: "Events", to: "/events" },
   { label: "Contacts", to: "/contact" },
 ];

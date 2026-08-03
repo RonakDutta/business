@@ -339,7 +339,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           alpha: true
         });
         this.renderer.setSize(initW, initH, false);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -360,6 +360,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.clock = new THREE.Clock();
         this.assets = {};
         this.disposed = false;
+        this.isPaused = false;
 
         this.road = new Road(this, options);
         this.leftCarLights = new CarLights(
@@ -422,7 +423,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.bloomPass = new EffectPass(this.camera, new BloomEffect({
           luminanceThreshold: 0.2,
           luminanceSmoothing: 0,
-          resolutionScale: 1
+          resolutionScale: 0.5
         }));
 
         const smaaPass = new EffectPass(this.camera, new SMAAEffect({
@@ -609,6 +610,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       tick() {
         if (this.disposed) return;
+        if (this.isPaused) {
+          requestAnimationFrame(this.tick);
+          return;
+        }
 
         if (!this.hasValidSize) {
           const w = this.container.offsetWidth;
@@ -1126,27 +1131,40 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
     }
 
     const container = hyperspeed.current;
-    if (!container) return;
+    if (!container || appRef.current) return;
 
     const options = {
       ...DEFAULT_EFFECT_OPTIONS,
       ...effectOptions,
-      colors: { ...DEFAULT_EFFECT_OPTIONS.colors, ...effectOptions.colors }
+      colors: { ...DEFAULT_EFFECT_OPTIONS.colors, ...effectOptions?.colors }
     };
-    options.distortion = distortions[options.distortion];
+    options.distortion = distortions[options.distortion] || distortions.turbulentDistortion;
 
     const myApp = new App(container, options);
     appRef.current = myApp;
     myApp.loadAssets().then(myApp.init);
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (appRef.current) {
+          appRef.current.isPaused = !entry.isIntersecting;
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(container);
+
     return () => {
+      observer.disconnect();
       if (appRef.current) {
         appRef.current.dispose();
+        appRef.current = null;
       }
     };
-  }, [effectOptions]);
+  }, []);
 
-  return <div className="w-full h-full" ref={hyperspeed}></div>;
+  return <div className="w-full h-full will-change-transform transform-gpu" ref={hyperspeed}></div>;
 };
 
 export default Hyperspeed;

@@ -63,6 +63,7 @@ const BorderGlow = ({
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
   fillOpacity = 0.5,
+  ...props
 }) => {
   const cardRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -150,6 +151,7 @@ const BorderGlow = ({
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
       className={`relative grid isolate border border-white/15 ${className}`}
+      {...props}
       style={{
         background: backgroundColor,
         borderRadius: `${borderRadius}px`,

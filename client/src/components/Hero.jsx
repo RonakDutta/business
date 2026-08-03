@@ -3,7 +3,7 @@ import VideoPlaceholder from "./VideoPlaceholder.jsx";
 import { Blobs, PersonTalking, GlowingRings } from "./Decor.jsx";
 import { ArrowRightIcon } from "./icons.jsx";
 import TextType from "./TextType";
-// import Hyperspeed from "./Hyperspeed.jsx";
+import Hyperspeed from "./Hyperspeed.jsx";
 
 const ILLUSTRATION = "/images/illustration/what-is-business-4.png";
 
@@ -30,7 +30,6 @@ function HeroIllustration() {
   );
 }
 
-/*
 const HYPERSPEED_OPTIONS = {
   distortion: "turbulentDistortion",
   length: 400,
@@ -66,7 +65,6 @@ const HYPERSPEED_OPTIONS = {
     sticks: 0x2563eb,
   },
 };
-*/
 
 export default function Hero() {
   return (
@@ -80,10 +78,10 @@ export default function Hero() {
       </div>
 
       <div className="band-white relative overflow-hidden px-5 py-16 sm:px-6 md:px-10 md:py-24">
-        {/* Hyperspeed WebGL background canvas layer (disabled for now) */}
-        {/* <div className="pointer-events-none absolute inset-0 z-0 opacity-65">
+        {/* Hyperspeed WebGL background canvas layer */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-65">
           <Hyperspeed effectOptions={HYPERSPEED_OPTIONS} />
-        </div> */}
+        </div>
         <div aria-hidden className="hero-grid absolute inset-0 z-0 opacity-40" />
         <div aria-hidden className="hero-glows absolute inset-0 z-0 opacity-60" />
         <Blobs className="pointer-events-none absolute -left-40 -top-24 z-0 h-[560px] w-[560px] blur-[4px]" />

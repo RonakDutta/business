@@ -64,11 +64,11 @@ function TeamMember({ person }) {
         )}
       </div>
 
-      <div className="flex flex-col items-center p-5 text-center">
-        <h3 className="text-[19px] font-extrabold tracking-[-0.02em] text-ink sm:text-[20px]">
+      <div className="flex flex-col items-center p-3.5 text-center sm:p-5">
+        <h3 className="text-[15px] font-extrabold tracking-[-0.02em] text-ink sm:text-[20px]">
           {person.name}
         </h3>
-        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
+        <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.09em] text-accent sm:mt-2 sm:px-3 sm:py-1 sm:text-[11px]">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
           {person.role}
         </div>
@@ -115,7 +115,7 @@ export default function Team({ members = [], showHeader = true }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4">
         {members.map((person) => (
           <TeamMember key={person.id} person={person} />
         ))}

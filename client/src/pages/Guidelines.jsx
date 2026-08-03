@@ -3,11 +3,9 @@ import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
 import { VENUE } from "../data/venue.js";
 import { priceLabel } from "../lib/format.js";
-import MetroRoute from "../components/MetroRoute.jsx";
 import {
   Waves,
   PlusField,
-  RoutePath,
   ConnectionMesh,
   Orb,
 } from "../components/Decor.jsx";
@@ -318,48 +316,7 @@ export default function Guidelines() {
         </div>
       </section>
 
-      {/* ---- Getting here ---------------------------------------------- */}
-      <section
-        id="getting-here"
-        className="reveal relative mt-16 scroll-mt-28 overflow-hidden rounded-panel border border-line bg-white p-6 md:p-9"
-      >
-        <RoutePath className="pointer-events-none absolute -right-8 top-2 hidden h-32 w-96 text-accent sm:block" />
 
-        <SectionHead
-          icon={MapPinIcon}
-          eyebrow="Getting here"
-          title="Finding the room"
-        />
-
-        <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-subtle">
-              From the nearest metro
-            </div>
-            <MetroRoute metro={VENUE.metro} className="mt-5" />
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <p className="inline-flex w-fit items-center gap-2 rounded-btn bg-accent/10 px-3.5 py-1.5 text-[12.5px] font-bold text-accent">
-              <MapPinIcon className="h-4 w-4" />
-              Enter via {VENUE.gate}
-            </p>
-            <p className="max-w-[380px] text-[14px] leading-relaxed text-muted">
-              {VENUE.name} · {VENUE.address}, {VENUE.city}.
-            </p>
-            <p className="max-w-[380px] text-[13px] leading-relaxed text-subtle">
-              Lost on the day? Call{" "}
-              <a
-                href={`tel:${VENUE.helpline}`}
-                className="font-bold text-accent"
-              >
-                {VENUE.helpline}
-              </a>
-              . Directions only , not for questions about the event.
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* ---- Hand-off -------------------------------------------------- */}
       <section className="reveal relative mt-16 overflow-hidden rounded-panel bg-ink p-8 text-white md:p-11">

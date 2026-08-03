@@ -62,10 +62,10 @@ export default function EventCard({ event, variant = "upcoming" }) {
       glowRadius={32}
       glowIntensity={1.2}
       edgeSensitivity={10}
-      className="h-full w-full"
+      className="reveal h-full w-full"
+      data-stagger
     >
       <div
-        data-stagger
         className="group flex h-full flex-col overflow-hidden rounded-[18px] bg-white transition-all duration-300"
       >
         {/* Media. The link covers the tile; the buttons sit above it. */}
