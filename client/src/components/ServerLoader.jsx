@@ -1,6 +1,6 @@
 export function ServerLoader({
-  message = "Connecting to server...",
-  hint = "Render free instance is waking up — loading events data..."
+  message = "Fetching content...",
+  hint = "Please wait a moment while we load the latest information..."
 }) {
   return (
     <div className="clay relative overflow-hidden rounded-panel bg-white p-8 sm:p-10 text-center">

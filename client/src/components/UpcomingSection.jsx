@@ -81,7 +81,7 @@ export default function UpcomingSection({ events = [] }) {
             </div>
 
             {!ready ? (
-              <ServerLoader message="Fetching upcoming event..." hint="Connecting to Render server (waking up free instance)..." />
+              <ServerLoader message="Loading upcoming event..." hint="Fetching latest event details..." />
             ) : nextEvent ? (
               <EventCard event={nextEvent} variant="upcoming" />
             ) : (

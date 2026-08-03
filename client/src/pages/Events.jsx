@@ -128,7 +128,7 @@ export default function Events() {
 
       {!ready ? (
         <div className="flex flex-col gap-6">
-          <ServerLoader message="Fetching events from server..." hint="Render free instance is waking up (takes ~15s)..." />
+          <ServerLoader message="Loading events..." hint="Fetching calendar schedule..." />
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <EventCardSkeleton />
             <EventCardSkeleton />

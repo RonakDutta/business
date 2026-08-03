@@ -70,7 +70,7 @@ export default function GlimpsesSection({ albums = [] }) {
           className="reveal clay mt-9 overflow-hidden rounded-panel bg-white md:mt-12"
         >
           {!ready ? (
-            <ServerLoader message="Fetching photo gallery..." hint="Connecting to Render server (waking up free instance)..." />
+            <ServerLoader message="Loading photo gallery..." hint="Fetching event glimpses..." />
           ) : album ? (
             <div
               className={`grid items-stretch lg:grid-cols-2 transition-all duration-300 ease-smooth ${
