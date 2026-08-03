@@ -3,6 +3,8 @@ import EventCard from "./EventCard.jsx";
 import { ClayCalendar } from "./Decor.jsx";
 import { ArrowRightIcon, CalendarIcon, ClockIcon, MapPinIcon } from "./icons.jsx";
 import { VENUE } from "../data/venue.js";
+import { useEvents } from "../context/EventsContext.jsx";
+import { ServerLoader } from "./ServerLoader.jsx";
 
 const FACTS = [
   { Icon: CalendarIcon, label: "Every second Saturday" },
@@ -13,6 +15,7 @@ const FACTS = [
 // Page 2 of the sketch: the pitch, how the meetup runs and the buttons on the
 // left, the next meetup's card on the right.
 export default function UpcomingSection({ events = [] }) {
+  const { ready } = useEvents();
   const nextEvent = events.find((event) => !event.cancelled) || events[0];
 
   return (
@@ -24,7 +27,7 @@ export default function UpcomingSection({ events = [] }) {
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <div className="reveal">
             <h2 className="text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
-              Upcoming events
+              Upcoming event
             </h2>
 
             <p className="mt-5 max-w-[420px] text-[17px] leading-[1.7] text-muted sm:text-[19px]">
@@ -77,7 +80,9 @@ export default function UpcomingSection({ events = [] }) {
               </Link>
             </div>
 
-            {nextEvent ? (
+            {!ready ? (
+              <ServerLoader message="Fetching upcoming event..." hint="Connecting to Render server (waking up free instance)..." />
+            ) : nextEvent ? (
               <EventCard event={nextEvent} variant="upcoming" />
             ) : (
               <div className="reveal clay rounded-panel bg-white py-16 text-center">

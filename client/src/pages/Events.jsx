@@ -7,6 +7,7 @@ import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
 import { Orb, ConnectionMesh } from "../components/Decor.jsx";
 import { CalendarIcon } from "../components/icons.jsx";
+import { ServerLoader, EventCardSkeleton } from "../components/ServerLoader.jsx";
 
 const TABS = ["upcoming", "past", "saved"];
 
@@ -30,7 +31,7 @@ const EMPTY = {
 
 export default function Events() {
   const { saved } = useSavedEvents();
-  const { upcomingEvents, pastEvents } = useEvents();
+  const { upcomingEvents, pastEvents, ready } = useEvents();
 
   /* The tab lives in the URL so "Saved events" in the account menu can link
      straight to it, and so a shared link opens where the sender was. */
@@ -71,9 +72,7 @@ export default function Events() {
 
   return (
     <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
-      {/* Vector backdrop. No overflow-hidden (body already clips-x), so the
-          glow fades softly; the mesh is masked and kept subtle. Mobile-first:
-          both stay faint and out of the text's way on small screens. */}
+      {/* Vector backdrop */}
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
       <ConnectionMesh className="pointer-events-none absolute -right-6 top-2 -z-10 h-36 w-52 text-accent opacity-60 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-52 sm:w-80 sm:opacity-70 md:-right-4" />
 
@@ -127,7 +126,16 @@ export default function Events() {
         ))}
       </div>
 
-      {events.length === 0 ? (
+      {!ready ? (
+        <div className="flex flex-col gap-6">
+          <ServerLoader message="Fetching events from server..." hint="Render free instance is waking up (takes ~15s)..." />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <EventCardSkeleton />
+            <EventCardSkeleton />
+            <EventCardSkeleton />
+          </div>
+        </div>
+      ) : events.length === 0 ? (
         <div className="rounded-card border border-dashed border-line-strong py-20 text-center">
           <p className="text-[17px] font-bold text-ink">{empty.title}</p>
           <p className="mx-auto mt-2 max-w-[340px] text-sm leading-relaxed text-muted">

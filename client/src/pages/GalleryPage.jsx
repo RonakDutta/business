@@ -4,9 +4,10 @@ import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
 import { Orb, Scatter } from "../components/Decor.jsx";
 import { ImageIcon } from "../components/icons.jsx";
+import { ServerLoader, AlbumCardSkeleton } from "../components/ServerLoader.jsx";
 
 export default function GalleryPage() {
-  const { albums } = useEvents();
+  const { albums, ready } = useEvents();
 
   useReveal([albums.length]);
 
@@ -14,9 +15,6 @@ export default function GalleryPage() {
 
   return (
     <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-16 md:px-10">
-      {/* Vector backdrop — a loose photo-like scatter + a soft glow. No
-          overflow-hidden so nothing clips into a hard edge; kept faint on
-          mobile so it never competes with the album covers. */}
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
       <Scatter className="pointer-events-none absolute -right-4 top-4 -z-10 h-36 w-36 text-accent opacity-70 sm:h-52 sm:w-52 md:right-2" />
 
@@ -44,11 +42,22 @@ export default function GalleryPage() {
         see the full set.
       </p>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {albums.map((album) => (
-          <AlbumCard key={album.id} album={album} />
-        ))}
-      </div>
+      {!ready ? (
+        <div className="flex flex-col gap-6">
+          <ServerLoader message="Fetching photo archive..." hint="Render free instance is waking up (takes ~15s)..." />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <AlbumCardSkeleton />
+            <AlbumCardSkeleton />
+            <AlbumCardSkeleton />
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {albums.map((album) => (
+            <AlbumCard key={album.id} album={album} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import CoverImage from "./CoverImage.jsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "./icons.jsx";
+import { useEvents } from "../context/EventsContext.jsx";
+import { ServerLoader } from "./ServerLoader.jsx";
 
 // Page 3 of the sketch: one wide photo from a past meetup with the details
 // beside it, and arrows to step through the other albums.
 export default function GlimpsesSection({ albums = [] }) {
+  const { ready } = useEvents();
   const [index, setIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -66,7 +69,9 @@ export default function GlimpsesSection({ albums = [] }) {
           onMouseLeave={() => setIsPaused(false)}
           className="reveal clay mt-9 overflow-hidden rounded-panel bg-white md:mt-12"
         >
-          {album ? (
+          {!ready ? (
+            <ServerLoader message="Fetching photo gallery..." hint="Connecting to Render server (waking up free instance)..." />
+          ) : album ? (
             <div
               className={`grid items-stretch lg:grid-cols-2 transition-all duration-300 ease-smooth ${
                 isFading ? "opacity-0 scale-[0.99] blur-[2px]" : "opacity-100 scale-100 blur-0"
