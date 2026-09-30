@@ -1,24 +1,32 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import BackLink from "./BackLink.jsx";
-import AvatarStack from "./AvatarStack.jsx";
+import NameBadge from "./NameBadge.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import { useReveal } from "../hooks/useReveal.js";
-import { Orb, ConnectionMesh } from "./Decor.jsx";
+import { CurlyArrow } from "./Decor.jsx";
 import Spinner from "./Spinner.jsx";
-import { CheckIcon, ShieldIcon, UsersIcon, CalendarIcon } from "./icons.jsx";
+import {
+  CalendarIcon,
+  CheckIcon,
+  HeartIcon,
+  ImageIcon,
+} from "./icons.jsx";
 
 /* ===========================================================================
    Shared shell for Login and Signup.
 
-   A split panel: the form on the left, and on the right the reason you're
-   filling it in — the room you're joining, drawn from the real event data
-   rather than marketing copy. The right panel is display-only and hidden
-   under lg; on a phone the form is the whole page, so the same social proof
-   is folded into a compact strip beneath it instead of being dropped.
+   Every meetup starts the same way: everyone says who they are. So the page
+   is built around a name badge, the kind you'd stick on at the door, that
+   fills in live as you type. Signing up writes your name on it; signing in
+   greets you by the name in your email. The form sits beside it in one soft
+   card, with a pill switch between the two modes that mirrors the navbar.
+
+   On phones the badge shrinks to a compact strip above the form, so the
+   form is still the first thing you can act on.
    =========================================================================== */
 
-/* Local to this file — the only place in the app that needs an eye. */
+/* Local to this file, the only place in the app that needs an eye. */
 function EyeIcon({ off = false, className = "" }) {
   return (
     <svg
@@ -39,16 +47,26 @@ function EyeIcon({ off = false, className = "" }) {
 }
 
 const PERKS = [
-  "RSVP in one tap, and keep your seat",
-  "Save the editions you want to come to",
-  "Your photos from past meetups, in one place",
+  { icon: CalendarIcon, text: "RSVP in one tap" },
+  { icon: HeartIcon, text: "Save the editions you like" },
+  { icon: ImageIcon, text: "Your photos, in one place" },
 ];
 
+/* "priya.sharma@x.com" -> "Priya". Only used for the greeting on sign in. */
+function nameFromEmail(email) {
+  const local = email.split("@")[0] || "";
+  const first = local.split(/[._\-+0-9]/).find(Boolean) || "";
+  return first ? first[0].toUpperCase() + first.slice(1).toLowerCase() : "";
+}
+
+/* ---------------------------------------------------------------------------
+   The page
+   --------------------------------------------------------------------------- */
 export default function AuthForm({ mode = "login", onSubmit }) {
   const isSignup = mode === "signup";
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { upcomingEvents, pastEvents } = useEvents();
+  const { upcomingEvents } = useEvents();
 
   useReveal([mode]);
 
@@ -61,27 +79,35 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   const [submitting, setSubmitting] = useState(false);
 
   const nextEvent = upcomingEvents.find((e) => !e.cancelled);
-  const totalAttendees = useMemo(
-    () => pastEvents.reduce((n, e) => n + e.attendeeCount, 0),
-    [pastEvents],
-  );
 
-  /* Coming from an RSVP? Say so — otherwise the redirect back looks random. */
+  /* Coming from an RSVP? Say so, otherwise the redirect back looks random. */
   const returning = next.startsWith("/events/");
+  const keepNext = next !== "/" ? `?next=${encodeURIComponent(next)}` : "";
+
+  const badgeName = isSignup ? name.trim() : nameFromEmail(email);
+  const badgeProps = {
+    name: badgeName,
+    placeholder: isSignup ? "Your name" : "Good to see you",
+    greeting: isSignup ? "my name is" : "welcome back",
+    event: nextEvent,
+  };
+
+  const passwordOk = password.length >= 6;
 
   const submit = async () => {
     if (submitting) return;
     if (isSignup && !name.trim()) return setError("Tell us your name.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       return setError("That email doesn't look right.");
-    if (password.length < 6)
+    if (!passwordOk)
       return setError("Password needs to be at least 6 characters.");
 
     setError("");
     setSubmitting(true);
     try {
-      // onSubmit may be async (real API) or sync (stub) — await handles both,
-      // and we only navigate once it resolves, so a failed sign-in stays put.
+      // onSubmit may be async (real API) or sync (stub). Awaiting handles
+      // both, and we only navigate once it resolves, so a failed sign-in
+      // stays put.
       await onSubmit({ name: name.trim(), email: email.trim(), password });
       navigate(next, { replace: true });
     } catch (err) {
@@ -92,65 +118,103 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   };
 
   const field =
-    "w-full rounded-2xl border border-line-strong bg-[#fafbfc] px-4 py-3.5 text-[15px] text-ink shadow-[inset_0_1px_0_rgba(255,255,255,.8)] transition-[border-color,background,box-shadow] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--b4-accent)_10%,transparent)] focus:outline-none";
-  const labelCls =
-    "text-[11.5px] font-bold uppercase tracking-[0.07em] text-subtle";
+    "clay-inset clay-edge w-full rounded-2xl border bg-canvas px-4 py-3.5 text-[15px] text-ink transition-[border-color,background] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none";
+  const labelCls = "text-[13px] font-bold text-ink";
 
-  const EyebrowIcon = isSignup ? UsersIcon : ShieldIcon;
-  const eyebrowText = isSignup ? "Join the community" : "Member access";
-  const [titleHead, titleTail] = isSignup
-    ? ["Create your ", "account"]
-    : ["Welcome ", "back"];
+  const tab = (active) =>
+    `rounded-full py-2.5 text-center text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ${
+      active ? "clay bg-white text-ink" : "text-muted hover:text-ink"
+    }`;
 
   return (
-    <section className="relative isolate mx-auto max-w-shell px-5 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14">
-      {/* Vector backdrop. No overflow-hidden, so the glow fades softly and the
-          mesh is masked — consistent with the rest of the site. */}
-      <Orb className="pointer-events-none absolute -left-24 -top-6 -z-10 h-64 w-64 text-accent blur-3xl" />
-      <ConnectionMesh className="pointer-events-none absolute -right-6 top-0 -z-10 h-40 w-56 text-accent opacity-50 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-56 sm:w-80 lg:hidden" />
-
+    <section className="relative isolate mx-auto max-w-shell px-5 pb-16 pt-6 sm:px-6 sm:pt-8 md:px-10 lg:pb-24">
       <BackLink to="/">Back home</BackLink>
 
-      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_440px]">
-        {/* ---- Form ------------------------------------------------- */}
-        <div className="bg-gradient-to-b from-white to-[#fafbfc] p-6 sm:p-9 md:p-12">
-          <div className="mx-auto max-w-[380px]">
+      <div className="mt-6 grid items-center gap-8 lg:mt-10 lg:grid-cols-[1fr_460px] lg:gap-16">
+        {/* ---- Badge stage (desktop) ------------------------------------ */}
+        <div className="reveal relative hidden lg:block">
+          <div
+            aria-hidden
+            className="pattern-dots absolute inset-x-6 inset-y-0 -z-10 rounded-[40px] [mask-image:radial-gradient(70%_70%_at_50%_45%,#000,transparent)]"
+          />
+
+          <div className="px-6 py-10">
+            <NameBadge {...badgeProps} />
+
+            <ul className="mx-auto mt-12 flex max-w-[460px] flex-wrap justify-center gap-2.5">
+              {PERKS.map(({ icon: Icon, text }) => (
+                <li
+                  key={text}
+                  className="clay-edge inline-flex items-center gap-2 rounded-full border bg-white px-3.5 py-2 text-[13px] font-semibold text-muted"
+                >
+                  <Icon className="h-4 w-4 text-accent" />
+                  {text}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <CurlyArrow className="pointer-events-none absolute -right-14 top-1/3 h-20 w-28 rotate-[-10deg] text-accent/40" />
+        </div>
+
+        {/* ---- Form ------------------------------------------------------ */}
+        <div className="reveal" data-delay="0.08">
+          <div className="mb-5 lg:hidden">
+            <NameBadge {...badgeProps} compact />
+          </div>
+
+          <div className="clay-soft clay-edge rounded-[30px] border bg-white p-6 sm:p-8">
+            {/* Mode switch, the same pill track as the navbar */}
+            <div className="clay-inset grid grid-cols-2 gap-1 rounded-full bg-canvas p-1">
+              <Link to={`/login${keepNext}`} className={tab(!isSignup)}>
+                Sign in
+              </Link>
+              <Link to={`/signup${keepNext}`} className={tab(isSignup)}>
+                Create account
+              </Link>
+            </div>
+
+            <h1 className="relative isolate mt-7 text-[28px] font-extrabold leading-tight tracking-[-0.035em] sm:text-[32px]">
+              {isSignup ? (
+                <>
+                  Save your{" "}
+                  <span className="relative whitespace-nowrap text-accent">
+                    seat
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 -bottom-0.5 -z-10 h-[0.45em] rounded-full accent-tint"
+                    />
+                  </span>
+                </>
+              ) : (
+                <>
+                  Welcome{" "}
+                  <span className="relative whitespace-nowrap text-accent">
+                    back
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 -bottom-0.5 -z-10 h-[0.45em] rounded-full accent-tint"
+                    />
+                  </span>
+                </>
+              )}
+            </h1>
+            <p className="mt-2 text-[15px] leading-relaxed text-muted">
+              {isSignup
+                ? "Takes a minute. You need an account to RSVP for a meetup."
+                : "Sign in to RSVP and keep track of the meetups you're going to."}
+            </p>
+
             {returning && (
-              <div className="accent-tint accent-border mb-6 flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
+              <div className="accent-tint accent-border mt-5 flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-[13px] font-semibold leading-relaxed text-accent">
                 <CalendarIcon className="mt-0.5 h-4 w-4 shrink-0" />
-                Sign in to finish your RSVP — we'll take you straight back to it.
+                Finish signing in and we'll take you straight back to your RSVP.
               </div>
             )}
 
-            <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-              <EyebrowIcon className="h-3.5 w-3.5" />
-              {eyebrowText}
-            </div>
-
-            <h1
-              data-delay="0.06"
-              className="reveal mt-3 text-[30px] font-extrabold tracking-[-0.035em] md:text-[36px]"
-            >
-              {titleHead}
-              <span className="relative whitespace-nowrap text-accent">
-                {titleTail}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 -bottom-1 h-[0.5em] -z-10 rounded-full accent-tint"
-                />
-              </span>
-            </h1>
-            <p
-              data-delay="0.12"
-              className="reveal mt-2.5 text-[15px] leading-relaxed text-muted"
-            >
-              {isSignup
-                ? "Takes a minute. You'll need one to RSVP for a meetup."
-                : "Sign in to RSVP and keep track of the meetups you're attending."}
-            </p>
-
             <form
-              className="mt-8 flex flex-col gap-4"
+              className="mt-6 flex flex-col gap-4"
+              noValidate
               onSubmit={(e) => {
                 e.preventDefault();
                 submit();
@@ -162,8 +226,9 @@ export default function AuthForm({ mode = "login", onSubmit }) {
                   <input
                     className={field}
                     autoComplete="name"
-                    placeholder="What should we call you?"
+                    placeholder="What goes on your badge?"
                     value={name}
+                    maxLength={40}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </label>
@@ -175,6 +240,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
                   className={field}
                   type="email"
                   autoComplete="email"
+                  inputMode="email"
                   placeholder="you@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -187,9 +253,9 @@ export default function AuthForm({ mode = "login", onSubmit }) {
                   {!isSignup && (
                     <Link
                       to="/contact"
-                      className="text-[12px] font-bold text-subtle transition-colors duration-200 hover:text-accent"
+                      className="text-[12.5px] font-bold text-subtle transition-colors duration-200 hover:text-accent"
                     >
-                      Forgotten?
+                      Forgotten it?
                     </Link>
                   )}
                 </span>
@@ -198,12 +264,8 @@ export default function AuthForm({ mode = "login", onSubmit }) {
                   <input
                     className={`${field} pr-12`}
                     type={show ? "text" : "password"}
-                    autoComplete={
-                      isSignup ? "new-password" : "current-password"
-                    }
-                    placeholder={
-                      isSignup ? "At least 6 characters" : "Your password"
-                    }
+                    autoComplete={isSignup ? "new-password" : "current-password"}
+                    placeholder={isSignup ? "At least 6 characters" : "Your password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -211,15 +273,35 @@ export default function AuthForm({ mode = "login", onSubmit }) {
                     type="button"
                     onClick={() => setShow((s) => !s)}
                     aria-label={show ? "Hide password" : "Show password"}
-                    className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-faint transition-colors duration-200 hover:bg-line hover:text-ink"
+                    className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-xl text-faint transition-colors duration-200 hover:bg-white hover:text-ink"
                   >
                     <EyeIcon off={show} className="h-[18px] w-[18px]" />
                   </button>
                 </span>
+
+                {isSignup && (
+                  <span
+                    className={`mt-0.5 inline-flex items-center gap-1.5 text-[12.5px] font-semibold transition-colors duration-200 ${
+                      passwordOk ? "text-emerald-600" : "text-subtle"
+                    }`}
+                  >
+                    <span
+                      className={`grid h-4 w-4 place-items-center rounded-full transition-colors duration-200 ${
+                        passwordOk ? "bg-emerald-500 text-white" : "bg-line text-transparent"
+                      }`}
+                    >
+                      <CheckIcon className="h-2.5 w-2.5" />
+                    </span>
+                    6 characters or more
+                  </span>
+                )}
               </label>
 
               {error && (
-                <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[13.5px] font-semibold text-red-600">
+                <p
+                  role="alert"
+                  className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[13.5px] font-semibold text-red-600"
+                >
                   {error}
                 </p>
               )}
@@ -227,7 +309,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-2 flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_20px_-14px_rgba(15,23,42,.6)] transition-[translate,background,box-shadow] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent hover:shadow-[0_16px_24px_-16px_var(--b4-accent)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                className="clay clay-press mt-2 flex items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-ink"
               >
                 {submitting && <Spinner className="h-4 w-4" />}
                 {submitting
@@ -240,120 +322,39 @@ export default function AuthForm({ mode = "login", onSubmit }) {
               </button>
             </form>
 
-            <p className="mt-8 border-t border-line pt-6 text-sm text-muted">
-              {isSignup ? "Already a member? " : "New here? "}
-              <Link
-                to={`${isSignup ? "/login" : "/signup"}${
-                  next !== "/" ? `?next=${encodeURIComponent(next)}` : ""
-                }`}
-                className="font-bold text-accent"
+            <p className="mt-6 text-center text-[13px] leading-relaxed text-subtle">
+              {isSignup ? (
+                <>
+                  By joining you agree to the{" "}
+                  <Link to="/guidelines" className="font-bold text-accent">
+                    house rules
+                  </Link>
+                  .
+                </>
+              ) : (
+                <>
+                  New here?{" "}
+                  <Link to={`/signup${keepNext}`} className="font-bold text-accent">
+                    Create an account
+                  </Link>
+                </>
+              )}
+            </p>
+          </div>
+
+          {/* Perks for phones, where the badge stage is hidden */}
+          <ul className="mt-5 flex flex-wrap justify-center gap-2 lg:hidden">
+            {PERKS.map(({ icon: Icon, text }) => (
+              <li
+                key={text}
+                className="clay-edge inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1.5 text-[12.5px] font-semibold text-muted"
               >
-                {isSignup ? "Sign in" : "Create an account"}
-              </Link>
-            </p>
-          </div>
+                <Icon className="h-3.5 w-3.5 text-accent" />
+                {text}
+              </li>
+            ))}
+          </ul>
         </div>
-
-        {/* ---- The room you're joining (desktop) -------------------- */}
-        <aside className="relative hidden overflow-hidden bg-ink p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <ConnectionMesh className="pointer-events-none absolute -right-8 -top-10 h-72 w-96 text-white/[0.12]" />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/25 blur-3xl"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-accent/10 blur-3xl"
-          />
-
-          <div className="relative">
-            <div className="flex items-baseline gap-2">
-              <span className="text-[44px] font-extrabold leading-none tracking-[-0.04em] tabular-nums">
-                {pastEvents.length || "190"}
-              </span>
-              <span className="text-[13px] font-bold uppercase tracking-[0.09em] text-white/45">
-                editions
-              </span>
-            </div>
-            <p className="mt-3 max-w-[280px] text-[15px] leading-relaxed text-white/60">
-              Marketers, founders and freelancers, every second Saturday at
-              Shaheedi Park. Same room, same time, for years.
-            </p>
-
-            <ul className="mt-8 flex flex-col gap-3.5">
-              {PERKS.map((p) => (
-                <li key={p} className="flex items-start gap-3">
-                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent text-white">
-                    <CheckIcon className="h-3 w-3" />
-                  </span>
-                  <span className="text-[14px] leading-snug text-white/75">
-                    {p}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Live from the data, not a testimonial someone wrote. */}
-          {nextEvent && (
-            <div className="relative mt-10 rounded-card border border-white/10 bg-white/[0.06] p-5">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-white/40">
-                Next meetup
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-snug text-white">
-                {nextEvent.when.headline}
-              </div>
-
-              <div className="mt-4 flex items-center gap-2.5">
-                <AvatarStack
-                  people={nextEvent.attendees}
-                  total={nextEvent.attendeeCount}
-                  max={4}
-                  size={26}
-                  className="[&_span]:ring-ink"
-                />
-                <span className="text-[12.5px] font-semibold text-white/55">
-                  {nextEvent.attendeeCount} going ·{" "}
-                  {totalAttendees.toLocaleString("en-IN")} have come through
-                </span>
-              </div>
-            </div>
-          )}
-        </aside>
-      </div>
-
-      {/* ---- Same value, folded into a strip for phones ------------- */}
-      <div className="reveal mt-4 rounded-[24px] border border-line bg-white p-5 shadow-[0_20px_50px_-45px_rgba(15,23,42,.55)] lg:hidden">
-        <ul className="flex flex-col gap-3">
-          {PERKS.map((p) => (
-            <li key={p} className="flex items-start gap-3">
-              <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
-                <CheckIcon className="h-3 w-3" />
-              </span>
-              <span className="text-[14px] leading-snug text-muted">{p}</span>
-            </li>
-          ))}
-        </ul>
-
-        {nextEvent && (
-          <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
-            <AvatarStack
-              people={nextEvent.attendees}
-              total={nextEvent.attendeeCount}
-              max={4}
-              size={28}
-            />
-            <div className="min-w-0">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-subtle">
-                Next meetup
-              </div>
-              <div className="truncate text-[13.5px] font-bold text-ink">
-                {nextEvent.when.headline.split(" · ")[0]} ·{" "}
-                {nextEvent.attendeeCount} going
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

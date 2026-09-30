@@ -1,5 +1,5 @@
 /* ===========================================================================
-   One stroke weight, one join style, one 24x24 box , that's what keeps a set
+   One stroke weight, one join style, one 24x24 box, that's what keeps a set
    of hand-rolled icons from looking hand-rolled. Size them at the call site
    with a className; they inherit colour from `currentColor`.
    =========================================================================== */
@@ -331,7 +331,7 @@ export function FacebookIcon({ className = "" }) {
   );
 }
 
-/* Formerly Twitter. The mark is a glyph, not a stroke drawing , filled to
+/* Formerly Twitter. The mark is a glyph, not a stroke drawing, filled to
    match how X publishes it, rather than outlined to match everything else. */
 export function XIcon({ className = "" }) {
   return (

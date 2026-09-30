@@ -35,7 +35,7 @@ export default function AlbumCard({ album }) {
         </div>
 
         {/* Slides up on hover; always visible to keyboard/touch users */}
-        <div className="mt-2 translate-y-1 text-[13px] font-bold opacity-0 transition-[translate,opacity] duration-300 ease-smooth group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+        <div className="mt-2 translate-y-1 text-[13px] font-bold opacity-0 transition-[translate,opacity] duration-300 ease-smooth group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
           View album →
         </div>
       </div>

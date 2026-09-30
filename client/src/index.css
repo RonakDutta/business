@@ -47,8 +47,8 @@
 /* Runtime theme values , overwritten on :root by ThemeContext. */
 :root {
   --b4-accent: #2563eb;
-  --b4-card: 18px;
-  --b4-panel: 22px;
+  --b4-card: 24px;
+  --b4-panel: 30px;
   --b4-btn: 999px;
 }
 
@@ -58,7 +58,14 @@
   }
 
   body {
-    background: var(--color-canvas);
+    /* A faint blue dot pattern on the canvas, like squared paper. The white
+       bands sit on top of it, so it only shows between sections. */
+    background-color: var(--color-canvas);
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--b4-accent) 14%, transparent) 1.2px,
+      transparent 1.6px
+    );
+    background-size: 26px 26px;
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -72,6 +79,34 @@
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--b4-accent) 22%, transparent);
+    color: var(--color-ink);
+  }
+
+  /* Clay buttons give their own press feedback, so skip the grey tap flash. */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* A thin, rounded scrollbar in the brand blue. */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--b4-accent) 35%, #fff) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--b4-accent) 35%, #fff) padding-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   /* v4 resets buttons to `cursor: default` , restore the pointer. */
@@ -201,19 +236,46 @@
 }
 
 /* ---------------------------------------------------------------------------
-   CLAYMORPHISM (subtle)
+   CLAYMORPHISM
 
-   Clay surfaces read as soft and moulded rather than flat: a highlight inset
-   along the top edge, a soft shade inset along the bottom, and a wide diffuse
-   drop shadow underneath. Kept deliberately gentle here , this is a business
-   site, not a toy , so the radii stay on brand and only the depth changes.
+   The recipe, light always from the top-left:
+   1. a thin blue rim, so every surface keeps a visible edge on white bands
+   2. a soft drop shadow tinted with the brand blue (never grey) lifts it
+   3. a white sheen inset along the top-left inflates the edge
+   4. a blue shade inset along the bottom-right gives it volume
+   Everything is keyed to --b4-accent so a re-theme recolours the clay too.
    --------------------------------------------------------------------------- */
 @utility clay {
   box-shadow:
-    0 18px 40px -18px rgba(15, 23, 42, 0.24),
-    0 3px 8px -3px rgba(15, 23, 42, 0.08),
-    inset 0 2px 3px rgba(255, 255, 255, 0.95),
-    inset 0 -4px 8px rgba(15, 23, 42, 0.05);
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 11%, transparent),
+    4px 10px 22px -14px color-mix(in srgb, var(--b4-accent) 32%, transparent),
+    inset 2px 3px 4px rgba(255, 255, 255, 0.9),
+    inset -3px -4px 8px color-mix(in srgb, var(--b4-accent) 7%, transparent);
+}
+
+/* The quiet version for big content containers (tickets, forms, long
+   panels). Clay on every large surface turns the page to mush, so these get
+   a real border (add clay-edge), a gentle drop and just a hint of sheen. */
+@utility clay-soft {
+  box-shadow:
+    0 16px 36px -26px color-mix(in srgb, var(--b4-accent) 38%, rgba(15, 23, 42, 0.4)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Dark clay (ink buttons and panels): the sheen has to be much fainter and
+   the shade much deeper, or the edge glows white. Unlayered on purpose so it
+   beats the plain .clay utility. */
+.clay.bg-ink {
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.9),
+    8px 12px 24px -10px color-mix(in srgb, var(--b4-accent) 45%, rgba(15, 23, 42, 0.5)),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.22),
+    inset -4px -5px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* A soft blue edge for real borders on clay surfaces. */
+@utility clay-edge {
+  border-color: color-mix(in srgb, var(--b4-accent) 18%, #e3e8f2);
 }
 
 /* The same idea on a dark surface, where the highlight has to be much fainter. */
@@ -242,33 +304,55 @@
   );
 }
 
-/* The navbar. Lighter than .clay , it is a wide surface, so the same shadow
-   would read as a slab hanging over the page. Lit along the top edge, shaded
-   along the bottom, with a soft spread underneath. */
+/* The navbar at rest. Lighter than .clay: it is a wide surface, so the same
+   drop would read as a slab hanging over the page. */
 @utility clay-bar {
   box-shadow:
-    0 12px 30px -18px rgba(15, 23, 42, 0.3),
-    0 2px 6px -3px rgba(15, 23, 42, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -3px 6px rgba(15, 23, 42, 0.045);
+    0 12px 30px -20px color-mix(in srgb, var(--b4-accent) 40%, transparent),
+    inset 0 2px 3px rgba(255, 255, 255, 0.95),
+    inset 0 -4px 8px color-mix(in srgb, var(--b4-accent) 7%, transparent);
 }
 
-/* A pressed-in surface , the hollow counterpart to .clay. Used for grouped
-   rows inside a clay panel so they read as one moulded object. */
+/* A pressed-in well, the hollow counterpart to .clay: tracks, inputs and
+   grouped rows. Shade top-left, light bottom-right, the reverse of clay. */
 @utility clay-inset {
   box-shadow:
-    inset 0 2px 6px rgba(15, 23, 42, 0.07),
+    inset 0 2px 5px color-mix(in srgb, var(--b4-accent) 10%, transparent),
     inset 0 -1px 1px rgba(255, 255, 255, 0.9);
 }
 
-/* Presses squash slightly, the way a soft object would. */
+/* Presses squash like a soft object: on press it shrinks and every shadow
+   tightens, so it sinks into the page. No hover lift. */
 @utility clay-press {
   transition:
     transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.22s ease;
+    box-shadow 0.22s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 .clay-press:active {
   transform: scale(0.97);
+}
+.clay.clay-press:active {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 16%, transparent),
+    3px 5px 10px -6px color-mix(in srgb, var(--b4-accent) 30%, transparent),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.7),
+    inset -3px -3px 8px color-mix(in srgb, var(--b4-accent) 16%, transparent);
+}
+.clay.bg-ink.clay-press:active {
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.9),
+    3px 5px 10px -6px rgba(15, 23, 42, 0.5),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
+    inset -3px -3px 8px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .clay-press:active,
+  .clay-squish:hover,
+  .clay-squish:active {
+    transform: none;
+  }
 }
 
 /* Clay squish effect on hover/active for cards:
@@ -279,18 +363,20 @@
     box-shadow 0.28s ease;
 }
 .clay-squish:hover {
-  transform: scale(0.982) translateY(2px);
+  transform: scale(0.99);
   box-shadow:
-    0 6px 16px -6px rgba(15, 23, 42, 0.16),
-    0 2px 4px -2px rgba(15, 23, 42, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -2px 5px rgba(15, 23, 42, 0.08);
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 18%, transparent),
+    4px 7px 16px -8px color-mix(in srgb, var(--b4-accent) 32%, transparent),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.85),
+    inset -4px -5px 10px color-mix(in srgb, var(--b4-accent) 13%, transparent);
 }
 .clay-squish:active {
-  transform: scale(0.965) translateY(4px);
+  transform: scale(0.97);
   box-shadow:
-    0 3px 8px -4px rgba(15, 23, 42, 0.14),
-    inset 0 2px 4px rgba(15, 23, 42, 0.1);
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 18%, transparent),
+    2px 3px 8px -5px color-mix(in srgb, var(--b4-accent) 30%, transparent),
+    inset 2px 2px 5px color-mix(in srgb, var(--b4-accent) 12%, transparent),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.8);
 }
 
 @layer components {
@@ -421,4 +507,89 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   COZY PATTERNS
+
+   Soft blue textures for backing plates and headers. Built from the live
+   accent so they re-theme with everything else.
+   --------------------------------------------------------------------------- */
+@utility pattern-dots {
+  background-color: color-mix(in srgb, var(--b4-accent) 8%, #fff);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--b4-accent) 30%, transparent) 1.4px,
+    transparent 2px
+  );
+  background-size: 16px 16px;
+}
+
+@utility pattern-grid {
+  background-color: color-mix(in srgb, var(--b4-accent) 5%, #fff);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--b4-accent) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--b4-accent) 10%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* A clay surface tinted blue: the cozy counterpart to plain white clay. */
+@utility clay-blue {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--b4-accent) 6%, #fff),
+    color-mix(in srgb, var(--b4-accent) 13%, #fff)
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 16%, transparent),
+    4px 6px 14px -6px color-mix(in srgb, var(--b4-accent) 35%, transparent),
+    inset 3px 3px 5px rgba(255, 255, 255, 0.95),
+    inset -3px -4px 8px color-mix(in srgb, var(--b4-accent) 14%, transparent);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--r, 0deg)); }
+}
+.bob {
+  animation: bob 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bob { animation: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   CLAY BALLS
+
+   Little puffed 3D pieces of clay, the signature ornament of the style. A
+   radial gradient does the rounding (lit top-left), the insets add the
+   squashed rim, and a blue drop lifts it off the page.
+   --------------------------------------------------------------------------- */
+@utility clay-ball {
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 30% 26%,
+    #fff 0%,
+    color-mix(in srgb, var(--b4-accent) 30%, #fff) 20%,
+    color-mix(in srgb, var(--b4-accent) 72%, #fff) 62%,
+    color-mix(in srgb, var(--b4-accent) 92%, #1e3a8a) 100%
+  );
+  box-shadow:
+    10px 16px 28px -12px color-mix(in srgb, var(--b4-accent) 55%, transparent),
+    inset -5px -7px 12px color-mix(in srgb, #1e3a8a 30%, transparent),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.55);
+}
+
+/* The pastel version, for bigger pieces that should stay in the background. */
+@utility clay-ball-soft {
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 30% 26%,
+    #fff 0%,
+    color-mix(in srgb, var(--b4-accent) 10%, #fff) 30%,
+    color-mix(in srgb, var(--b4-accent) 26%, #fff) 100%
+  );
+  box-shadow:
+    10px 16px 30px -14px color-mix(in srgb, var(--b4-accent) 45%, transparent),
+    inset -6px -8px 14px color-mix(in srgb, var(--b4-accent) 22%, transparent),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.9);
 }

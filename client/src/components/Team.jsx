@@ -58,7 +58,7 @@ function TeamMember({ person }) {
           <TeamPortrait person={person} />
         </div>
         {person.linkedin && (
-          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-white hover:text-accent">
+          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:bg-white hover:text-accent">
             <ArrowUpRightIcon className="h-4 w-4" />
           </span>
         )}
@@ -69,7 +69,6 @@ function TeamMember({ person }) {
           {person.name}
         </h3>
         <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.09em] text-accent sm:mt-2 sm:px-3 sm:py-1 sm:text-[11px]">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
           {person.role}
         </div>
       </div>
@@ -100,10 +99,6 @@ export default function Team({ members = [], showHeader = true }) {
     <section id="team" className="relative mx-auto w-full">
       {showHeader && (
         <div className="reveal mb-10 text-center">
-          <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            <UsersIcon className="h-3.5 w-3.5" />
-            The organisers
-          </div>
           <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
             Meet the organising team
           </h2>

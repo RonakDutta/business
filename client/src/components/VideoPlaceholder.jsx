@@ -75,7 +75,7 @@ export default function VideoPlaceholder({
 
       <span className="absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-between gap-2 p-4 text-left sm:p-6">
         <span className="text-[13px] font-bold text-white sm:text-[16px]">
-          {noVideoYet ? "The film is on its way , check back soon." : label}
+          {noVideoYet ? "The film is on its way, check back soon." : label}
         </span>
         <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-white/80 backdrop-blur">
           {noVideoYet ? "Coming soon" : "2 min"}

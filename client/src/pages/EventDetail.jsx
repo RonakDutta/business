@@ -13,6 +13,7 @@ import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { HOST } from "../data/events.js";
 import { useEvents } from "../context/EventsContext.jsx";
+import { Squiggle, Sparkle, DotSwatch, ClayBall } from "../components/Decor.jsx";
 
 /* ===========================================================================
    EVENT DETAIL
@@ -37,13 +38,14 @@ import { useEvents } from "../context/EventsContext.jsx";
 /** Section heading in the left rail. Sticky so it stays with its content. */
 function Row({ label, count, children }) {
   return (
-    <section className="reveal grid grid-cols-1 gap-x-10 gap-y-5 border-t border-line pt-8 lg:grid-cols-[150px_1fr]">
+    <section className="clay-soft clay-edge reveal relative grid grid-cols-1 gap-x-10 gap-y-5 overflow-clip rounded-panel border bg-white p-6 sm:p-8 lg:grid-cols-[170px_1fr]">
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.09em] text-ink">
+        <h2 className="text-[20px] font-extrabold tracking-[-0.02em] text-ink">
           {label}
         </h2>
+        <Squiggle className="mt-2 h-2.5 w-16 text-accent/50" />
         {count && (
-          <div className="mt-1.5 text-[12.5px] font-semibold text-subtle">
+          <div className="mt-2 text-[13px] font-semibold text-subtle">
             {count}
           </div>
         )}
@@ -78,7 +80,14 @@ export default function EventDetail() {
         <BackLink to={-1}>Back</BackLink>
 
         {/* ---- The ticket ---------------------------------------------- */}
-        <div className="reveal mt-5 overflow-hidden rounded-panel border border-line bg-white shadow-[0_24px_50px_-45px_rgba(15,23,42,.55)]">
+        <div className="reveal relative isolate mt-5">
+        <div
+          aria-hidden
+          className="pattern-dots absolute inset-0 -z-10 translate-x-2.5 translate-y-3 rounded-panel sm:translate-x-4 sm:translate-y-4"
+        />
+        <ClayBall className="absolute -bottom-5 -left-3 z-10 h-10 w-10 sm:-left-5 sm:h-12 sm:w-12" />
+        <Sparkle className="bob pointer-events-none absolute -right-2 -top-4 z-10 h-9 w-9 text-accent [--r:14deg] sm:-right-4 sm:-top-5 sm:h-11 sm:w-11" />
+        <div className="clay-soft clay-edge overflow-hidden rounded-panel border bg-white">
           <header className="relative bg-ink">
             {/*
               On phones the image is a clean banner and the type sits on the
@@ -160,26 +169,28 @@ export default function EventDetail() {
             hard black-to-white edge (which read as a sharp, un-rounded card
             end) into a ticket tear: the notches round off the ink block's
             bottom corners and the dashed line reads as the tear between stub
-            and ticket. Notch fill matches the page behind the card (white).
+            and ticket. Notch fill matches the page canvas behind the card.
           */}
           <div className="relative border-t border-dashed border-line-strong">
             <span
               aria-hidden="true"
-              className="absolute -left-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+              className="absolute -left-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-canvas clay-inset"
             />
             <span
               aria-hidden="true"
-              className="absolute -right-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
+              className="absolute -right-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-canvas clay-inset"
             />
             <EventMeta event={event} />
           </div>
         </div>
+        </div>
 
         {/* ---- Sections on a rail -------------------------------------- */}
-        <div className="mt-10 flex flex-col gap-10 sm:mt-14 sm:gap-12">
+        <div className="mt-10 flex flex-col gap-6 sm:mt-14 sm:gap-8">
           {/* The fee is on the ticket. It was also the rail count and the first
               line of the body — the same number three times in one screen. */}
           <Row label="Details">
+            <DotSwatch className="pointer-events-none absolute -right-2 -top-2 hidden h-16 w-20 text-accent/15 sm:block" />
             <div className="flex max-w-[68ch] flex-col gap-4">
               {event.description.map((para, i) => (
                 <p key={i} className="text-[16px] leading-[1.75] text-muted">
@@ -193,7 +204,7 @@ export default function EventDetail() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
               <div>
                 {event.location.gate && (
-                  <p className="inline-flex items-center gap-2 rounded-btn bg-accent/10 px-3.5 py-1.5 text-[12.5px] font-bold text-accent">
+                  <p className="clay-blue inline-flex items-center gap-2 rounded-btn px-3.5 py-1.5 text-[12.5px] font-bold text-accent">
                     Enter via {event.location.gate}
                   </p>
                 )}
@@ -209,13 +220,13 @@ export default function EventDetail() {
                     >
                       {event.helpline}
                     </a>
-                    . Directions only — not for questions about the event.
+                    . Directions only, not for questions about the event.
                   </p>
                 )}
               </div>
 
               {/* The map earns width here rather than height in a sidebar. */}
-              <div className="overflow-hidden rounded-card border border-line">
+              <div className="clay-soft clay-edge overflow-hidden rounded-card border">
                 <MapEmbed
                   location={event.location}
                   title={event.location.name}

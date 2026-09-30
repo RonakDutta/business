@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const CORNER_MAP = {
   Sharp: { card: "8px", panel: "12px", btn: "10px" },
-  Soft: { card: "18px", panel: "22px", btn: "999px" },
-  Rounded: { card: "26px", panel: "30px", btn: "999px" },
+  Soft: { card: "24px", panel: "30px", btn: "999px" },
+  Rounded: { card: "30px", panel: "36px", btn: "999px" },
 };
 
 const DEFAULTS = {

@@ -26,7 +26,7 @@ import { contactApi } from "../api";
    anywhere. Swap `sendVia` for a POST when there's somewhere to POST to.
 
    Only channels that actually reach someone are listed. If the community adds
-   an Instagram or a LinkedIn page later, drop another <Channel> in , there are
+   an Instagram or a LinkedIn page later, drop another <Channel> in, there are
    icons for both in components/icons.jsx already.
    =========================================================================== */
 
@@ -51,18 +51,16 @@ function Channel({ icon: Icon, label, value, href, note, external }) {
   return (
     <Wrap
       {...props}
-      className={`group flex items-start gap-4 rounded-card border border-line bg-white p-5 transition-[border-color,translate] duration-300 ease-smooth ${
-        href ? "hover:-translate-y-0.5 hover:border-[#dfe3ea]" : ""
+      className={`clay-soft clay-edge group flex items-start gap-4 rounded-card border bg-white p-5 transition-[translate] duration-300 ease-smooth ${
+        href ? "" : ""
       }`}
     >
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
+      <span className="clay-blue grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-accent">
         <Icon className="h-5 w-5" />
       </span>
 
       <div className="min-w-0 flex-1">
-        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-subtle">
-          {label}
-        </div>
+        <div className="text-[12.5px] font-semibold text-subtle">{label}</div>
         <div className="mt-1 break-words text-[15px] font-bold text-ink">
           {value}
         </div>
@@ -102,7 +100,7 @@ export default function Contact() {
     if (sending) return;
     if (!form.name.trim()) return setError("We'd like to know who's writing.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      return setError("That email doesn't look right , we reply to it.");
+      return setError("That email doesn't look right, we reply to it.");
     if (form.message.trim().length < 10)
       return setError("Tell us a bit more so we can actually answer.");
 
@@ -125,7 +123,7 @@ export default function Contact() {
   };
 
   const field =
-    "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
+    "clay-inset clay-edge w-full rounded-2xl border bg-canvas px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none";
 
   return (
     <div className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
@@ -137,11 +135,6 @@ export default function Contact() {
       <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
 
       <header className="max-w-[640px]">
-        <div className="reveal accent-border inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-2 text-xs font-bold tracking-[0.1em] text-accent backdrop-blur">
-          <MailIcon className="h-3.5 w-3.5" />
-          GET IN TOUCH
-        </div>
-
         <h1
           data-delay="0.06"
           className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[52px]"
@@ -205,37 +198,59 @@ export default function Contact() {
             note="Every edition, past and upcoming, with the RSVP list."
           />
 
-          <div className="mt-3 overflow-hidden rounded-card">
+          <div className="clay-soft clay-edge mt-3 overflow-hidden rounded-card border">
             <MapEmbed location={VENUE} title={VENUE.name} />
           </div>
 
-          <div className="rounded-card border border-line bg-white p-5">
-            <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-subtle">
-              Nearest metro
-            </div>
+          <div className="clay-soft clay-edge rounded-card border bg-white p-5">
+            <div className="text-[15px] font-bold text-ink">Nearest metro</div>
             <MetroRoute metro={VENUE.metro} className="mt-4" />
           </div>
         </div>
 
         {/* Message */}
         <aside className="reveal lg:sticky lg:top-28">
-          <div className="relative overflow-hidden rounded-panel border border-line bg-white p-6 shadow-[0_20px_50px_-40px_rgba(15,23,42,.5)] md:p-8">
+          <div className="clay-soft clay-edge relative overflow-hidden rounded-panel border bg-white p-6 md:p-8">
             <Scatter className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 text-accent/50" />
             <div className="relative">
             {sent ? (
-              <div className="py-6 text-center">
-                <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent/10 text-accent">
-                  <MailIcon className="h-7 w-7" />
-                </span>
-                <h2 className="mt-5 text-[22px] font-extrabold tracking-[-0.03em]">
+              <div className="py-2 text-center">
+                <h2 className="text-[22px] font-extrabold tracking-[-0.03em]">
                   Message sent
                 </h2>
-                <p className="mx-auto mt-2.5 max-w-[300px] text-[14.5px] leading-relaxed text-muted">
-                  Thanks , we've got it and we'll reply to {form.email} soon.
+                <p className="mx-auto mt-2 max-w-[320px] text-[14.5px] leading-relaxed text-muted">
+                  Thanks, we've got it and we'll reply to {form.email} soon.
                 </p>
+
+                {/* The note, as a postcard on its way to the organisers */}
+                <div className="clay clay-edge relative mx-auto mt-7 max-w-[360px] -rotate-1 overflow-hidden rounded-[22px] border bg-white text-left">
+                  <div className="flex items-center justify-between gap-3 border-b-2 border-dashed border-line px-5 py-3">
+                    <span className="text-[12.5px] font-bold text-subtle">
+                      To the organisers
+                    </span>
+                    <span className="clay-blue grid h-9 w-9 rotate-6 place-items-center rounded-lg text-accent">
+                      <MailIcon className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <div className="px-5 py-4">
+                    <span className="accent-tint rounded-full px-2.5 py-1 text-[11.5px] font-bold text-accent">
+                      {form.topic}
+                    </span>
+                    <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-ink">
+                      {form.message}
+                    </p>
+                    <p className="mt-3 text-[13px] font-bold text-muted">
+                      From {form.name}
+                    </p>
+                  </div>
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => setSent(false)}
+                  onClick={() => {
+                    setForm((f) => ({ ...f, message: "" }));
+                    setSent(false);
+                  }}
                   className="mt-6 text-sm font-bold text-accent"
                 >
                   Write another
@@ -247,12 +262,12 @@ export default function Contact() {
                   Send us a message
                 </h2>
                 <p className="mt-2 text-[13.5px] leading-relaxed text-subtle">
-                  Send it straight to the organisers , we read everything.
+                  Send it straight to the organisers, we read everything.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3">
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[12px] font-bold uppercase tracking-[0.07em] text-subtle">
+                    <span className="text-[13px] font-bold text-ink">
                       Your name
                     </span>
                     <input
@@ -264,7 +279,7 @@ export default function Contact() {
                   </label>
 
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[12px] font-bold uppercase tracking-[0.07em] text-subtle">
+                    <span className="text-[13px] font-bold text-ink">
                       Email
                     </span>
                     <input
@@ -277,23 +292,35 @@ export default function Contact() {
                     />
                   </label>
 
-                  <label className="flex flex-col gap-1.5">
-                    <span className="text-[12px] font-bold uppercase tracking-[0.07em] text-subtle">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[13px] font-bold text-ink">
                       What's it about
                     </span>
-                    <select
-                      className={`${field} appearance-none`}
-                      value={form.topic}
-                      onChange={set("topic")}
-                    >
-                      {TOPICS.map((t) => (
-                        <option key={t}>{t}</option>
-                      ))}
-                    </select>
-                  </label>
+                    <div role="radiogroup" className="flex flex-wrap gap-2">
+                      {TOPICS.map((t) => {
+                        const on = form.topic === t;
+                        return (
+                          <button
+                            key={t}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            onClick={() => setForm((f) => ({ ...f, topic: t }))}
+                            className={`clay-press rounded-full border px-3.5 py-2 text-[13px] font-bold transition-[color,background,border-color] duration-200 ${
+                              on
+                                ? "clay border-transparent bg-accent text-white"
+                                : "clay-edge bg-white text-muted hover:text-ink"
+                            }`}
+                          >
+                            {t}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[12px] font-bold uppercase tracking-[0.07em] text-subtle">
+                    <span className="text-[13px] font-bold text-ink">
                       Message
                     </span>
                     <textarea
@@ -301,7 +328,7 @@ export default function Contact() {
                       className={`${field} resize-y leading-relaxed`}
                       value={form.message}
                       onChange={set("message")}
-                      placeholder="Keep it short , we read everything."
+                      placeholder="Keep it short, we read everything."
                     />
                   </label>
 
@@ -315,7 +342,7 @@ export default function Contact() {
                     type="button"
                     onClick={send}
                     disabled={sending}
-                    className="mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                    className="clay clay-press mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-ink"
                   >
                     {sending && <Spinner className="h-4 w-4" />}
                     {sending ? "Sending…" : "Send message"}

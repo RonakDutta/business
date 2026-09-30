@@ -1,5 +1,5 @@
 import Stats from "./Stats.jsx";
-import { ClayChat } from "./Decor.jsx";
+import { ClayChat, Squiggle } from "./Decor.jsx";
 import { CheckIcon } from "./icons.jsx";
 import { audience, stats } from "../data/events.js";
 
@@ -14,14 +14,10 @@ export default function AboutSection() {
       <div className="mx-auto max-w-shell">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="reveal">
-            <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-              The idea
-            </div>
-
             <h2 className="text-[28px] font-extrabold leading-[1.15] tracking-[-0.03em] sm:text-[34px] md:text-[40px]">
               Not a seminar. A room where people actually talk.
             </h2>
+            <Squiggle className="mt-3 h-3 w-24 text-accent/55" />
 
             <div className="mt-6 flex max-w-[620px] flex-col gap-4 text-[16px] leading-[1.75] text-muted sm:text-[17px]">
               <p>
@@ -58,7 +54,7 @@ export default function AboutSection() {
               </ul>
 
               <p className="mt-6 border-t border-line pt-5 text-[14px] leading-relaxed text-muted">
-                If you are building something , or seriously plan to , you are
+                If you are building something, or seriously plan to, you are
                 in the right room.
               </p>
             </div>

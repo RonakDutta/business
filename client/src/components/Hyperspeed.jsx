@@ -1,4 +1,4 @@
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from 'postprocessing';
+import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -339,7 +339,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           alpha: true
         });
         this.renderer.setSize(initW, initH, false);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
+        this.renderer.setPixelRatio(1);
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -361,6 +361,9 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.assets = {};
         this.disposed = false;
         this.isPaused = false;
+        // Own clock: advances only while the road is actually moving, so a
+        // pause never makes the lights leap forward on resume.
+        this.elapsed = 0;
 
         this.road = new Road(this, options);
         this.leftCarLights = new CarLights(
@@ -426,17 +429,12 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           resolutionScale: 0.5
         }));
 
-        const smaaPass = new EffectPass(this.camera, new SMAAEffect({
-          preset: SMAAPreset.MEDIUM,
-          searchImage: SMAAEffect.searchImageDataURL,
-          areaImage: SMAAEffect.areaImageDataURL
-        }));
+        // No SMAA pass: at 65% opacity behind the hero the edge smoothing is
+        // invisible, and it was a full extra render of the canvas every frame.
         this.renderPass.renderToScreen = false;
-        this.bloomPass.renderToScreen = false;
-        smaaPass.renderToScreen = true;
+        this.bloomPass.renderToScreen = true;
         this.composer.addPass(this.renderPass);
         this.composer.addPass(this.bloomPass);
-        this.composer.addPass(smaaPass);
       }
 
       loadAssets() {
@@ -521,7 +519,8 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.speedUp += lerp(this.speedUp, this.speedUpTarget, lerpPercentage, 0.00001);
         this.timeOffset += this.speedUp * delta;
 
-        let time = this.clock.elapsedTime + this.timeOffset;
+        this.elapsed += delta;
+        let time = this.elapsed + this.timeOffset;
 
         this.rightCarLights.update(time);
         this.leftCarLights.update(time);
@@ -610,7 +609,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       tick() {
         if (this.disposed) return;
+        // Off screen: stop outright. getDelta() keeps the clock fresh so the
+        // first frame back doesn't see the whole gap.
         if (this.isPaused) {
+          this.clock.getDelta();
           requestAnimationFrame(this.tick);
           return;
         }
@@ -639,7 +641,19 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         }
 
         if (this.hasValidSize) {
-          const delta = this.clock.getDelta();
+          // Never stops: while the page scrolls it draws every other frame
+          // (about 30fps) so the GPU has room for the scroll. Time keeps
+          // accumulating between drawn frames, so the road's speed is the
+          // same either way and there is nothing to snap back from.
+          this.pending = (this.pending || 0) + this.clock.getDelta();
+          const minStep = this.scrollPaused ? 1 / 32 : 0;
+          if (this.pending < minStep) {
+            requestAnimationFrame(this.tick);
+            return;
+          }
+
+          const delta = Math.min(this.pending, 1 / 20);
+          this.pending = 0;
           this.render(delta);
           this.update(delta);
         }
@@ -1155,8 +1169,20 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
     observer.observe(container);
 
+    let scrollTimer;
+    const onScroll = () => {
+      if (appRef.current) appRef.current.scrollPaused = true;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        if (appRef.current) appRef.current.scrollPaused = false;
+      }, 200);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
       observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(scrollTimer);
       if (appRef.current) {
         appRef.current.dispose();
         appRef.current = null;

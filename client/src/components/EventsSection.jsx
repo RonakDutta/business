@@ -20,10 +20,6 @@ export default function EventsSection({
       <div className="reveal mb-8 flex flex-wrap items-end justify-between gap-5">
         <div>
           {eyebrow && (
-            <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-              {eyebrow}
-            </div>
           )}
           <h2 className={`${headingClass} font-extrabold tracking-tight`}>
             {title}
@@ -34,7 +30,7 @@ export default function EventsSection({
           (variant === "upcoming" ? (
             <Link
               to="/events"
-              className="accent-border hover:accent-tint group inline-flex items-center gap-2 whitespace-nowrap rounded-btn border px-5 py-2.75 text-sm font-bold text-accent transition-[background,translate] duration-300 ease-smooth hover:-translate-y-0.5"
+              className="accent-border hover:accent-tint group inline-flex items-center gap-2 whitespace-nowrap rounded-btn border px-5 py-2.75 text-sm font-bold text-accent transition-[background,translate] duration-300 ease-smooth"
             >
               {ctaLabel}
               <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 ease-smooth group-hover:translate-x-0.5" />

@@ -1,6 +1,14 @@
 import { useState } from "react";
 import VideoPlaceholder from "./VideoPlaceholder.jsx";
-import { Blobs, PersonTalking, GlowingRings } from "./Decor.jsx";
+import {
+  Blobs,
+  PersonTalking,
+  Squiggle,
+  Sparkle,
+  CurlyArrow,
+  GlowingRings,
+  ClayBall,
+} from "./Decor.jsx";
 import { ArrowRightIcon } from "./icons.jsx";
 import TextType from "./TextType";
 import Hyperspeed from "./Hyperspeed.jsx";
@@ -15,17 +23,27 @@ function HeroIllustration() {
       <PersonTalking className="h-auto w-full max-w-[480px] sm:max-w-[520px]" />
     );
 
+  /* The PNG already carries its own rounded lavender card, so it is not
+     wrapped in another white frame. It sits on an offset dotted plate like a
+     print pinned to a board, with a few pen doodles around it. */
   return (
-    <div className="relative isolate max-w-[520px] sm:max-w-[580px] lg:max-w-[620px] w-full">
-      <GlowingRings className="pointer-events-none absolute -right-10 -top-10 z-0 h-[280px] w-[280px] sm:h-[340px] sm:w-[340px]" />
-      <div className="clay relative z-10 overflow-hidden rounded-[26px] bg-white p-2.5 sm:p-3.5 w-full border border-line shadow-md">
+    <div className="relative isolate w-full max-w-[560px] px-4 py-6">
+      <GlowingRings className="pointer-events-none absolute -right-14 -top-14 -z-20 h-[300px] w-[300px]" />
+      <div
+        aria-hidden
+        className="pattern-dots clay absolute inset-x-4 inset-y-6 -z-10 translate-x-5 translate-y-5 rotate-[3deg] rounded-[30px]"
+      />
+      <div className="clay relative -rotate-[1.5deg] overflow-hidden rounded-[30px] border-[6px] border-white bg-[#eef1fe]">
         <img
           src={ILLUSTRATION}
-          alt="What is Business 4.0 illustration"
+          alt="A person at a laptop explaining an idea"
           onError={() => setFailed(true)}
-          className="h-auto w-full rounded-[18px] object-cover"
+          className="block h-auto w-full scale-[1.025]"
         />
       </div>
+      <Sparkle className="bob pointer-events-none absolute -right-1 top-0 h-10 w-10 text-accent [--r:12deg]" />
+      <Squiggle className="pointer-events-none absolute -bottom-1 left-10 h-4 w-28 text-accent/45" />
+      <CurlyArrow className="pointer-events-none absolute -left-16 top-4 h-16 w-24 -scale-x-100 rotate-[20deg] text-accent/40" />
     </div>
   );
 }
@@ -85,6 +103,7 @@ export default function Hero() {
         <div aria-hidden className="hero-grid absolute inset-0 z-0 opacity-40" />
         <div aria-hidden className="hero-glows absolute inset-0 z-0 opacity-60" />
         <Blobs className="pointer-events-none absolute -left-40 -top-24 z-0 h-[560px] w-[560px] blur-[4px]" />
+        <ClayBall className="bob absolute left-[6%] top-8 z-0 h-7 w-7 sm:h-9 sm:w-9" />
 
         {/* Grid layout: centered text on mobile (no image), 2-col with illustration on laptop (lg) */}
         <div className="relative z-10 mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-2 lg:gap-12">
@@ -94,22 +113,33 @@ export default function Hero() {
               className="reveal text-[32px] font-extrabold leading-[1.25] tracking-[-0.03em] pb-1 sm:text-[46px] sm:leading-[1.15] md:text-[56px]"
             >
               What is{" "}
-              <span className="relative inline-block text-accent">
-                <TextType
-                  text={["Business 4.0", "Community", "Growth", "Networking"]}
-                  typingSpeed={75}
-                  deletingSpeed={40}
-                  pauseDuration={2200}
-                  showCursor={true}
-                  cursorCharacter="|"
-                  cursorClassName="text-accent font-normal"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0.5 h-[0.35em] -z-10 rounded-full accent-tint"
-                />
+              {/* The typed word sits in a grid cell sized by an invisible copy
+                  of the longest phrase, so the line is always the same width
+                  and never jumps between one and two lines while typing. */}
+              <span className="inline-grid whitespace-nowrap">
+                <span aria-hidden className="invisible col-start-1 row-start-1">
+                  <span className="tracking-tight">Business 4.0</span>
+                  <span className="ml-0.5 font-normal">|</span>?
+                </span>
+                <span className="col-start-1 row-start-1 justify-self-start">
+                  <span className="relative inline-block text-accent">
+                    <TextType
+                      text={["Business 4.0", "Community", "Growth", "Networking"]}
+                      typingSpeed={75}
+                      deletingSpeed={40}
+                      pauseDuration={2200}
+                      showCursor={true}
+                      cursorCharacter="|"
+                      cursorClassName="text-accent font-normal"
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 bottom-0.5 h-[0.35em] -z-10 rounded-full accent-tint"
+                    />
+                  </span>
+                  ?
+                </span>
               </span>
-              ?
             </h1>
 
             <p

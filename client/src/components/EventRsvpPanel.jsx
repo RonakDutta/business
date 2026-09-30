@@ -94,7 +94,7 @@ export default function EventRsvpPanel({ event, variant = "stub" }) {
       onClick={isPast ? () => navigate(`/gallery/${event.id}`) : onAttend}
       aria-pressed={going || undefined}
       title={going ? "Click to give up your seat" : undefined}
-      className={`block w-full whitespace-nowrap rounded-btn px-6 py-3.5 text-center text-[14px] font-bold transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 ${
+      className={`block w-full whitespace-nowrap rounded-btn px-6 py-3.5 text-center text-[14px] font-bold transition-[translate,background] duration-300 ease-smooth ${
         band
           ? going
             ? "bg-accent text-white"

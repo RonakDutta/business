@@ -22,11 +22,6 @@ export default function TeamPage() {
 
         {/* Hero Section */}
         <header className="mt-8 mb-12 max-w-[680px]">
-          <div className="reveal inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            <UsersIcon className="h-3.5 w-3.5" />
-            The people behind it
-          </div>
-
           <h1
             data-delay="0.06"
             className="reveal mt-3 text-[36px] font-extrabold tracking-[-0.03em] sm:text-[46px] md:text-[56px]"
@@ -66,7 +61,7 @@ export default function TeamPage() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               to="/contact"
-              className="clay clay-press inline-flex items-center gap-2 rounded-btn bg-accent px-8 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5"
+              className="clay clay-press inline-flex items-center gap-2 rounded-btn bg-accent px-8 py-3.5 text-[15px] font-bold text-white transition-transform"
             >
               Contact Us
               <ArrowRightIcon className="h-4 w-4" />

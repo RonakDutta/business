@@ -2,7 +2,7 @@ import AlbumCard from "../components/AlbumCard.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
-import { Orb, Scatter } from "../components/Decor.jsx";
+import { Orb, Scatter, ClayBall } from "../components/Decor.jsx";
 import { ImageIcon } from "../components/icons.jsx";
 import { ServerLoader, AlbumCardSkeleton } from "../components/ServerLoader.jsx";
 
@@ -16,12 +16,9 @@ export default function GalleryPage() {
   return (
     <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-16 md:px-10">
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
+      <ClayBall soft className="absolute right-[28%] top-14 -z-10 h-10 w-10 sm:h-14 sm:w-14" />
       <Scatter className="pointer-events-none absolute -right-4 top-4 -z-10 h-36 w-36 text-accent opacity-70 sm:h-52 sm:w-52 md:right-2" />
 
-      <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-        <ImageIcon className="h-3.5 w-3.5" />
-        The archive
-      </div>
       <h1
         data-delay="0.06"
         className="reveal mb-3 mt-2.5 text-[36px] font-extrabold tracking-[-0.03em] md:text-[52px]"

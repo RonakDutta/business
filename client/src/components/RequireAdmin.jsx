@@ -1,7 +1,7 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
-/** Route guard for /admin. Client-side only , see the note in AuthContext. */
+/** Route guard for /admin. Client-side only, see the note in AuthContext. */
 export default function RequireAdmin({ children }) {
   const { user, isAdmin, ready } = useAuth();
   const { pathname } = useLocation();

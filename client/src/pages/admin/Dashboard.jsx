@@ -46,7 +46,7 @@ const STATUS = {
   },
 };
 
-/** The id is the date , a chip reads faster than "2026-07-18" in a long list. */
+/** The id is the date, a chip reads faster than "2026-07-18" in a long list. */
 function DateChip({ id, muted = false }) {
   const [y, m, d] = id.split("-").map(Number);
   return (
@@ -163,7 +163,7 @@ function Spotlight({ event }) {
         <div className="mt-6 flex flex-wrap gap-2">
           <Link
             to={`/admin/events/${event.id}`}
-            className="inline-flex items-center gap-2 rounded-btn bg-white px-5 py-2.5 text-[13.5px] font-bold text-ink transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 rounded-btn bg-white px-5 py-2.5 text-[13.5px] font-bold text-ink transition-[translate] duration-300 ease-smooth"
           >
             <PencilIcon className="h-4 w-4" />
             Edit this meetup
@@ -239,7 +239,7 @@ export default function Dashboard() {
 
         <Link
           to="/admin/events/new"
-          className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-3 text-sm font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+          className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-3 text-sm font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
         >
           <PlusIcon className="h-4 w-4" />
           Add meetup
@@ -464,7 +464,7 @@ export default function Dashboard() {
             </p>
             <p className="mx-auto mt-1.5 max-w-[320px] text-[13px] leading-relaxed text-muted">
               {query
-                ? "Try the date instead , every meetup is filed under the day it runs."
+                ? "Try the date instead, every meetup is filed under the day it runs."
                 : "Add a date and it'll show up here and on the public site."}
             </p>
           </div>
