@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ArrowUpRightIcon, UsersIcon } from "./icons.jsx";
-import { Squiggle } from "./Decor.jsx";
 
 /**
  * Helper to get initials from full name
@@ -103,7 +102,7 @@ export default function Team({ members = [], showHeader = true }) {
           <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
             Meet the organising team
           </h2>
-          <Squiggle className="mx-auto mt-3 h-3 w-24 text-accent/55" />
+          <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
           <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
             The people who show up early, stack the chairs, and make sure you
             leave knowing someone new.

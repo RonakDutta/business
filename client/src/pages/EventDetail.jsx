@@ -13,7 +13,7 @@ import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { HOST } from "../data/events.js";
 import { useEvents } from "../context/EventsContext.jsx";
-import { Squiggle, Sparkle, DotSwatch } from "../components/Decor.jsx";
+import { Squiggle, Sparkle, DotSwatch, ClayBall } from "../components/Decor.jsx";
 
 /* ===========================================================================
    EVENT DETAIL
@@ -38,7 +38,7 @@ import { Squiggle, Sparkle, DotSwatch } from "../components/Decor.jsx";
 /** Section heading in the left rail. Sticky so it stays with its content. */
 function Row({ label, count, children }) {
   return (
-    <section className="clay reveal relative grid grid-cols-1 gap-x-10 gap-y-5 overflow-clip rounded-panel bg-white p-6 sm:p-8 lg:grid-cols-[170px_1fr]">
+    <section className="clay clay-edge reveal relative grid grid-cols-1 gap-x-10 gap-y-5 overflow-clip rounded-panel border bg-white p-6 sm:p-8 lg:grid-cols-[170px_1fr]">
       <div className="lg:sticky lg:top-28 lg:self-start">
         <h2 className="text-[20px] font-extrabold tracking-[-0.02em] text-ink">
           {label}
@@ -85,8 +85,9 @@ export default function EventDetail() {
           aria-hidden
           className="pattern-dots absolute inset-0 -z-10 translate-x-2.5 translate-y-3 rounded-panel sm:translate-x-4 sm:translate-y-4"
         />
+        <ClayBall className="absolute -bottom-5 -left-3 z-10 h-10 w-10 sm:-left-5 sm:h-12 sm:w-12" />
         <Sparkle className="bob pointer-events-none absolute -right-2 -top-4 z-10 h-9 w-9 text-accent [--r:14deg] sm:-right-4 sm:-top-5 sm:h-11 sm:w-11" />
-        <div className="clay overflow-hidden rounded-panel border border-white bg-white">
+        <div className="clay clay-edge overflow-hidden rounded-panel border bg-white">
           <header className="relative bg-ink">
             {/*
               On phones the image is a clean banner and the type sits on the

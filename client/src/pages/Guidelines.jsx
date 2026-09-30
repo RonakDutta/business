@@ -23,12 +23,12 @@ import {
 /* ===========================================================================
    COPY LIVES HERE ON PURPOSE.
 
-   This is the organising team's page, not an engineering one , the wording is
+   This is the organising team's page, not an engineering one, the wording is
    a first draft written from what's already on the meetup listing
    (fortnightly, 11-1, Gate No. 1, the helpline note). Rewrite it in your own
    words; nothing here is wired to anything.
 
-   The three phases are numbered because they're an actual sequence , before,
+   The three phases are numbered because they're an actual sequence, before,
    during, after. The house rules aren't a sequence, so they aren't numbered.
    =========================================================================== */
 
@@ -46,10 +46,10 @@ const PHASES = [
     title: "Before you come",
     lede: "Ten minutes of admin that saves everyone an awkward start.",
     points: [
-      "RSVP on this site or on Meetup so we know how many chairs to put out. The room is a real room , it fills up.",
+      "RSVP on this site or on Meetup so we know how many chairs to put out. The room is a real room, it fills up.",
       "Pay the entry fee by UPI when you RSVP and keep your payment reference handy.",
       "Come a few minutes early. We start at 11:00 and the intros go first.",
-      `Enter via ${VENUE.gate}. The helpline is for finding the gate on the day , not for questions about the meetup.`,
+      `Enter via ${VENUE.gate}. The helpline is for finding the gate on the day, not for questions about the meetup.`,
     ],
   },
   {
@@ -58,7 +58,7 @@ const PHASES = [
     title: "In the room",
     lede: "Two hours. No badges, no breakouts, nobody reading slides at you.",
     points: [
-      "Everyone introduces themselves , name, what you're building, what you're stuck on. Keep it under a minute.",
+      "Everyone introduces themselves, name, what you're building, what you're stuck on. Keep it under a minute.",
       "Conversations, not pitches. If someone wants what you sell, they'll ask you afterwards.",
       "Listen more than you talk. The best sessions are the ones where the quietest person says something nobody expected.",
       "Photos get taken. Tell an organiser if you'd rather stay out of them and we'll work around you.",
@@ -79,7 +79,7 @@ const PHASES = [
 ];
 
 const DO = [
-  "Follow up with people you met , that's the whole point",
+  "Follow up with people you met, that's the whole point",
   "Ask questions in the room, not just in the corridor after",
   "Tell us if something in the session didn't work",
   "Bring someone who'd get something out of it",
@@ -89,7 +89,7 @@ const DONT = [
   "Pitch from the floor or work the room selling",
   "Add everyone to a mailing list you started on the way home",
   "Record or stream the session without asking first",
-  "Leave litter , it's a public park and we'd like to stay welcome",
+  "Leave litter, it's a public park and we'd like to stay welcome",
 ];
 
 function Rule({ text, allowed }) {
@@ -163,7 +163,7 @@ export default function Guidelines() {
             className="reveal mt-5 text-[17px] leading-[1.7] text-muted [text-wrap:pretty]"
           >
             Two hours, every two weeks, same room. Here's what to expect and
-            what we expect back , read it once and you'll walk in like a
+            what we expect back, read it once and you'll walk in like a
             regular.
           </p>
         </div>
@@ -172,7 +172,7 @@ export default function Guidelines() {
       {/* The four things people ask before anything else. */}
       <div
         data-delay="0.18"
-        className="reveal relative mt-10 overflow-hidden rounded-panel border border-line bg-gradient-to-b from-white to-[#f8f9fc]"
+        className="clay clay-edge reveal relative mt-10 overflow-hidden rounded-panel border bg-gradient-to-b from-white to-[#f5f7fe]"
       >
         <PlusField className="pointer-events-none absolute inset-0 h-full w-full text-accent/[0.08]" />
         <div className="relative grid grid-cols-2 divide-line sm:grid-cols-4 sm:divide-x">
@@ -221,7 +221,7 @@ export default function Guidelines() {
                   {phase.n}
                 </span>
 
-                <div className="overflow-hidden rounded-panel border border-line bg-white">
+                <div className="clay clay-edge overflow-hidden rounded-panel border bg-white">
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-line bg-[#fbfcfd] px-6 py-5 md:px-8">
                     <h3 className="text-[21px] font-extrabold tracking-[-0.03em] md:text-[25px]">
                       {phase.title}
@@ -254,7 +254,7 @@ export default function Guidelines() {
         </div>
       </section>
 
-      {/* ---- House rules , deliberately unnumbered --------------------- */}
+      {/* ---- House rules, deliberately unnumbered --------------------- */}
       <section id="house-rules" className="reveal mt-16 scroll-mt-28">
         <SectionHead
           icon={ShieldIcon}
@@ -266,7 +266,7 @@ export default function Guidelines() {
         </p>
 
         <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="relative overflow-hidden rounded-card border border-line bg-white p-6">
+          <div className="clay clay-edge relative overflow-hidden rounded-card border bg-white p-6">
             <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
               Please do
             </div>
@@ -277,7 +277,7 @@ export default function Guidelines() {
             </ul>
           </div>
 
-          <div className="rounded-card border border-line bg-white p-6">
+          <div className="clay clay-edge rounded-card border bg-white p-6">
             <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-red-500">
               Please don't
             </div>
@@ -296,7 +296,7 @@ export default function Guidelines() {
           </span>
           <p className="text-[14.5px] leading-relaxed text-ink">
             <b>Harassment, of any kind, ends your membership.</b> You'll be asked
-            to leave and you won't be invited back , no warning, no debate. If
+            to leave and you won't be invited back, no warning, no debate. If
             anything happens in the room, find an organiser. If you'd rather not
             do that in person,{" "}
             <Link to="/contact" className="font-bold text-red-600 underline">
@@ -321,7 +321,7 @@ export default function Guidelines() {
             <p className="mt-2.5 max-w-[420px] text-[14.5px] leading-relaxed text-white/60">
               {next
                 ? `Next one is ${next.when.headline.split(" · ")[0]} at ${VENUE.shortName} · ${priceLabel(next.entryFee)}.`
-                : "The next date isn't up yet. Check back , it's every second Saturday."}
+                : "The next date isn't up yet. Check back, it's every second Saturday."}
             </p>
           </div>
 

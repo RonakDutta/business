@@ -85,7 +85,7 @@ export default function EventCard({ event, variant = "upcoming" }) {
 
           <Link to={to} className="absolute inset-0" aria-label={event.title} />
 
-          {/* Date chip , the one thing everyone scans for first. */}
+          {/* Date chip, the one thing everyone scans for first. */}
           <div
             className={`pointer-events-none absolute left-3 top-3 flex w-[52px] flex-col items-center rounded-xl py-1.5 ${
               cancelled ? "bg-red-600 text-white" : "bg-white text-ink"

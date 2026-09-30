@@ -362,7 +362,7 @@ export function ClayCalendar({ className = "" }) {
       <rect x="72" y="16" width="14" height="34" rx="7" fill="var(--color-ink)" opacity="0.35" />
       <rect x="174" y="16" width="14" height="34" rx="7" fill="var(--color-ink)" opacity="0.35" />
 
-      {/* day grid , one Saturday circled */}
+      {/* day grid, one Saturday circled */}
       {[0, 1, 2, 3].map((row) =>
         [0, 1, 2, 3, 4].map((col) => {
           const cx = 60 + col * 36;
@@ -389,7 +389,7 @@ export function ClayCalendar({ className = "" }) {
   );
 }
 
-/* Three stacked speech bubbles , the "room where people talk" motif. */
+/* Three stacked speech bubbles, the "room where people talk" motif. */
 export function ClayChat({ className = "" }) {
   const id = useId();
 
@@ -522,5 +522,16 @@ export function DotSwatch({ className = "", cols = 5, rows = 4 }) {
         <circle key={i} cx={x} cy={y} r="3" fill="currentColor" />
       ))}
     </svg>
+  );
+}
+
+/* A puffed clay ball or capsule. Size and position come from className;
+   `soft` gives the pale pastel version. */
+export function ClayBall({ className = "", soft = false }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none block ${soft ? "clay-ball-soft" : "clay-ball"} ${className}`}
+    />
   );
 }

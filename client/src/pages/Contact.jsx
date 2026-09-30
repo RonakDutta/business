@@ -13,7 +13,7 @@ import {
   PhoneIcon,
   UsersIcon,
 } from "../components/icons.jsx";
-import { Rings, Orb, Scatter } from "../components/Decor.jsx";
+import { Rings, Orb, Scatter, ClayBall } from "../components/Decor.jsx";
 import Spinner from "../components/Spinner.jsx";
 import { contactApi } from "../api";
 
@@ -26,7 +26,7 @@ import { contactApi } from "../api";
    anywhere. Swap `sendVia` for a POST when there's somewhere to POST to.
 
    Only channels that actually reach someone are listed. If the community adds
-   an Instagram or a LinkedIn page later, drop another <Channel> in , there are
+   an Instagram or a LinkedIn page later, drop another <Channel> in, there are
    icons for both in components/icons.jsx already.
    =========================================================================== */
 
@@ -51,11 +51,11 @@ function Channel({ icon: Icon, label, value, href, note, external }) {
   return (
     <Wrap
       {...props}
-      className={`group flex items-start gap-4 rounded-card border border-line bg-white p-5 transition-[border-color,translate] duration-300 ease-smooth ${
-        href ? "hover:-translate-y-0.5 hover:border-[#dfe3ea]" : ""
+      className={`clay clay-edge group flex items-start gap-4 rounded-card border bg-white p-5 transition-[translate] duration-300 ease-smooth ${
+        href ? "hover:-translate-y-0.5" : ""
       }`}
     >
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
+      <span className="clay-blue grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-accent">
         <Icon className="h-5 w-5" />
       </span>
 
@@ -102,7 +102,7 @@ export default function Contact() {
     if (sending) return;
     if (!form.name.trim()) return setError("We'd like to know who's writing.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      return setError("That email doesn't look right , we reply to it.");
+      return setError("That email doesn't look right, we reply to it.");
     if (form.message.trim().length < 10)
       return setError("Tell us a bit more so we can actually answer.");
 
@@ -125,7 +125,7 @@ export default function Contact() {
   };
 
   const field =
-    "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none";
+    "clay-inset clay-edge w-full rounded-2xl border bg-canvas px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none";
 
   return (
     <div className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
@@ -135,6 +135,9 @@ export default function Contact() {
           so the glow can bleed past the column and fade off softly instead. */}
       <Rings className="pointer-events-none absolute -right-16 -top-16 -z-10 hidden h-80 w-80 text-accent md:block" />
       <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
+
+      <ClayBall className="bob absolute right-[12%] top-24 -z-10 hidden h-12 w-12 md:block" />
+      <ClayBall soft className="absolute right-[30%] top-10 -z-10 hidden h-6 w-14 rotate-[18deg] md:block" />
 
       <header className="max-w-[640px]">
         <h1
@@ -200,11 +203,11 @@ export default function Contact() {
             note="Every edition, past and upcoming, with the RSVP list."
           />
 
-          <div className="mt-3 overflow-hidden rounded-card">
+          <div className="clay mt-3 overflow-hidden rounded-card border-[5px] border-white">
             <MapEmbed location={VENUE} title={VENUE.name} />
           </div>
 
-          <div className="rounded-card border border-line bg-white p-5">
+          <div className="clay clay-edge rounded-card border bg-white p-5">
             <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-subtle">
               Nearest metro
             </div>
@@ -214,19 +217,19 @@ export default function Contact() {
 
         {/* Message */}
         <aside className="reveal lg:sticky lg:top-28">
-          <div className="relative overflow-hidden rounded-panel border border-line bg-white p-6 shadow-[0_20px_50px_-40px_rgba(15,23,42,.5)] md:p-8">
+          <div className="clay clay-edge relative overflow-hidden rounded-panel border bg-white p-6 md:p-8">
             <Scatter className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 text-accent/50" />
             <div className="relative">
             {sent ? (
               <div className="py-6 text-center">
-                <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent/10 text-accent">
+                <span className="clay-blue mx-auto grid h-14 w-14 place-items-center rounded-full text-accent">
                   <MailIcon className="h-7 w-7" />
                 </span>
                 <h2 className="mt-5 text-[22px] font-extrabold tracking-[-0.03em]">
                   Message sent
                 </h2>
                 <p className="mx-auto mt-2.5 max-w-[300px] text-[14.5px] leading-relaxed text-muted">
-                  Thanks , we've got it and we'll reply to {form.email} soon.
+                  Thanks, we've got it and we'll reply to {form.email} soon.
                 </p>
                 <button
                   type="button"
@@ -242,7 +245,7 @@ export default function Contact() {
                   Send us a message
                 </h2>
                 <p className="mt-2 text-[13.5px] leading-relaxed text-subtle">
-                  Send it straight to the organisers , we read everything.
+                  Send it straight to the organisers, we read everything.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3">
@@ -296,7 +299,7 @@ export default function Contact() {
                       className={`${field} resize-y leading-relaxed`}
                       value={form.message}
                       onChange={set("message")}
-                      placeholder="Keep it short , we read everything."
+                      placeholder="Keep it short, we read everything."
                     />
                   </label>
 
@@ -310,7 +313,7 @@ export default function Contact() {
                     type="button"
                     onClick={send}
                     disabled={sending}
-                    className="mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                    className="clay clay-press mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
                   >
                     {sending && <Spinner className="h-4 w-4" />}
                     {sending ? "Sending…" : "Send message"}

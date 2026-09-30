@@ -20,7 +20,7 @@ import {
 
    "Add meetup" isn't in here. Creating a meetup is an action on the meetups
    page, not a place you navigate to, and it already has a primary button
-   there , two doors to one room only makes people wonder what the difference
+   there, two doors to one room only makes people wonder what the difference
    is.
    =========================================================================== */
 
@@ -132,7 +132,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#f5f6f8] lg:flex">
-      {/* Desktop rail , sticky so the table scrolls under it. */}
+      {/* Desktop rail, sticky so the table scrolls under it. */}
       <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 lg:block">
         <Rail user={user} signOut={signOut} />
       </aside>

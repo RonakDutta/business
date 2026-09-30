@@ -9,7 +9,7 @@ import {
   XIcon,
 } from "./icons.jsx";
 
-/* Everything here is a real route , the old #contact / #guidelines anchors
+/* Everything here is a real route, the old #contact / #guidelines anchors
    pointed at the footer itself, which was a link to nowhere. */
 const COLUMNS = [
   {
@@ -92,7 +92,7 @@ function Socials() {
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${s.label} , ${s.handle}`}
+            aria-label={`${s.label}, ${s.handle}`}
             title={s.handle}
             className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.08] text-white/70 transition-[scale,background,color] duration-300 ease-smooth hover:scale-110 hover:bg-white hover:text-ink"
           >

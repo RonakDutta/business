@@ -92,7 +92,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
   };
 
   const field =
-    "w-full rounded-2xl border border-line-strong bg-[#fafbfc] px-4 py-3.5 text-[15px] text-ink shadow-[inset_0_1px_0_rgba(255,255,255,.8)] transition-[border-color,background,box-shadow] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--b4-accent)_10%,transparent)] focus:outline-none";
+    "clay-inset clay-edge w-full rounded-2xl border bg-canvas px-4 py-3.5 text-[15px] text-ink transition-[border-color,background,box-shadow] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--b4-accent)_10%,transparent)] focus:outline-none";
   const labelCls =
     "text-[11.5px] font-bold uppercase tracking-[0.07em] text-subtle";
 
@@ -111,7 +111,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
 
       <BackLink to="/">Back home</BackLink>
 
-      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_30px_70px_-50px_rgba(15,23,42,.6)] lg:grid-cols-[1fr_440px]">
+      <div className="clay clay-edge mt-6 grid grid-cols-1 overflow-hidden rounded-[32px] border bg-white lg:grid-cols-[1fr_440px]">
         {/* ---- Form ------------------------------------------------- */}
         <div className="bg-gradient-to-b from-white to-[#fafbfc] p-6 sm:p-9 md:p-12">
           <div className="mx-auto max-w-[380px]">
@@ -318,7 +318,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
       </div>
 
       {/* ---- Same value, folded into a strip for phones ------------- */}
-      <div className="reveal mt-4 rounded-[24px] border border-line bg-white p-5 shadow-[0_20px_50px_-45px_rgba(15,23,42,.55)] lg:hidden">
+      <div className="clay clay-edge reveal mt-4 rounded-[28px] border bg-white p-5 lg:hidden">
         <ul className="flex flex-col gap-3">
           {PERKS.map((p) => (
             <li key={p} className="flex items-start gap-3">

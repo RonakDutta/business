@@ -5,7 +5,7 @@ import { useReveal } from "../hooks/useReveal.js";
 import { useSavedEvents } from "../context/SavedEventsContext.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
-import { Orb, ConnectionMesh } from "../components/Decor.jsx";
+import { Orb, ConnectionMesh, ClayBall } from "../components/Decor.jsx";
 import { CalendarIcon } from "../components/icons.jsx";
 import { ServerLoader, EventCardSkeleton } from "../components/ServerLoader.jsx";
 
@@ -14,7 +14,7 @@ const TABS = ["upcoming", "past", "saved"];
 const EMPTY = {
   upcoming: {
     title: "No dates up yet",
-    body: "The next edition hasn't been announced. It's every second Saturday , check back in a few days.",
+    body: "The next edition hasn't been announced. It's every second Saturday, check back in a few days.",
     cta: null,
   },
   past: {
@@ -73,6 +73,7 @@ export default function Events() {
   return (
     <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-14 md:px-10">
       {/* Vector backdrop */}
+      <ClayBall className="bob absolute right-[22%] top-16 -z-10 h-8 w-8 sm:h-10 sm:w-10" />
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
       <ConnectionMesh className="pointer-events-none absolute -right-6 top-2 -z-10 h-36 w-52 text-accent opacity-60 [-webkit-mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] [mask-image:radial-gradient(80%_80%_at_80%_20%,#000,transparent)] sm:h-52 sm:w-80 sm:opacity-70 md:-right-4" />
 

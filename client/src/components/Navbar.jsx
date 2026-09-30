@@ -167,18 +167,18 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Inner navbar container with smooth 2-way animation and zero black border */}
+      {/* Inner navbar container: a full-width clay bar at rest, a floating clay pill once scrolled. */}
       <div
         className={`pointer-events-auto mx-auto w-full bg-white transition-all duration-300 ease-smooth ${
           scrolled
-            ? "mt-2.5 max-w-[1240px] clay rounded-full py-1.5 px-4 shadow-xl border border-white/80"
-            : "mt-0 max-w-[2000px] rounded-none border-b border-line py-3 px-5 sm:px-6 md:px-10 shadow-xs"
+            ? "mt-2.5 max-w-[1240px] clay clay-edge rounded-full border py-1.5 px-4"
+            : "clay-bar clay-edge mt-0 max-w-[2000px] rounded-none border-b py-3 px-5 sm:px-6 md:px-10"
         }`}
       >
         <div className="mx-auto max-w-shell">
           <nav className="flex items-center justify-between gap-4">
             {/* Logo */}
-            <Link to="/" aria-label="Business 4.0 , home" className="flex items-center">
+            <Link to="/" aria-label="Business 4.0, home" className="flex items-center">
               <Wordmark />
             </Link>
 
@@ -242,7 +242,7 @@ export default function Navbar() {
 
         {/* Mobile Dropdown Floating Menu Panel */}
         {open && (
-          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-line bg-white p-5 shadow-2xl md:hidden sm:left-6 sm:right-6">
+          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto clay clay-edge rounded-[28px] border bg-white p-5 md:hidden sm:left-6 sm:right-6">
             <div className="flex flex-col gap-1.5">
               {LINKS.map((l) => (
                 <NavLink

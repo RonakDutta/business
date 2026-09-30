@@ -1,4 +1,4 @@
-/** "Free" or "₹150" , one source of truth for how price renders. */
+/** "Free" or "₹150", one source of truth for how price renders. */
 export const priceLabel = (entryFee) =>
   !entryFee ? "Free" : `₹${entryFee.toLocaleString("en-IN")}`;
 

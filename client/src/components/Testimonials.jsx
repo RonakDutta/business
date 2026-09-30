@@ -68,7 +68,7 @@ export default function Testimonials() {
 
       <div className="marquee marquee-mask reveal mt-10 overflow-hidden md:mt-12">
         <ul className="marquee-track">
-          {/* The list twice , the second copy is what makes the loop seamless,
+          {/* The list twice, the second copy is what makes the loop seamless,
               and it is hidden from screen readers and the tab order. */}
           {[...testimonials, ...testimonials].map((person, index) => {
             const duplicate = index >= testimonials.length;

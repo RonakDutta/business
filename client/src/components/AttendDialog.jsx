@@ -11,7 +11,7 @@ import { priceLabel, isFree } from "../lib/format.js";
 
    The QR is a UPI intent string encoded at render time, so any UPI app scans
    it with the amount and reference already filled in. On a phone, the same
-   string opens the app directly , hence the button under the code.
+   string opens the app directly, hence the button under the code.
 
    What this can't do without a backend: verify the money arrived. The seat is
    booked when the attendee says they've paid, and the reference under the code
@@ -28,7 +28,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
   const [paymentError, setPaymentError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // One reference per dialog , regenerating it mid-payment would be unhelpful.
+  // One reference per dialog, regenerating it mid-payment would be unhelpful.
   const reference = useMemo(() => paymentRef(event.id), [event.id]);
 
   const intent = useMemo(
@@ -149,7 +149,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
 
             {free ? (
               <p className="mt-3 text-[15px] leading-relaxed text-muted">
-                This edition is free , no payment needed. Confirm below and
+                This edition is free, no payment needed. Confirm below and
                 we'll count you in.
               </p>
             ) : (
@@ -290,7 +290,7 @@ function Confirmed({ event, onClose }) {
       </h2>
       <p className="mx-auto mt-2 max-w-[300px] text-[15px] leading-relaxed text-muted">
         {event.when.headline}. Enter via{" "}
-        {event.location.gate || "the main gate"} , we start on time.
+        {event.location.gate || "the main gate"}, we start on time.
       </p>
 
       <button

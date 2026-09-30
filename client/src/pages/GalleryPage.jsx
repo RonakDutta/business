@@ -2,7 +2,7 @@ import AlbumCard from "../components/AlbumCard.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
-import { Orb, Scatter } from "../components/Decor.jsx";
+import { Orb, Scatter, ClayBall } from "../components/Decor.jsx";
 import { ImageIcon } from "../components/icons.jsx";
 import { ServerLoader, AlbumCardSkeleton } from "../components/ServerLoader.jsx";
 
@@ -16,6 +16,7 @@ export default function GalleryPage() {
   return (
     <section className="relative isolate mx-auto max-w-shell px-6 pb-24 pt-16 md:px-10">
       <Orb className="pointer-events-none absolute -left-20 -top-8 -z-10 h-56 w-56 text-accent blur-2xl sm:h-64 sm:w-64" />
+      <ClayBall soft className="absolute right-[28%] top-14 -z-10 h-10 w-10 sm:h-14 sm:w-14" />
       <Scatter className="pointer-events-none absolute -right-4 top-4 -z-10 h-36 w-36 text-accent opacity-70 sm:h-52 sm:w-52 md:right-2" />
 
       <h1

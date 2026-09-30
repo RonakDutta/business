@@ -71,7 +71,7 @@ export default function EventComments({ event }) {
                 }}
                 maxLength={MAX_COMMENT_LENGTH}
                 placeholder={`How was ${event.date.split(" · ")[0]}? What stuck with you?`}
-                className="w-full resize-y rounded-2xl border border-line-strong bg-[#fafbfc] px-4 py-3 text-[15px] leading-relaxed text-ink transition-[border-color,background] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none"
+                className="clay-inset clay-edge w-full resize-y rounded-2xl border bg-canvas px-4 py-3 text-[15px] leading-relaxed text-ink transition-[border-color,background] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none"
               />
 
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">

@@ -46,7 +46,7 @@ const STATUS = {
   },
 };
 
-/** The id is the date , a chip reads faster than "2026-07-18" in a long list. */
+/** The id is the date, a chip reads faster than "2026-07-18" in a long list. */
 function DateChip({ id, muted = false }) {
   const [y, m, d] = id.split("-").map(Number);
   return (
@@ -464,7 +464,7 @@ export default function Dashboard() {
             </p>
             <p className="mx-auto mt-1.5 max-w-[320px] text-[13px] leading-relaxed text-muted">
               {query
-                ? "Try the date instead , every meetup is filed under the day it runs."
+                ? "Try the date instead, every meetup is filed under the day it runs."
                 : "Add a date and it'll show up here and on the public site."}
             </p>
           </div>

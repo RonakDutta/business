@@ -12,7 +12,7 @@ export default function Wordmark({
   return (
     <span className={`flex items-center gap-2.5 ${className}`}>
       {/* The logo sits in a moulded ring rather than being cut straight out of
-          the bar , it is the one place the brand touches every page. */}
+          the bar, it is the one place the brand touches every page. */}
       <span
         aria-hidden="true"
         className={`grid shrink-0 place-items-center rounded-full p-[3px] ${

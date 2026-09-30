@@ -22,14 +22,14 @@ export const heroSlides = [
   },
 ];
 
-// Placeholder figures for now , swap them for the real ones.
+// Placeholder figures for now, swap them for the real ones.
 export const stats = [
   { id: "editions", value: 180, suffix: "+", label: "Editions hosted" },
   { id: "members", value: 1200, suffix: "+", label: "Community members" },
   { id: "connections", value: 1500, suffix: "+", label: "Connections made" },
 ];
 
-// Who the meetup is for , shown under the explanation.
+// Who the meetup is for, shown under the explanation.
 export const audience = [
   "Side hustlers",
   "Entrepreneurs",

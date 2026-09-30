@@ -54,7 +54,7 @@ export default function AboutSection() {
               </ul>
 
               <p className="mt-6 border-t border-line pt-5 text-[14px] leading-relaxed text-muted">
-                If you are building something , or seriously plan to , you are
+                If you are building something, or seriously plan to, you are
                 in the right room.
               </p>
             </div>

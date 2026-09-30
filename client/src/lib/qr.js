@@ -7,7 +7,7 @@
    is smaller than the dependency's README. No install step, no bundle weight,
    works offline.
 
-   Output is a boolean matrix , see components/QRCode.jsx for the SVG.
+   Output is a boolean matrix, see components/QRCode.jsx for the SVG.
    If you ever need >213 characters, add rows to CAPACITY/BLOCKS/ALIGN.
    =========================================================================== */
 
@@ -123,7 +123,7 @@ const bits = () => {
   };
 };
 
-/** UTF-8 bytes , UPI strings can carry names with non-ASCII characters. */
+/** UTF-8 bytes, UPI strings can carry names with non-ASCII characters. */
 const utf8 = (str) => Array.from(new TextEncoder().encode(str));
 
 /* --- Encode -------------------------------------------------------------- */
@@ -240,7 +240,7 @@ function reserveFormat(m, size) {
     m.reserved[8][size - 1 - i] = true;
     m.reserved[size - 1 - i][8] = true;
   }
-  // Dark module , always set, always reserved.
+  // Dark module, always set, always reserved.
   m.modules[size - 8][8] = true;
   m.reserved[size - 8][8] = true;
 }
@@ -272,14 +272,14 @@ function placeFormat(m, size, mask) {
   const value = ((data << 10) | rem) ^ 0x5412;
   const bit = (i) => ((value >> i) & 1) === 1;
 
-  // Copy 1 , down the left of the top-right finder, then along the top-left.
+  // Copy 1, down the left of the top-right finder, then along the top-left.
   for (let i = 0; i <= 5; i++) m.modules[i][8] = bit(i);
   m.modules[7][8] = bit(6);
   m.modules[8][8] = bit(7);
   m.modules[8][7] = bit(8);
   for (let i = 9; i <= 14; i++) m.modules[8][14 - i] = bit(i);
 
-  // Copy 2 , split across the bottom-left and top-right corners.
+  // Copy 2, split across the bottom-left and top-right corners.
   for (let i = 0; i <= 7; i++) m.modules[8][size - 1 - i] = bit(i);
   for (let i = 8; i <= 14; i++) m.modules[size - 15 + i][8] = bit(i);
 }
@@ -327,7 +327,7 @@ function penalty(modules, size) {
   for (let r = 0; r < size; r++) runScore(modules[r]);
   for (let c = 0; c < size; c++) runScore(modules.map((row) => row[c]));
 
-  // Rule 2 , 2x2 blocks of one colour.
+  // Rule 2, 2x2 blocks of one colour.
   for (let r = 0; r < size - 1; r++) {
     for (let c = 0; c < size - 1; c++) {
       const v = modules[r][c];
@@ -341,7 +341,7 @@ function penalty(modules, size) {
     }
   }
 
-  /* Rule 3 , the finder-like 1:1:3:1:1 pattern with four light modules on one
+  /* Rule 3, the finder-like 1:1:3:1:1 pattern with four light modules on one
      side. Matched as the two 11-module windows the spec names, 10111010000 and
      00001011101, so this scores the same way a scanner's reference decoder does. */
   const scanLine = (line) => {
@@ -354,7 +354,7 @@ function penalty(modules, size) {
   for (let r = 0; r < size; r++) scanLine(modules[r]);
   for (let c = 0; c < size; c++) scanLine(modules.map((row) => row[c]));
 
-  // Rule 4 , deviation from a 50/50 dark ratio, in 5% steps.
+  // Rule 4, deviation from a 50/50 dark ratio, in 5% steps.
   const dark = modules.flat().filter(Boolean).length;
   const ratio = (dark * 100) / (size * size);
   score += Math.abs(Math.ceil(ratio / 5) - 10) * 10;

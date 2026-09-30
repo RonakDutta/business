@@ -9,7 +9,7 @@ const initials = (name) =>
     .toUpperCase();
 
 /**
- * Falls back to initials when the avatar API is unreachable , pravatar is a
+ * Falls back to initials when the avatar API is unreachable, pravatar is a
  * placeholder service and does go down. `ring` marks Prime members.
  */
 export default function Avatar({

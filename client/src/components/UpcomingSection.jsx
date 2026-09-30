@@ -8,7 +8,7 @@ import { ServerLoader } from "./ServerLoader.jsx";
 
 const FACTS = [
   { Icon: CalendarIcon, label: "Every second Saturday" },
-  { Icon: ClockIcon, label: "11:00 AM , 1:00 PM" },
+  { Icon: ClockIcon, label: "11:00 AM, 1:00 PM" },
   { Icon: MapPinIcon, label: VENUE.shortName },
 ];
 
@@ -89,7 +89,7 @@ export default function UpcomingSection({ events = [] }) {
                 <p className="text-[16px] font-bold text-ink">No dates up yet</p>
                 <p className="mx-auto mt-2 max-w-[300px] text-sm leading-relaxed text-muted">
                   The next edition has not been announced. It runs every second
-                  Saturday , check back in a few days.
+                  Saturday, check back in a few days.
                 </p>
               </div>
             )}

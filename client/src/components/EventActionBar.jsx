@@ -78,7 +78,7 @@ export default function EventActionBar({ event }) {
   return (
     <>
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:px-4 sm:pb-4 md:pb-6">
-        <div className="pointer-events-auto mx-auto grid max-w-[940px] grid-cols-[42px_minmax(0,1fr)_40px] items-center gap-2 rounded-panel border border-line bg-white/95 p-2.5 shadow-[0_18px_45px_-18px_rgba(15,23,42,.45)] backdrop-blur-md sm:flex sm:gap-3 sm:rounded-full md:gap-4 md:p-3 md:pl-4">
+        <div className="pointer-events-auto mx-auto grid max-w-[940px] grid-cols-[42px_minmax(0,1fr)_40px] items-center gap-2 clay clay-edge rounded-panel border bg-white/95 p-2.5 backdrop-blur-md sm:flex sm:gap-3 sm:rounded-full md:gap-4 md:p-3 md:pl-4">
           {/* Date chip — same object as on the cards, so the bar reads as a
               continuation of the one you clicked. */}
           <div
