@@ -58,7 +58,7 @@ function TeamMember({ person }) {
           <TeamPortrait person={person} />
         </div>
         {person.linkedin && (
-          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-white hover:text-accent">
+          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:opacity-100 hover:bg-white hover:text-accent">
             <ArrowUpRightIcon className="h-4 w-4" />
           </span>
         )}

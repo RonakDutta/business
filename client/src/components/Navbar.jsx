@@ -109,7 +109,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
 
           <div className="p-2">
             <Link
-              to="/saved"
+              to="/events?tab=saved"
               role="menuitem"
               onClick={() => setOpen(false)}
               className={`${item} text-muted hover:bg-canvas hover:text-ink`}

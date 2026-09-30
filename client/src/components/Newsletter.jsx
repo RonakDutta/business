@@ -41,7 +41,7 @@ export default function Newsletter() {
           <button
             type="button"
             onClick={subscribe}
-            className="whitespace-nowrap rounded-btn bg-accent px-7 py-[15px] text-[15px] font-bold text-white transition-transform duration-300 ease-smooth hover:-translate-y-0.5"
+            className="whitespace-nowrap rounded-btn bg-accent px-7 py-[15px] text-[15px] font-bold text-white transition-transform duration-300 ease-smooth"
           >
             Subscribe
           </button>

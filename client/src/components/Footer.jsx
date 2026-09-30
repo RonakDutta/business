@@ -106,7 +106,7 @@ function Socials() {
 
 export default function Footer() {
   return (
-    <footer className="bg-ink text-white">
+    <footer className="clay-dark rounded-t-[36px] bg-ink text-white sm:rounded-t-[56px]">
       <div className="mx-auto max-w-shell px-5 sm:px-6 md:px-10">
         <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>

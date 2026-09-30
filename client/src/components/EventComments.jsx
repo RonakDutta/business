@@ -86,7 +86,7 @@ export default function EventComments({ event }) {
                 <button
                   type="submit"
                   disabled={!body.trim()}
-                  className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-2.5 text-[14px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                  className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-2.5 text-[14px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-ink"
                 >
                   Post comment
                   <ArrowRightIcon className="h-4 w-4" />
@@ -108,7 +108,7 @@ export default function EventComments({ event }) {
           </p>
           <Link
             to={`/login?next=${encodeURIComponent(`/events/${event.id}`)}`}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-btn bg-ink px-5 py-2.5 text-[13.5px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-btn bg-ink px-5 py-2.5 text-[13.5px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
           >
             Sign in
             <ArrowRightIcon className="h-4 w-4" />

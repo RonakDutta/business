@@ -142,7 +142,7 @@ export default function Events() {
             <button
               type="button"
               onClick={() => setTab("upcoming")}
-              className="mt-6 rounded-btn bg-ink px-6 py-3 text-sm font-bold text-white transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
+              className="mt-6 rounded-btn bg-ink px-6 py-3 text-sm font-bold text-white transition-[translate] duration-300 ease-smooth"
             >
               {empty.cta}
             </button>

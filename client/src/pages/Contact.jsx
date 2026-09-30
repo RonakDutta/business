@@ -52,7 +52,7 @@ function Channel({ icon: Icon, label, value, href, note, external }) {
     <Wrap
       {...props}
       className={`clay clay-edge group flex items-start gap-4 rounded-card border bg-white p-5 transition-[translate] duration-300 ease-smooth ${
-        href ? "hover:-translate-y-0.5" : ""
+        href ? "" : ""
       }`}
     >
       <span className="clay-blue grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-accent">
@@ -313,7 +313,7 @@ export default function Contact() {
                     type="button"
                     onClick={send}
                     disabled={sending}
-                    className="clay clay-press mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+                    className="clay clay-press mt-1 flex w-full items-center justify-center gap-2 rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-ink"
                   >
                     {sending && <Spinner className="h-4 w-4" />}
                     {sending ? "Sending…" : "Send message"}

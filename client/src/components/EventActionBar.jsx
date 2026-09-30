@@ -161,7 +161,7 @@ export default function EventActionBar({ event }) {
                 onClick={isPast ? () => navigate(`/gallery/${event.id}`) : onAttend}
                 aria-pressed={going || undefined}
                 title={going ? "Click to give up your seat" : undefined}
-                className={`min-w-0 flex-1 rounded-full px-4 py-3 text-center text-[13px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
+                className={`min-w-0 flex-1 rounded-full px-4 py-3 text-center text-[13px] font-bold text-white transition-[translate,background] duration-300 ease-smooth sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
                   going ? "bg-accent" : "bg-ink hover:bg-accent"
                 }`}
               >

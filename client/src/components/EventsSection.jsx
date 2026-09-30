@@ -30,7 +30,7 @@ export default function EventsSection({
           (variant === "upcoming" ? (
             <Link
               to="/events"
-              className="accent-border hover:accent-tint group inline-flex items-center gap-2 whitespace-nowrap rounded-btn border px-5 py-2.75 text-sm font-bold text-accent transition-[background,translate] duration-300 ease-smooth hover:-translate-y-0.5"
+              className="accent-border hover:accent-tint group inline-flex items-center gap-2 whitespace-nowrap rounded-btn border px-5 py-2.75 text-sm font-bold text-accent transition-[background,translate] duration-300 ease-smooth"
             >
               {ctaLabel}
               <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 ease-smooth group-hover:translate-x-0.5" />

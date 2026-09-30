@@ -259,7 +259,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
               type="button"
               onClick={confirm}
               disabled={submitting}
-              className="mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+              className="mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
             >
               {submitting
                 ? "Submitting payment proof…"
@@ -296,7 +296,7 @@ function Confirmed({ event, onClose }) {
       <button
         type="button"
         onClick={onClose}
-        className="mt-7 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+        className="mt-7 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
       >
         Done
       </button>

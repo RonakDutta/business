@@ -13,13 +13,13 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link
           to="/"
-          className="rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-transform duration-300 ease-smooth hover:-translate-y-0.75 hover:text-white"
+          className="rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-transform duration-300 ease-smooth hover:text-white"
         >
           Go home
         </Link>
         <Link
           to="/events"
-          className="accent-border hover:accent-tint rounded-btn border px-7 py-4 text-[15px] font-bold text-accent transition-[background,translate] duration-300 ease-smooth hover:-translate-y-0.75"
+          className="accent-border hover:accent-tint rounded-btn border px-7 py-4 text-[15px] font-bold text-accent transition-[background,translate] duration-300 ease-smooth"
         >
           See all events
         </Link>

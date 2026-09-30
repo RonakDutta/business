@@ -361,7 +361,7 @@ export default function EventForm() {
               type="button"
               onClick={save}
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-btn bg-ink px-7 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
+              className="inline-flex items-center gap-2 rounded-btn bg-ink px-7 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-ink"
             >
               {saving ? (
                 <Spinner className="h-4 w-4" />

@@ -329,7 +329,7 @@ export default function Guidelines() {
             {next && (
               <Link
                 to={`/events/${next.id}`}
-                className="inline-flex items-center gap-2 rounded-btn bg-white px-6 py-3.5 text-sm font-bold text-ink transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 rounded-btn bg-white px-6 py-3.5 text-sm font-bold text-ink transition-[translate] duration-300 ease-smooth"
               >
                 RSVP
                 <ArrowRightIcon className="h-4 w-4" />
