@@ -339,7 +339,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           alpha: true
         });
         this.renderer.setSize(initW, initH, false);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
+        this.renderer.setPixelRatio(1);
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -364,7 +364,6 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         // Own clock: advances only while the road is actually moving, so a
         // pause never makes the lights leap forward on resume.
         this.elapsed = 0;
-        this.timeScale = 1;
 
         this.road = new Road(this, options);
         this.leftCarLights = new CarLights(
@@ -642,22 +641,19 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         }
 
         if (this.hasValidSize) {
-          const raw = Math.min(this.clock.getDelta(), 1 / 30);
-
-          // While the page scrolls the road eases to a stop (then stops
-          // rendering so the GPU goes to the scroll), and eases back up to
-          // speed afterwards, instead of freezing and snapping.
-          const target = this.scrollPaused ? 0 : 1;
-          const ease = 1 - Math.exp(-raw * (this.scrollPaused ? 10 : 4));
-          this.timeScale += (target - this.timeScale) * ease;
-
-          if (this.scrollPaused && this.timeScale < 0.03) {
-            this.timeScale = 0;
+          // Never stops: while the page scrolls it draws every other frame
+          // (about 30fps) so the GPU has room for the scroll. Time keeps
+          // accumulating between drawn frames, so the road's speed is the
+          // same either way and there is nothing to snap back from.
+          this.pending = (this.pending || 0) + this.clock.getDelta();
+          const minStep = this.scrollPaused ? 1 / 32 : 0;
+          if (this.pending < minStep) {
             requestAnimationFrame(this.tick);
             return;
           }
 
-          const delta = raw * this.timeScale;
+          const delta = Math.min(this.pending, 1 / 20);
+          this.pending = 0;
           this.render(delta);
           this.update(delta);
         }

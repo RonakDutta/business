@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "./QRCode.jsx";
 import ImagePicker from "./ImagePicker.jsx";
-import { CheckIcon, CloseIcon, ScanIcon } from "./icons.jsx";
+import { CalendarIcon, CloseIcon, ScanIcon } from "./icons.jsx";
+import NameBadge from "./NameBadge.jsx";
 import { PAYMENT, paymentRef } from "../data/payment.js";
 import { upiIntent } from "../lib/qr.js";
 import { priceLabel, isFree } from "../lib/format.js";
@@ -134,15 +135,16 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
         </button>
 
         {done ? (
-          <Confirmed event={event} onClose={onClose} />
+          <Confirmed event={event} user={user} onClose={onClose} />
         ) : (
           <>
-            <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-subtle">
+            <span className="accent-tint inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] font-bold text-accent">
+              <CalendarIcon className="h-3.5 w-3.5" />
               {event.date}
-            </div>
+            </span>
             <h2
               id="attend-title"
-              className="mt-1.5 pr-8 text-[22px] font-extrabold leading-tight tracking-[-0.03em]"
+              className="mt-3 pr-8 text-[22px] font-extrabold leading-tight tracking-[-0.03em]"
             >
               {free ? "Save your seat" : "Pay the entry fee"}
             </h2>
@@ -159,7 +161,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   filled in.
                 </p>
 
-                <div className="mt-5 flex flex-col items-center rounded-card border border-line bg-[#fafbfc] p-4 sm:mt-5 sm:p-3">
+                <div className="clay-edge mt-5 flex flex-col items-center rounded-card border bg-canvas p-4 sm:mt-5 sm:p-3">
                   <QRCode
                     value={intent}
                     title={`Pay ${priceLabel(event.entryFee)} to ${PAYMENT.displayName}`}
@@ -173,14 +175,14 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                     <div className="mt-0.5 text-[13px] font-semibold text-muted">
                       {PAYMENT.displayName}
                     </div>
-                    <div className="mt-1.5 flex items-center justify-center gap-2 rounded-lg border border-line-strong bg-white px-2.5 py-1.5">
+                    <div className="clay-edge mt-1.5 flex items-center justify-center gap-2 rounded-full border bg-white py-1 pl-3 pr-1">
                       <span className="font-mono text-[12px] font-bold text-ink">
                         {PAYMENT.vpa}
                       </span>
                       <button
                         type="button"
                         onClick={copyUpiId}
-                        className="shrink-0 rounded-md bg-ink px-2 py-1 text-[10px] font-bold text-white transition-colors hover:bg-accent"
+                        className="shrink-0 rounded-full bg-ink px-2.5 py-1 text-[10.5px] font-bold text-white transition-colors hover:bg-accent"
                         aria-label="Copy UPI ID"
                       >
                         {copied ? "Copied" : "Copy"}
@@ -191,7 +193,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
 
                 <a
                   href={intent}
-                  className="mt-3 flex items-center justify-center gap-2 rounded-btn border border-line-strong px-5 py-3 text-sm font-bold text-ink transition-colors duration-200 hover:border-ink sm:hidden"
+                  className="clay-press clay-edge mt-3 flex items-center justify-center gap-2 rounded-btn border bg-white px-5 py-3 text-sm font-bold text-ink sm:hidden"
                 >
                   <ScanIcon className="h-[18px] w-[18px]" />
                   Open my UPI app
@@ -199,8 +201,8 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
 
                 <p className="mt-3 text-[12px] leading-relaxed text-subtle">
                   Reference{" "}
-                  <span className="font-mono text-ink">{reference}</span> ,
-                  quote it if anything goes wrong with the transfer.
+                  <span className="font-mono text-ink">{reference}</span>.
+                  Quote it if anything goes wrong with the transfer.
                 </p>
 
                 <div className="mt-4">
@@ -220,7 +222,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   </div>
 
                   {paymentImage ? (
-                    <div className="flex items-center gap-3 rounded-card border border-line bg-[#fafbfc] p-3">
+                    <div className="clay-edge flex items-center gap-3 rounded-card border bg-canvas p-3">
                       <img
                         src={paymentImage}
                         alt="Selected payment screenshot"
@@ -259,7 +261,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
               type="button"
               onClick={confirm}
               disabled={submitting}
-              className="mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
+              className="clay clay-press mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white hover:bg-accent disabled:opacity-70"
             >
               {submitting
                 ? "Submitting payment proof…"
@@ -275,28 +277,44 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
   );
 }
 
-function Confirmed({ event, onClose }) {
+/* The RSVP's payoff: the same name badge from sign-up, handed over with the
+   date on the stub. */
+function Confirmed({ event, user, onClose }) {
+  const date = event.when.headline.split(" · ");
   return (
-    <div className="py-4 text-center">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent/10 text-accent">
-        <CheckIcon className="h-7 w-7" />
-      </span>
-
+    <div className="pt-2 text-center">
       <h2
         id="attend-title"
-        className="mt-5 text-[22px] font-extrabold tracking-[-0.03em]"
+        className="text-[22px] font-extrabold tracking-[-0.03em]"
       >
         You're going
       </h2>
-      <p className="mx-auto mt-2 max-w-[300px] text-[15px] leading-relaxed text-muted">
-        {event.when.headline}. Enter via{" "}
-        {event.location.gate || "the main gate"}, we start on time.
+      <p className="mx-auto mt-2 max-w-[300px] text-[14.5px] leading-relaxed text-muted">
+        Here's your badge. Enter via {event.location.gate || "the main gate"},
+        we start on time.
       </p>
+
+      <div className="px-5 pb-2 pt-8 text-left">
+        <NameBadge
+          name={user?.name?.trim()}
+          placeholder="See you there"
+          greeting="my name is"
+          stub={
+            <>
+              {date[0]}
+              <br />
+              <span className="font-semibold text-faint">
+                {date[1]?.split(" to ")[0]}
+              </span>
+            </>
+          }
+        />
+      </div>
 
       <button
         type="button"
         onClick={onClose}
-        className="mt-7 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:bg-accent"
+        className="clay clay-press mt-7 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white hover:bg-accent"
       >
         Done
       </button>

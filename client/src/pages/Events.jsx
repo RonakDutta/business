@@ -5,7 +5,7 @@ import { useReveal } from "../hooks/useReveal.js";
 import { useSavedEvents } from "../context/SavedEventsContext.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import BackLink from "../components/BackLink.jsx";
-import { Orb, ConnectionMesh, ClayBall } from "../components/Decor.jsx";
+import { Orb, ConnectionMesh, ClayBall, ClayCalendar } from "../components/Decor.jsx";
 import { CalendarIcon } from "../components/icons.jsx";
 import { ServerLoader, EventCardSkeleton } from "../components/ServerLoader.jsx";
 
@@ -98,22 +98,23 @@ export default function Events() {
         first pick of seats.
       </p>
 
-      <div className="mb-9 flex w-full gap-1 rounded-btn border border-line-strong p-1.5 sm:inline-flex sm:w-auto">
+      {/* The same pill track as the navbar and the sign-in switch. */}
+      <div className="clay-inset mb-9 flex w-full gap-1 rounded-full bg-canvas p-1 sm:inline-flex sm:w-auto">
         {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
             aria-pressed={tab === t.id}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-btn px-3 py-2.5 text-sm font-bold transition-colors duration-300 sm:flex-none sm:px-5 ${
-              tab === t.id ? "bg-ink text-white" : "text-muted hover:text-ink"
+            className={`flex flex-1 items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-bold transition-[color,background,box-shadow] duration-200 sm:flex-none sm:px-5 ${
+              tab === t.id ? "clay bg-white text-ink" : "text-muted hover:text-ink"
             }`}
           >
             {t.label}
             {t.count > 0 && (
               <span
-                className={`text-[12px] tabular-nums ${
-                  tab === t.id ? "text-white/50" : "text-faint"
+                className={`rounded-full px-1.5 text-[11.5px] tabular-nums ${
+                  tab === t.id ? "accent-tint text-accent" : "text-faint"
                 }`}
               >
                 {t.count}
@@ -133,8 +134,11 @@ export default function Events() {
           </div>
         </div>
       ) : events.length === 0 ? (
-        <div className="rounded-card border border-dashed border-line-strong py-20 text-center">
-          <p className="text-[17px] font-bold text-ink">{empty.title}</p>
+        <div className="clay-soft clay-edge flex flex-col items-center rounded-panel border bg-white px-6 py-14 text-center">
+          <ClayCalendar className="h-auto w-40" />
+          <p className="mt-6 text-[19px] font-extrabold tracking-[-0.02em] text-ink">
+            {empty.title}
+          </p>
           <p className="mx-auto mt-2 max-w-[340px] text-sm leading-relaxed text-muted">
             {empty.body}
           </p>
@@ -142,7 +146,7 @@ export default function Events() {
             <button
               type="button"
               onClick={() => setTab("upcoming")}
-              className="mt-6 rounded-btn bg-ink px-6 py-3 text-sm font-bold text-white transition-[translate] duration-300 ease-smooth"
+              className="clay clay-press mt-6 rounded-btn bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-accent"
             >
               {empty.cta}
             </button>
