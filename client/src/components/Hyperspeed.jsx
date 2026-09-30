@@ -1,4 +1,4 @@
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from 'postprocessing';
+import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -426,17 +426,12 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           resolutionScale: 0.5
         }));
 
-        const smaaPass = new EffectPass(this.camera, new SMAAEffect({
-          preset: SMAAPreset.MEDIUM,
-          searchImage: SMAAEffect.searchImageDataURL,
-          areaImage: SMAAEffect.areaImageDataURL
-        }));
+        // No SMAA pass: at 65% opacity behind the hero the edge smoothing is
+        // invisible, and it was a full extra render of the canvas every frame.
         this.renderPass.renderToScreen = false;
-        this.bloomPass.renderToScreen = false;
-        smaaPass.renderToScreen = true;
+        this.bloomPass.renderToScreen = true;
         this.composer.addPass(this.renderPass);
         this.composer.addPass(this.bloomPass);
-        this.composer.addPass(smaaPass);
       }
 
       loadAssets() {
@@ -610,7 +605,9 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       tick() {
         if (this.disposed) return;
-        if (this.isPaused) {
+        // Paused while off screen, and while the page is being scrolled so the
+        // GPU goes to the scroll instead of the road.
+        if (this.isPaused || this.scrollPaused) {
           requestAnimationFrame(this.tick);
           return;
         }
@@ -639,7 +636,8 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         }
 
         if (this.hasValidSize) {
-          const delta = this.clock.getDelta();
+          // Clamped so the road doesn't leap forward after a pause.
+          const delta = Math.min(this.clock.getDelta(), 1 / 30);
           this.render(delta);
           this.update(delta);
         }
@@ -1155,8 +1153,20 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
     observer.observe(container);
 
+    let scrollTimer;
+    const onScroll = () => {
+      if (appRef.current) appRef.current.scrollPaused = true;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        if (appRef.current) appRef.current.scrollPaused = false;
+      }, 160);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
       observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(scrollTimer);
       if (appRef.current) {
         appRef.current.dispose();
         appRef.current = null;

@@ -172,7 +172,7 @@ export default function Guidelines() {
       {/* The four things people ask before anything else. */}
       <div
         data-delay="0.18"
-        className="clay clay-edge reveal relative mt-10 overflow-hidden rounded-panel border bg-gradient-to-b from-white to-[#f5f7fe]"
+        className="clay-soft clay-edge reveal relative mt-10 overflow-hidden rounded-panel border bg-gradient-to-b from-white to-[#f5f7fe]"
       >
         <PlusField className="pointer-events-none absolute inset-0 h-full w-full text-accent/[0.08]" />
         <div className="relative grid grid-cols-2 divide-line sm:grid-cols-4 sm:divide-x">
@@ -221,7 +221,7 @@ export default function Guidelines() {
                   {phase.n}
                 </span>
 
-                <div className="clay clay-edge overflow-hidden rounded-panel border bg-white">
+                <div className="clay-soft clay-edge overflow-hidden rounded-panel border bg-white">
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-line bg-[#fbfcfd] px-6 py-5 md:px-8">
                     <h3 className="text-[21px] font-extrabold tracking-[-0.03em] md:text-[25px]">
                       {phase.title}
@@ -266,7 +266,7 @@ export default function Guidelines() {
         </p>
 
         <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="clay clay-edge relative overflow-hidden rounded-card border bg-white p-6">
+          <div className="clay-soft clay-edge relative overflow-hidden rounded-card border bg-white p-6">
             <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-accent">
               Please do
             </div>
@@ -277,7 +277,7 @@ export default function Guidelines() {
             </ul>
           </div>
 
-          <div className="clay clay-edge rounded-card border bg-white p-6">
+          <div className="clay-soft clay-edge rounded-card border bg-white p-6">
             <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-red-500">
               Please don't
             </div>

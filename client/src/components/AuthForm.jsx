@@ -111,7 +111,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
 
       <BackLink to="/">Back home</BackLink>
 
-      <div className="clay clay-edge mt-6 grid grid-cols-1 overflow-hidden rounded-[32px] border bg-white lg:grid-cols-[1fr_440px]">
+      <div className="clay-soft clay-edge mt-6 grid grid-cols-1 overflow-hidden rounded-[32px] border bg-white lg:grid-cols-[1fr_440px]">
         {/* ---- Form ------------------------------------------------- */}
         <div className="bg-gradient-to-b from-white to-[#fafbfc] p-6 sm:p-9 md:p-12">
           <div className="mx-auto max-w-[380px]">
@@ -318,7 +318,7 @@ export default function AuthForm({ mode = "login", onSubmit }) {
       </div>
 
       {/* ---- Same value, folded into a strip for phones ------------- */}
-      <div className="clay clay-edge reveal mt-4 rounded-[28px] border bg-white p-5 lg:hidden">
+      <div className="clay-soft clay-edge reveal mt-4 rounded-[28px] border bg-white p-5 lg:hidden">
         <ul className="flex flex-col gap-3">
           {PERKS.map((p) => (
             <li key={p} className="flex items-start gap-3">

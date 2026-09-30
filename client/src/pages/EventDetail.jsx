@@ -38,7 +38,7 @@ import { Squiggle, Sparkle, DotSwatch, ClayBall } from "../components/Decor.jsx"
 /** Section heading in the left rail. Sticky so it stays with its content. */
 function Row({ label, count, children }) {
   return (
-    <section className="clay clay-edge reveal relative grid grid-cols-1 gap-x-10 gap-y-5 overflow-clip rounded-panel border bg-white p-6 sm:p-8 lg:grid-cols-[170px_1fr]">
+    <section className="clay-soft clay-edge reveal relative grid grid-cols-1 gap-x-10 gap-y-5 overflow-clip rounded-panel border bg-white p-6 sm:p-8 lg:grid-cols-[170px_1fr]">
       <div className="lg:sticky lg:top-28 lg:self-start">
         <h2 className="text-[20px] font-extrabold tracking-[-0.02em] text-ink">
           {label}
@@ -87,7 +87,7 @@ export default function EventDetail() {
         />
         <ClayBall className="absolute -bottom-5 -left-3 z-10 h-10 w-10 sm:-left-5 sm:h-12 sm:w-12" />
         <Sparkle className="bob pointer-events-none absolute -right-2 -top-4 z-10 h-9 w-9 text-accent [--r:14deg] sm:-right-4 sm:-top-5 sm:h-11 sm:w-11" />
-        <div className="clay clay-edge overflow-hidden rounded-panel border bg-white">
+        <div className="clay-soft clay-edge overflow-hidden rounded-panel border bg-white">
           <header className="relative bg-ink">
             {/*
               On phones the image is a clean banner and the type sits on the
@@ -226,7 +226,7 @@ export default function EventDetail() {
               </div>
 
               {/* The map earns width here rather than height in a sidebar. */}
-              <div className="clay overflow-hidden rounded-card border-[5px] border-white">
+              <div className="clay-soft clay-edge overflow-hidden rounded-card border">
                 <MapEmbed
                   location={event.location}
                   title={event.location.name}

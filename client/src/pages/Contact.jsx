@@ -13,7 +13,7 @@ import {
   PhoneIcon,
   UsersIcon,
 } from "../components/icons.jsx";
-import { Rings, Orb, Scatter, ClayBall } from "../components/Decor.jsx";
+import { Rings, Orb, Scatter } from "../components/Decor.jsx";
 import Spinner from "../components/Spinner.jsx";
 import { contactApi } from "../api";
 
@@ -51,7 +51,7 @@ function Channel({ icon: Icon, label, value, href, note, external }) {
   return (
     <Wrap
       {...props}
-      className={`clay clay-edge group flex items-start gap-4 rounded-card border bg-white p-5 transition-[translate] duration-300 ease-smooth ${
+      className={`clay-soft clay-edge group flex items-start gap-4 rounded-card border bg-white p-5 transition-[translate] duration-300 ease-smooth ${
         href ? "" : ""
       }`}
     >
@@ -136,9 +136,6 @@ export default function Contact() {
       <Rings className="pointer-events-none absolute -right-16 -top-16 -z-10 hidden h-80 w-80 text-accent md:block" />
       <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
 
-      <ClayBall className="bob absolute right-[12%] top-24 -z-10 hidden h-12 w-12 md:block" />
-      <ClayBall soft className="absolute right-[30%] top-10 -z-10 hidden h-6 w-14 rotate-[18deg] md:block" />
-
       <header className="max-w-[640px]">
         <h1
           data-delay="0.06"
@@ -203,11 +200,11 @@ export default function Contact() {
             note="Every edition, past and upcoming, with the RSVP list."
           />
 
-          <div className="clay mt-3 overflow-hidden rounded-card border-[5px] border-white">
+          <div className="clay-soft clay-edge mt-3 overflow-hidden rounded-card border">
             <MapEmbed location={VENUE} title={VENUE.name} />
           </div>
 
-          <div className="clay clay-edge rounded-card border bg-white p-5">
+          <div className="clay-soft clay-edge rounded-card border bg-white p-5">
             <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-subtle">
               Nearest metro
             </div>
@@ -217,7 +214,7 @@ export default function Contact() {
 
         {/* Message */}
         <aside className="reveal lg:sticky lg:top-28">
-          <div className="clay clay-edge relative overflow-hidden rounded-panel border bg-white p-6 md:p-8">
+          <div className="clay-soft clay-edge relative overflow-hidden rounded-panel border bg-white p-6 md:p-8">
             <Scatter className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 text-accent/50" />
             <div className="relative">
             {sent ? (

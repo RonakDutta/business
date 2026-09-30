@@ -169,10 +169,10 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full">
       {/* Inner navbar container: a full-width clay bar at rest, a floating clay pill once scrolled. */}
       <div
-        className={`pointer-events-auto mx-auto w-full bg-white transition-all duration-300 ease-smooth ${
+        className={`pointer-events-auto mx-auto bg-white transition-all duration-300 ease-smooth ${
           scrolled
-            ? "mt-2.5 max-w-[1240px] clay clay-edge rounded-full border py-1.5 px-4"
-            : "clay-bar clay-edge mt-0 max-w-[2000px] rounded-none border-b py-3 px-5 sm:px-6 md:px-10"
+            ? "mt-2.5 w-[calc(100%-20px)] max-w-[1240px] clay clay-edge rounded-full border py-1.5 pl-2.5 pr-1.5 sm:w-[calc(100%-32px)] sm:px-4"
+            : "clay-bar clay-edge mt-0 w-full max-w-[2000px] rounded-none border-b py-3 px-5 sm:px-6 md:px-10"
         }`}
       >
         <div className="mx-auto max-w-shell">
@@ -242,7 +242,7 @@ export default function Navbar() {
 
         {/* Mobile Dropdown Floating Menu Panel */}
         {open && (
-          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto clay clay-edge rounded-[28px] border bg-white p-5 md:hidden sm:left-6 sm:right-6">
+          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto clay-soft clay-edge rounded-[24px] border bg-white p-4 md:hidden sm:left-6 sm:right-6">
             <div className="flex flex-col gap-1.5">
               {LINKS.map((l) => (
                 <NavLink
@@ -252,8 +252,8 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `rounded-xl px-4 py-3 text-[15px] font-bold transition-all duration-150 ${
                       isActive
-                        ? "clay bg-white text-ink font-extrabold"
-                        : "text-muted hover:text-ink"
+                        ? "accent-tint text-accent font-extrabold"
+                        : "text-muted hover:bg-canvas hover:text-ink"
                     }`
                   }
                 >
@@ -288,7 +288,7 @@ export default function Navbar() {
                     {isAdmin && (
                       <Link
                         to="/admin"
-                        className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-accent"
+                        className="clay-press clay-edge rounded-btn border bg-white px-5.5 py-2.75 text-center text-sm font-bold text-accent"
                       >
                         Organiser console
                       </Link>
@@ -299,7 +299,7 @@ export default function Navbar() {
                         signOut();
                         setOpen(false);
                       }}
-                      className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-muted"
+                      className="clay-press clay-edge rounded-btn border bg-white px-5.5 py-2.75 text-center text-sm font-bold text-muted"
                     >
                       Log out
                     </button>
@@ -309,7 +309,7 @@ export default function Navbar() {
                 <div className="flex flex-col gap-2">
                   <Link
                     to="/login"
-                    className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-ink"
+                    className="clay-press clay-edge rounded-btn border bg-white px-5.5 py-2.75 text-center text-sm font-bold text-ink"
                   >
                     Log in
                   </Link>

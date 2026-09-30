@@ -36,7 +36,6 @@
   --font-inter: "Inter", system-ui, sans-serif;
   --font-poppins: "Poppins", system-ui, sans-serif;
   --font-quicksand: "Quicksand", system-ui, sans-serif;
-  --font-display: "Quicksand", "Inter", system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 
   --container-shell: 1240px;
@@ -80,17 +79,6 @@
   a {
     color: inherit;
     text-decoration: none;
-  }
-
-  /* Headings in Quicksand: rounded letterforms to match the clay shapes.
-     Body copy stays in Inter, which reads better at small sizes. */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-display);
   }
 
   ::selection {
@@ -259,12 +247,19 @@
    --------------------------------------------------------------------------- */
 @utility clay {
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--b4-accent) 13%, transparent),
-    8px 12px 26px -10px color-mix(in srgb, var(--b4-accent) 32%, transparent),
-    2px 4px 8px -4px rgba(30, 58, 138, 0.14),
-    -6px -6px 16px -8px rgba(255, 255, 255, 0.9),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.95),
-    inset -5px -6px 12px color-mix(in srgb, var(--b4-accent) 10%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--b4-accent) 11%, transparent),
+    4px 10px 22px -14px color-mix(in srgb, var(--b4-accent) 32%, transparent),
+    inset 2px 3px 4px rgba(255, 255, 255, 0.9),
+    inset -3px -4px 8px color-mix(in srgb, var(--b4-accent) 7%, transparent);
+}
+
+/* The quiet version for big content containers (tickets, forms, long
+   panels). Clay on every large surface turns the page to mush, so these get
+   a real border (add clay-edge), a gentle drop and just a hint of sheen. */
+@utility clay-soft {
+  box-shadow:
+    0 16px 36px -26px color-mix(in srgb, var(--b4-accent) 38%, rgba(15, 23, 42, 0.4)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* Dark clay (ink buttons and panels): the sheen has to be much fainter and
@@ -322,9 +317,8 @@
    grouped rows. Shade top-left, light bottom-right, the reverse of clay. */
 @utility clay-inset {
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--b4-accent) 10%, transparent),
-    inset 3px 3px 7px color-mix(in srgb, var(--b4-accent) 15%, transparent),
-    inset -3px -3px 7px rgba(255, 255, 255, 0.95);
+    inset 0 2px 5px color-mix(in srgb, var(--b4-accent) 10%, transparent),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.9);
 }
 
 /* Presses squash like a soft object: on press it shrinks and every shadow
@@ -598,11 +592,4 @@
     10px 16px 30px -14px color-mix(in srgb, var(--b4-accent) 45%, transparent),
     inset -6px -8px 14px color-mix(in srgb, var(--b4-accent) 22%, transparent),
     inset 4px 4px 8px rgba(255, 255, 255, 0.9);
-}
-
-/* Quicksand is already narrow, so the tight tracking set for Inter squeezes
-   it. Unlayered so it wins over those tracking classes; uppercase label
-   headings keep their wide tracking. */
-:is(h1, h2, h3, h4, h5, h6):not(.uppercase) {
-  letter-spacing: -0.012em;
 }

@@ -5,7 +5,7 @@ function Stat({ value, suffix, label }) {
     <div className="flex flex-col items-center gap-1.5 px-3 py-7 text-center sm:px-4 sm:py-9 md:py-11">
       {/* tabular-nums keeps every digit the same width, so the number does not
           jitter while it counts up. */}
-      <div className="font-display text-[26px] font-bold tabular-nums leading-none tracking-[-0.01em] text-accent sm:text-[36px] md:text-[44px]">
+      <div className="text-[26px] font-extrabold tabular-nums leading-none tracking-[-0.03em] text-accent sm:text-[36px] md:text-[44px]">
         <CountUp
           from={0}
           to={value}

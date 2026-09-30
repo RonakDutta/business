@@ -27,7 +27,7 @@ export default function Wordmark({
       </span>
 
       <span
-        className={`font-display font-bold tracking-[-0.01em] ${
+        className={`font-extrabold tracking-[-0.03em] ${
           small ? "text-[15px]" : "text-[17px]"
         } ${light ? "text-white" : "text-ink"}`}
       >

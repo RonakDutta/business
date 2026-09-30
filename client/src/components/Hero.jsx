@@ -104,8 +104,6 @@ export default function Hero() {
         <div aria-hidden className="hero-glows absolute inset-0 z-0 opacity-60" />
         <Blobs className="pointer-events-none absolute -left-40 -top-24 z-0 h-[560px] w-[560px] blur-[4px]" />
         <ClayBall className="bob absolute left-[6%] top-8 z-0 h-7 w-7 sm:h-9 sm:w-9" />
-        <ClayBall soft className="absolute bottom-10 right-[44%] z-0 hidden h-16 w-16 lg:block" />
-        <ClayBall className="absolute bottom-10 right-[6%] z-0 h-4 w-10 rotate-[-20deg] lg:hidden" />
 
         {/* Grid layout: centered text on mobile (no image), 2-col with illustration on laptop (lg) */}
         <div className="relative z-10 mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-2 lg:gap-12">
