@@ -1,37 +1,42 @@
 import { Link } from "react-router-dom";
 import Wordmark from "./Wordmark.jsx";
 import { SOCIALS } from "../data/socials.js";
-import { VENUE } from "../data/venue.js";
 import {
-  ArrowRightIcon,
   FacebookIcon,
   InstagramIcon,
   LinkedInIcon,
-  MailIcon,
-  MapPinIcon,
-  PhoneIcon,
   UsersIcon,
   XIcon,
 } from "./icons.jsx";
 
-const EMAIL = "hello@business4.com";
-
+/* Everything here is a real route , the old #contact / #guidelines anchors
+   pointed at the footer itself, which was a link to nowhere. */
 const COLUMNS = [
   {
-    heading: "Explore",
+    id: "explore",
+    heading: "EXPLORE",
     links: [
       { label: "Home", to: "/" },
-      { label: "Events", to: "/events" },
+      { label: "All events", to: "/events" },
       { label: "Gallery", to: "/gallery" },
-      { label: "Team", to: "/team" },
     ],
   },
   {
-    heading: "Community",
+    id: "community",
+    heading: "COMMUNITY",
     links: [
       { label: "Guidelines", to: "/guidelines" },
       { label: "House rules", to: "/guidelines#house-rules" },
       { label: "Contact", to: "/contact" },
+    ],
+  },
+  {
+    id: "reach-us",
+    heading: "REACH US",
+    links: [
+      { label: "hello@business4.com", href: "mailto:hello@business4.com" },
+      { label: "9999658436", href: "tel:9999658436" },
+      { label: "Shaheedi Park, New Delhi", to: "/contact" },
     ],
   },
 ];
@@ -45,6 +50,34 @@ const ICONS = {
   meetup: UsersIcon,
 };
 
+function FooterLink({ link }) {
+  const cls = "text-sm opacity-75 transition-opacity hover:opacity-100";
+
+  if (link.to) {
+    return (
+      <Link to={link.to} className={cls}>
+        {link.label}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href={link.href}
+      className={cls}
+      {...(link.external
+        ? { target: "_blank", rel: "noopener noreferrer" }
+        : {})}
+    >
+      {link.label}
+    </a>
+  );
+}
+
+/**
+ * Icons, not names. Five more text links would compete with the nav columns
+ * for attention; five circles read as one object.
+ */
 function Socials() {
   const links = SOCIALS.filter((s) => s.url && ICONS[s.id]);
   if (!links.length) return null;
@@ -59,9 +92,9 @@ function Socials() {
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${s.label}: ${s.handle}`}
+            aria-label={`${s.label} , ${s.handle}`}
             title={s.handle}
-            className="grid h-9 w-9 place-items-center rounded-full text-white/65 ring-1 ring-white/15 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.08] text-white/70 transition-[scale,background,color] duration-300 ease-smooth hover:scale-110 hover:bg-white hover:text-ink"
           >
             <Icon className="h-[17px] w-[17px]" />
           </a>
@@ -71,101 +104,51 @@ function Socials() {
   );
 }
 
-const colHeading = "text-[13px] font-semibold text-white";
-const colLink = "text-[14.5px] text-white/65 transition-colors duration-200 hover:text-white";
-
 export default function Footer() {
   return (
     <footer className="bg-ink text-white">
-      <div className="shell">
-        <div className="flex flex-col gap-8 border-b border-white/10 py-14 md:flex-row md:items-end md:justify-between md:py-16">
-          <div className="max-w-[560px]">
-            <h2 className="font-display text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-white sm:text-[34px]">
-              Come to the next meetup.
-            </h2>
-            <p className="mt-3 text-[16px] leading-relaxed text-white/65">
-              Every second Saturday, 11 AM to 1 PM, at {VENUE.shortName} in
-              Shaheedi Park, New Delhi.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Link to="/events" className="btn btn-light">
-              See upcoming events
-              <ArrowRightIcon />
-            </Link>
-            <Link to="/contact" className="btn btn-outline-light">
-              Contact the team
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 py-12 md:grid-cols-[1.5fr_1fr_1fr_1.3fr] md:py-14">
-          <div className="col-span-2 md:col-span-1">
+      <div className="mx-auto max-w-shell px-5 sm:px-6 md:px-10">
+        <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+          <div>
             <Wordmark tone="light" />
-            <p className="mt-4 max-w-[300px] text-[14.5px] leading-relaxed text-white/60">
-              A community of marketers, founders and freelancers who meet,
-              learn and grow together.
+            <p className="mt-3.5 max-w-[260px] text-sm leading-relaxed opacity-60">
+              A community of marketers, founders, and freelancers who meet,
+              learn, and grow together. Every second Saturday, at Shaheedi Park.
             </p>
-            <div className="mt-6">
+
+            <div className="mt-7">
+              <div className="mb-3 text-xs font-bold tracking-[0.08em] opacity-45">
+                FOLLOW
+              </div>
               <Socials />
             </div>
           </div>
 
           {COLUMNS.map((col) => (
-            <div key={col.heading}>
-              <div className={colHeading}>{col.heading}</div>
-              <ul className="mt-4 flex flex-col gap-3">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    <Link to={link.to} className={colLink}>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <div key={col.id} id={col.id} className="flex flex-col gap-3">
+              <div className="mb-0.5 text-xs font-bold tracking-[0.08em] opacity-45">
+                {col.heading}
+              </div>
+              {col.links.map((link) => (
+                <FooterLink key={link.label} link={link} />
+              ))}
             </div>
           ))}
-
-          <div id="reach-us" className="col-span-2 md:col-span-1">
-            <div className={colHeading}>Reach us</div>
-            <ul className="mt-4 flex flex-col gap-3">
-              <li>
-                <a href={`mailto:${EMAIL}`} className={`${colLink} inline-flex items-center gap-2.5`}>
-                  <MailIcon className="h-4 w-4 shrink-0 text-white/45" />
-                  {EMAIL}
-                </a>
-              </li>
-              <li>
-                <a href={`tel:${VENUE.helpline}`} className={`${colLink} inline-flex items-center gap-2.5`}>
-                  <PhoneIcon className="h-4 w-4 shrink-0 text-white/45" />
-                  {VENUE.helpline}
-                </a>
-              </li>
-              <li>
-                <Link to="/contact" className={`${colLink} inline-flex items-start gap-2.5`}>
-                  <MapPinIcon className="mt-1 h-4 w-4 shrink-0 text-white/45" />
-                  <span>
-                    {VENUE.shortName}, Shaheedi Park
-                    <br />
-                    {VENUE.city}
-                  </span>
-                </Link>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-white/10 py-6 text-[13px] text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} Business 4.0 Community. All rights reserved.</span>
-          <span className="flex gap-5">
-            <Link to="/guidelines#house-rules" className="transition-colors hover:text-white">
-              Code of conduct
-            </Link>
-            <Link to="/guidelines" className="transition-colors hover:text-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-6 text-[13px] opacity-55">
+          <span>
+            © {new Date().getFullYear()} Business 4.0 Community. All rights
+            reserved.
+          </span>
+          <span className="flex gap-[22px]">
+            <Link to="/guidelines" className="hover:text-white">
               Guidelines
             </Link>
-            <Link to="/contact" className="transition-colors hover:text-white">
+            <Link to="/guidelines#house-rules" className="hover:text-white">
+              Code of conduct
+            </Link>
+            <Link to="/contact" className="hover:text-white">
               Contact
             </Link>
           </span>

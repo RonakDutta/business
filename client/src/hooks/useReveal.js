@@ -10,11 +10,11 @@ export function useReveal(deps = []) {
 
   useEffect(() => {
     const lively = motion !== "Calm";
-    const dur = lively ? 0.7 : 0.8;
+    const dur = lively ? 0.75 : 0.95;
     const timers = [];
 
     const root = document.documentElement.style;
-    root.setProperty("--reveal-dist", lively ? "16px" : "10px");
+    root.setProperty("--reveal-dist", lively ? "26px" : "14px");
     root.setProperty("--reveal-dur", `${dur}s`);
 
     // Stagger cards that sit in the same grid.
@@ -22,7 +22,7 @@ export function useReveal(deps = []) {
       const sibs = Array.from(el.parentElement?.children || []).filter((c) =>
         c.hasAttribute("data-stagger"),
       );
-      el.dataset.delay = (sibs.indexOf(el) % 4) * 0.06;
+      el.dataset.delay = (sibs.indexOf(el) % 3) * 0.1;
     });
 
     const els = Array.from(

@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRightIcon, LinkedInIcon } from "./icons.jsx";
+import { ArrowUpRightIcon, UsersIcon } from "./icons.jsx";
 
+/**
+ * Helper to get initials from full name
+ */
 function initials(name) {
   return name
     .split(" ")
@@ -11,15 +13,27 @@ function initials(name) {
     .toUpperCase();
 }
 
-// The photo, or a quiet monogram until the photo is added.
-function Portrait({ person }) {
+function TeamPortrait({ person }) {
   const [failed, setFailed] = useState(false);
 
   if (!person.image || failed) {
     return (
-      <div className="grid h-full w-full place-items-center rounded-card border border-line bg-surface">
-        <span className="font-display text-[30px] font-semibold tracking-[-0.02em] text-ink/30 sm:text-[38px]">
+      <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-[#1e293b] to-accent/80 p-4 text-white">
+        {/* Soft decorative background shapes */}
+        <div
+          aria-hidden="true"
+          className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/5 blur-xs"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-12 -left-10 h-40 w-40 rounded-full border border-white/10"
+        />
+
+        <span className="relative grid h-20 w-20 place-items-center rounded-full border border-white/20 bg-white/10 text-[26px] font-extrabold tracking-[-0.03em] text-white shadow-inner backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
           {initials(person.name)}
+        </span>
+        <span className="relative mt-4 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white/70 backdrop-blur-xs">
+          Business 4.0
         </span>
       </div>
     );
@@ -36,65 +50,76 @@ function Portrait({ person }) {
   );
 }
 
-function Member({ person }) {
-  return (
-    <li data-stagger className="reveal">
-      <div className="aspect-square overflow-hidden rounded-card">
-        <Portrait person={person} />
-      </div>
-
-      <div className="mt-4 flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="truncate text-[17px] font-semibold tracking-[-0.01em]">
-            {person.name}
-          </h3>
-          <p className="mt-0.5 text-[14px] text-subtle">{person.role}</p>
+function TeamMember({ person }) {
+  const inner = (
+    <div className="clay clay-squish group relative flex flex-col overflow-hidden rounded-[20px] bg-white isolate">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900 isolate">
+        <div className="h-full w-full">
+          <TeamPortrait person={person} />
         </div>
-
         {person.linkedin && (
-          <a
-            href={person.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${person.name} on LinkedIn`}
-            className="icon-btn icon-btn-outline h-9 w-9"
-          >
-            <LinkedInIcon className="h-4 w-4" />
-          </a>
+          <span className="absolute right-3 top-3 z-10 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 shadow-md backdrop-blur-xs transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-white hover:text-accent">
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </span>
         )}
       </div>
-    </li>
+
+      <div className="flex flex-col items-center p-3.5 text-center sm:p-5">
+        <h3 className="text-[15px] font-extrabold tracking-[-0.02em] text-ink sm:text-[20px]">
+          {person.name}
+        </h3>
+        <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.09em] text-accent sm:mt-2 sm:px-3 sm:py-1 sm:text-[11px]">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+          {person.role}
+        </div>
+      </div>
+    </div>
+  );
+
+  return person.linkedin ? (
+    <a
+      href={person.linkedin}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-stagger
+      className="reveal block text-left"
+    >
+      {inner}
+    </a>
+  ) : (
+    <div data-stagger className="reveal block text-left">
+      {inner}
+    </div>
   );
 }
 
-// The organisers. On the home page it carries its own heading and a link to
-// the team page; the team page supplies its own header and hides this one.
 export default function Team({ members = [], showHeader = true }) {
   if (!members.length) return null;
 
   return (
-    <div>
+    <section id="team" className="relative mx-auto w-full">
       {showHeader && (
-        <div className="reveal mb-10 flex flex-wrap items-end justify-between gap-x-10 gap-y-5 md:mb-12">
-          <div className="max-w-[620px]">
-            <h2 className="display-2">The organising team</h2>
-            <p className="lead mt-4">
-              The people who show up early, stack the chairs, and make sure you
-              leave knowing someone new.
-            </p>
+        <div className="reveal mb-10 text-center">
+          <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
+            <UsersIcon className="h-3.5 w-3.5" />
+            The organisers
           </div>
-          <Link to="/team" className="link-arrow text-[14.5px]">
-            About the team
-            <ArrowRightIcon />
-          </Link>
+          <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
+            Meet the organising team
+          </h2>
+          <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
+          <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
+            The people who show up early, stack the chairs, and make sure you
+            leave knowing someone new.
+          </p>
         </div>
       )}
 
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4">
         {members.map((person) => (
-          <Member key={person.id} person={person} />
+          <TeamMember key={person.id} person={person} />
         ))}
-      </ul>
-    </div>
+      </div>
+    </section>
   );
 }

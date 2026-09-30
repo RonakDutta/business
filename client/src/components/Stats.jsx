@@ -1,26 +1,35 @@
 import CountUp from "./CountUp.jsx";
 
-// Three headline numbers in one strip. A <dl> needs the label (<dt>) before
-// the value (<dd>), so `order` is what puts the number on top visually.
+function Stat({ value, suffix, label }) {
+  return (
+    <div className="flex flex-col items-center gap-1.5 px-3 py-7 text-center sm:px-4 sm:py-9 md:py-11">
+      {/* tabular-nums keeps every digit the same width, so the number does not
+          jitter while it counts up. */}
+      <div className="text-[26px] font-extrabold tabular-nums leading-none tracking-[-0.03em] text-accent sm:text-[36px] md:text-[44px]">
+        <CountUp
+          from={0}
+          to={value}
+          duration={1.2}
+          separator=","
+        />
+        {suffix}
+      </div>
+
+      <div className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-subtle sm:text-[11px] sm:tracking-[0.1em] md:text-xs">
+        {label}
+      </div>
+    </div>
+  );
+}
+
 export default function Stats({ items }) {
   return (
-    <dl className="reveal mt-14 grid grid-cols-3 divide-x divide-line rounded-card border border-line bg-white shadow-card sm:mt-16">
-      {items.map((item) => (
-        <div
-          key={item.id}
-          className="flex flex-col items-center px-2 py-7 text-center sm:py-10"
-        >
-          <dt className="order-2 mt-1.5 text-[12.5px] leading-snug text-subtle sm:text-[14.5px]">
-            {item.label}
-          </dt>
-          {/* tabular-nums keeps every digit the same width, so the number
-              does not jitter while it counts up. */}
-          <dd className="order-1 font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-ink tabular-nums sm:text-[40px] lg:text-[46px]">
-            <CountUp from={0} to={item.value} duration={1.1} separator="," />
-            {item.suffix}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <div className="reveal clay mt-14 overflow-hidden rounded-panel bg-white sm:mt-16">
+      <div className="grid grid-cols-3 divide-x divide-line">
+        {items.map((item) => (
+          <Stat key={item.id} {...item} />
+        ))}
+      </div>
+    </div>
   );
 }

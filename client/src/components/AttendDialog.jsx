@@ -1,22 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "./QRCode.jsx";
 import ImagePicker from "./ImagePicker.jsx";
-import Spinner from "./Spinner.jsx";
 import { CheckIcon, CloseIcon, ScanIcon } from "./icons.jsx";
 import { PAYMENT, paymentRef } from "../data/payment.js";
 import { upiIntent } from "../lib/qr.js";
 import { priceLabel, isFree } from "../lib/format.js";
 
 /* ===========================================================================
-   Attend, pay, confirmed.
+   Attend → pay → confirmed.
 
    The QR is a UPI intent string encoded at render time, so any UPI app scans
    it with the amount and reference already filled in. On a phone, the same
-   string opens the app directly, hence the button under the code.
+   string opens the app directly , hence the button under the code.
 
-   What this can't do: verify the money arrived. The seat is booked when the
-   attendee uploads their payment screenshot, and the reference under the code
-   is what the organisers match against their statement.
+   What this can't do without a backend: verify the money arrived. The seat is
+   booked when the attendee says they've paid, and the reference under the code
+   is what the organisers match against their statement. When a payment gateway
+   lands, `confirm` moves behind its webhook and the rest of this file stands.
    =========================================================================== */
 
 export default function AttendDialog({ event, user, onConfirm, onClose }) {
@@ -28,7 +28,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
   const [paymentError, setPaymentError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // One reference per dialog; regenerating it mid-payment would be unhelpful.
+  // One reference per dialog , regenerating it mid-payment would be unhelpful.
   const reference = useMemo(() => paymentRef(event.id), [event.id]);
 
   const intent = useMemo(
@@ -63,8 +63,12 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
       return;
     }
 
-    // RsvpContext.confirm() uploads the screenshot and records the RSVP, then
-    // resolves to { ok, error }.
+    /*
+      RsvpContext.confirm() takes this over the finish line: in API mode it
+      uploads `paymentProof.imageDataUrl` to /api/payments (Cloudinary) and
+      records the RSVP; in stub mode it just books the seat locally. Either
+      way it resolves to { ok, error }.
+    */
     const submission = {
       eventId: event.id,
       payer: { name: user?.name || "", email: user?.email || "" },
@@ -84,7 +88,9 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
       setPaymentError("");
       const res = await onConfirm(submission);
       if (res && res.ok === false) {
-        setPaymentError(res.error || "Unable to submit your RSVP. Please try again.");
+        setPaymentError(
+          res.error || "Unable to submit your RSVP. Please try again.",
+        );
         return;
       }
       setDone(true);
@@ -107,7 +113,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-end justify-center overflow-y-auto bg-ink/50 p-0 sm:items-center sm:p-6"
+      className="fixed inset-0 z-[60] flex items-end justify-center overflow-y-auto bg-ink/45 p-0 backdrop-blur-[2px] sm:items-center sm:p-6"
       onPointerDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
@@ -116,13 +122,13 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
         aria-modal="true"
         aria-labelledby="attend-title"
         tabIndex={-1}
-        className="relative max-h-[calc(100dvh-0.75rem)] w-full max-w-[440px] overflow-y-auto rounded-t-panel border border-line bg-white p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-float outline-none [scrollbar-width:none] sm:max-h-[calc(100dvh-3rem)] sm:rounded-panel sm:p-7 [&::-webkit-scrollbar]:hidden"
+        className="relative clay max-h-[calc(100dvh-0.75rem)] w-full max-w-[420px] overflow-y-auto rounded-t-panel bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:max-h-[calc(100dvh-3rem)] sm:rounded-panel sm:p-6"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="icon-btn absolute right-4 top-4 h-9 w-9"
+          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-subtle transition-colors duration-200 hover:bg-line hover:text-ink"
         >
           <CloseIcon className="h-[18px] w-[18px]" />
         </button>
@@ -131,15 +137,20 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
           <Confirmed event={event} onClose={onClose} />
         ) : (
           <>
-            <p className="text-[13.5px] font-semibold text-accent">{event.date}</p>
-            <h2 id="attend-title" className="display-3 mt-1.5 pr-10">
+            <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-subtle">
+              {event.date}
+            </div>
+            <h2
+              id="attend-title"
+              className="mt-1.5 pr-8 text-[22px] font-extrabold leading-tight tracking-[-0.03em]"
+            >
               {free ? "Save your seat" : "Pay the entry fee"}
             </h2>
 
             {free ? (
               <p className="mt-3 text-[15px] leading-relaxed text-muted">
-                This edition is free, so there is nothing to pay. Confirm below
-                and we will count you in.
+                This edition is free , no payment needed. Confirm below and
+                we'll count you in.
               </p>
             ) : (
               <>
@@ -148,24 +159,28 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   filled in.
                 </p>
 
-                <div className="mt-5 flex flex-col items-center rounded-card border border-line bg-surface p-5">
+                <div className="mt-5 flex flex-col items-center rounded-card border border-line bg-[#fafbfc] p-4 sm:mt-5 sm:p-3">
                   <QRCode
                     value={intent}
                     title={`Pay ${priceLabel(event.entryFee)} to ${PAYMENT.displayName}`}
-                    className="h-[168px] w-[168px] rounded-lg text-ink"
+                    className="h-[160px] w-[160px] rounded-lg text-ink sm:h-[160px] sm:w-[160px]"
                   />
 
-                  <div className="mt-4 text-center">
-                    <div className="font-display text-[26px] font-semibold tracking-[-0.02em] text-ink tabular-nums">
+                  <div className="mt-3 text-center">
+                    <div className="text-[24px] font-extrabold tracking-[-0.03em] tabular-nums text-ink">
                       {priceLabel(event.entryFee)}
                     </div>
-                    <div className="mt-0.5 text-[13.5px] text-muted">{PAYMENT.displayName}</div>
-                    <div className="mt-3 flex items-center justify-center gap-2 rounded-full border border-line-strong bg-white py-1 pl-3.5 pr-1">
-                      <span className="font-mono text-[12.5px] text-ink">{PAYMENT.vpa}</span>
+                    <div className="mt-0.5 text-[13px] font-semibold text-muted">
+                      {PAYMENT.displayName}
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-center gap-2 rounded-lg border border-line-strong bg-white px-2.5 py-1.5">
+                      <span className="font-mono text-[12px] font-bold text-ink">
+                        {PAYMENT.vpa}
+                      </span>
                       <button
                         type="button"
                         onClick={copyUpiId}
-                        className="btn btn-primary h-7 px-3 text-[12px]"
+                        className="shrink-0 rounded-md bg-ink px-2 py-1 text-[10px] font-bold text-white transition-colors hover:bg-accent"
                         aria-label="Copy UPI ID"
                       >
                         {copied ? "Copied" : "Copy"}
@@ -174,26 +189,30 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   </div>
                 </div>
 
-                <a href={intent} className="btn btn-secondary mt-3 w-full sm:hidden">
+                <a
+                  href={intent}
+                  className="mt-3 flex items-center justify-center gap-2 rounded-btn border border-line-strong px-5 py-3 text-sm font-bold text-ink transition-colors duration-200 hover:border-ink sm:hidden"
+                >
                   <ScanIcon className="h-[18px] w-[18px]" />
                   Open my UPI app
                 </a>
 
-                <p className="mt-3 text-[12.5px] leading-relaxed text-subtle">
-                  Reference <span className="font-mono text-ink">{reference}</span>.
-                  Quote it if anything goes wrong with the transfer.
+                <p className="mt-3 text-[12px] leading-relaxed text-subtle">
+                  Reference{" "}
+                  <span className="font-mono text-ink">{reference}</span> ,
+                  quote it if anything goes wrong with the transfer.
                 </p>
 
-                <div className="mt-5">
+                <div className="mt-4">
                   <div className="mb-2 flex items-baseline justify-between gap-3">
-                    <span className="field-label">
+                    <label className="text-[13px] font-bold text-ink">
                       Payment screenshot <span className="text-red-600">*</span>
-                    </span>
+                    </label>
                     {paymentImage && (
                       <button
                         type="button"
                         onClick={() => setPaymentImage("")}
-                        className="text-[13px] font-semibold text-accent hover:text-ink"
+                        className="text-[12px] font-bold text-accent hover:text-ink"
                       >
                         Replace image
                       </button>
@@ -201,16 +220,16 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   </div>
 
                   {paymentImage ? (
-                    <div className="flex items-center gap-3 rounded-card border border-line bg-surface p-3">
+                    <div className="flex items-center gap-3 rounded-card border border-line bg-[#fafbfc] p-3">
                       <img
                         src={paymentImage}
                         alt="Selected payment screenshot"
                         className="h-16 w-16 rounded-lg border border-line object-cover"
                       />
                       <div className="min-w-0">
-                        <p className="text-[14px] font-semibold text-ink">Screenshot attached</p>
-                        <p className="mt-0.5 text-[12.5px] leading-relaxed text-subtle">
-                          It will be sent with your RSVP.
+                        <p className="text-[13px] font-bold text-ink">Screenshot attached</p>
+                        <p className="mt-0.5 text-[11.5px] leading-relaxed text-subtle">
+                          Your payment proof will be submitted with your RSVP.
                         </p>
                       </div>
                     </div>
@@ -218,7 +237,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                     <ImagePicker
                       preset="gallery"
                       label="Add payment screenshot"
-                      hint="Required to submit your RSVP. A phone screenshot works best."
+                      hint="Required to submit your RSVP. PNG, JPG, or a phone screenshot work best."
                       onError={setPaymentError}
                       onAdd={([image]) => {
                         setPaymentImage(image);
@@ -228,7 +247,7 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
                   )}
 
                   {paymentError && (
-                    <p role="alert" className="mt-2 text-[13px] font-semibold text-red-600">
+                    <p role="alert" className="mt-2 text-[12px] font-semibold text-red-600">
                       {paymentError}
                     </p>
                   )}
@@ -240,15 +259,15 @@ export default function AttendDialog({ event, user, onConfirm, onClose }) {
               type="button"
               onClick={confirm}
               disabled={submitting}
-              className="btn btn-primary btn-lg mt-5 w-full"
+              className="mt-4 w-full rounded-btn bg-ink px-6 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
             >
-              {submitting && <Spinner className="h-4 w-4" />}
               {submitting
-                ? "Submitting…"
+                ? "Submitting payment proof…"
                 : free
                   ? "Count me in"
                   : "Submit payment proof"}
             </button>
+
           </>
         )}
       </div>
@@ -263,15 +282,22 @@ function Confirmed({ event, onClose }) {
         <CheckIcon className="h-7 w-7" />
       </span>
 
-      <h2 id="attend-title" className="display-3 mt-5">
+      <h2
+        id="attend-title"
+        className="mt-5 text-[22px] font-extrabold tracking-[-0.03em]"
+      >
         You're going
       </h2>
-      <p className="mx-auto mt-2 max-w-[320px] text-[15px] leading-relaxed text-muted">
-        {event.when.headline}. Enter via {event.location.gate || "the main gate"}.
-        We start on time.
+      <p className="mx-auto mt-2 max-w-[300px] text-[15px] leading-relaxed text-muted">
+        {event.when.headline}. Enter via{" "}
+        {event.location.gate || "the main gate"} , we start on time.
       </p>
 
-      <button type="button" onClick={onClose} className="btn btn-primary btn-lg mt-7 w-full">
+      <button
+        type="button"
+        onClick={onClose}
+        className="mt-7 w-full rounded-btn bg-ink px-6 py-4 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+      >
         Done
       </button>
     </div>

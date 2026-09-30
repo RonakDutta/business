@@ -20,7 +20,7 @@ import {
 
    "Add meetup" isn't in here. Creating a meetup is an action on the meetups
    page, not a place you navigate to, and it already has a primary button
-   there, two doors to one room only makes people wonder what the difference
+   there , two doors to one room only makes people wonder what the difference
    is.
    =========================================================================== */
 
@@ -32,13 +32,13 @@ const ELSEWHERE = [
 ];
 
 const SectionLabel = ({ children }) => (
-  <div className="px-3 pb-2 pt-6 text-[12px] font-semibold text-white/40">
+  <div className="px-3 pb-2 pt-5 text-[10px] font-bold uppercase tracking-[0.12em] text-white/35">
     {children}
   </div>
 );
 
 const navCls = ({ isActive }) =>
-  `relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors duration-200 ${
+  `relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-bold transition-colors duration-200 ${
     isActive
       ? "bg-white/[0.09] text-white"
       : "text-white/55 hover:bg-white/5 hover:text-white"
@@ -51,7 +51,7 @@ function Rail({ user, signOut, onNavigate }) {
         <Link to="/admin" onClick={onNavigate} className="block">
           <Wordmark tone="light" size="sm" />
         </Link>
-        <div className="mt-2 pl-[42px] text-[12.5px] font-medium text-white/50">
+        <div className="mt-2 pl-[38px] text-[10.5px] font-bold uppercase tracking-[0.12em] text-accent">
           Organiser console
         </div>
       </div>
@@ -87,7 +87,7 @@ function Rail({ user, signOut, onNavigate }) {
             key={label}
             to={to}
             onClick={onNavigate}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium text-white/55 transition-colors duration-200 hover:bg-white/5 hover:text-white"
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-bold text-white/55 transition-colors duration-200 hover:bg-white/5 hover:text-white"
           >
             <Icon className="h-[18px] w-[18px] shrink-0" />
             {label}
@@ -97,11 +97,11 @@ function Rail({ user, signOut, onNavigate }) {
 
       <div className="rounded-card bg-white/[0.06] p-3">
         <div className="flex items-center gap-2.5">
-          <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12.5px] font-semibold text-white">
+          <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-bold text-white">
             {(user?.name || user?.email || "?").charAt(0).toUpperCase()}
           </span>
           <div className="min-w-0">
-            <div className="truncate text-[13px] font-semibold text-white">
+            <div className="truncate text-[12.5px] font-bold text-white">
               {user?.name}
             </div>
             <div className="truncate text-[11px] text-white/45">
@@ -113,7 +113,7 @@ function Rail({ user, signOut, onNavigate }) {
         <button
           type="button"
           onClick={signOut}
-          className="btn btn-outline-light btn-sm mt-3 w-full"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-btn bg-white/10 py-2 text-[12.5px] font-bold text-white/80 transition-colors duration-200 hover:bg-white/15 hover:text-white"
         >
           <LogOutIcon className="h-4 w-4" />
           Log out
@@ -131,8 +131,8 @@ export default function AdminLayout() {
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <div className="min-h-screen bg-surface lg:flex">
-      {/* Desktop rail, sticky so the table scrolls under it. */}
+    <div className="min-h-screen bg-[#f5f6f8] lg:flex">
+      {/* Desktop rail , sticky so the table scrolls under it. */}
       <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 lg:block">
         <Rail user={user} signOut={signOut} />
       </aside>
@@ -143,14 +143,14 @@ export default function AdminLayout() {
           <Wordmark size="sm" />
         </Link>
         <div className="flex items-center gap-2">
-          <span className="badge bg-accent/10 text-accent">
+          <span className="rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-accent">
             Organiser
           </span>
           <button
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Open menu"
-            className="icon-btn icon-btn-outline h-9 w-9"
+            className="grid h-9 w-9 place-items-center rounded-full border border-line-strong text-ink"
           >
             <MenuIcon className="h-[18px] w-[18px]" />
           </button>

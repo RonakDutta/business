@@ -1,11 +1,11 @@
 /* ---------------------------------------------------------------------------
    TESTIMONIALS
 
-   Hardcoded for now: there is no table for these yet. Replace the names,
+   Hardcoded for now , there is no table for these yet. Replace the names,
    roles and words with real ones before this goes live.
 
    `quote`   the short line on the card
-   `outcome` the one thing they walked away with, shown as the card's headline
+   `outcome` the one thing they walked away with , shown as a chip
    `story`   the longer piece on its own page at /testimonials/<id>
 
    Add a `photo` (e.g. "/images/testimonials/priya.jpg") and it is used instead
@@ -22,7 +22,7 @@ export const testimonials = [
       "I came for the networking and stayed because someone in the room had already solved my packaging problem.",
     story: [
       "I had been running my skincare brand for about eight months and had hit a wall with packaging costs. Every supplier I found wanted a minimum order I could not justify.",
-      "At my second Business 4.0 meetup I mentioned it during intros. Two people came up afterwards. One had used a smaller supplier in Noida; the other offered to split a bulk order with me.",
+      "At my second Business 4.0 meetup I mentioned it during intros. Two people came up afterwards , one had used a smaller supplier in Noida, the other offered to split a bulk order with me.",
       "That one conversation cut my unit cost by a third. I have not missed a Saturday since.",
     ],
   },
@@ -34,7 +34,7 @@ export const testimonials = [
     quote:
       "Nobody pitches at you here. You say what you are stuck on and the room actually answers.",
     story: [
-      "Most networking events I had been to felt like a queue of people waiting to sell me something. This one is different because of how it starts: everyone introduces themselves and says what they are working on.",
+      "Most networking events I had been to felt like a queue of people waiting to sell me something. This one is different because of how it starts , everyone introduces themselves and says what they are working on.",
       "I have picked up two long-term clients from those introductions, but honestly the more useful part has been the advice. I priced my work far too low for years and it took one honest conversation here to fix that.",
     ],
   },
@@ -46,7 +46,7 @@ export const testimonials = [
     quote:
       "It is the only room in Delhi where I can ask a stupid question and get a straight answer.",
     story: [
-      "I moved into consulting after years in-house and did not know what I did not know: how to scope work, when to say no, what to charge.",
+      "I moved into consulting after years in-house and did not know what I did not know , how to scope work, when to say no, what to charge.",
       "The group is generous with the unglamorous details. People will tell you what actually went wrong in their business, which you never get at a conference.",
     ],
   },
@@ -71,7 +71,7 @@ export const testimonials = [
       "I came to help other people with their books and left with a practice of my own.",
     story: [
       "I started coming because founders kept asking tax questions in a WhatsApp group I was in, and someone suggested I say it in person instead.",
-      "Three of the people I answered that first Saturday are clients now. I did not sell anything. I just answered the question properly and they came back the following month.",
+      "Three of the people I answered that first Saturday are clients now. I did not sell anything , I just answered the question properly and they came back the following month.",
     ],
   },
   {
@@ -95,7 +95,7 @@ export const testimonials = [
       "Everyone told me my rate was too low. Here, someone told me exactly what to charge instead.",
     story: [
       "Going independent after six years in a company is mostly a pricing problem and nobody warns you about it.",
-      "The specificity is what helped. Not 'charge more', but a number, from a person who bills for the same work. I doubled my rate on the next project and nobody blinked.",
+      "The specificity is what helped , not 'charge more' but a number, from a person who bills for the same work. I doubled my rate on the next project and nobody blinked.",
     ],
   },
   {

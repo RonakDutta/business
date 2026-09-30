@@ -9,16 +9,21 @@ import AvatarStack from "./AvatarStack.jsx";
 import { HeartIcon, ShareIcon, CheckIcon } from "./icons.jsx";
 import { priceLabel } from "../lib/format.js";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
 /**
- * The bar pinned to the bottom of the event page: the date, the title, who is
- * going, and the one RSVP button. The page reserves space for it with pb-36
- * so it never covers the footer.
+ * Floating bar pinned to the bottom of the viewport.
+ * The page reserves space for it with pb-32 so it never covers the footer.
  *
- * On a phone it is two rows (details, then a full-width button); from sm up
- * it is a single pill. Share is the control that gives way on small screens,
- * since you can share from anywhere else on the page.
+ * Pill-shaped rather than a slab, and it leads with the date chip and carries
+ * the room with it — the two things that make someone decide. The price is in
+ * the button, so the bar states the offer once instead of twice.
+ *
+ * On a phone the title block used to be hidden entirely, which left the two
+ * icons and the button alone in a `justify-between` row — so they sprayed to
+ * the corners with a hole in the middle. The title stays now and takes the
+ * slack; `share` is what gives way instead, since it's the one thing here you
+ * can do from anywhere else on the page.
  */
 export default function EventActionBar({ event }) {
   const { isSaved, toggle } = useSavedEvents();
@@ -37,8 +42,9 @@ export default function EventActionBar({ event }) {
 
   /*
     RSVP is gated on sign-in. Signed out, this sends them to /login with a
-    `next` param so they land back on this event afterwards. Signed in, it
-    opens the payment step; the count only moves once they confirm in there.
+    `next` param so they land back on this event afterwards rather than on the
+    home page. Signed in, it opens the payment step — the count only moves once
+    they confirm in there.
   */
   const onAttend = () => {
     if (!user) {
@@ -59,32 +65,40 @@ export default function EventActionBar({ event }) {
     : !user
       ? "Sign in to RSVP"
       : going
-        ? "You're going"
-        : `RSVP · ${priceLabel(event.entryFee)}`;
+        ? "You're going ✓"
+        : `Attend · ${priceLabel(event.entryFee)}`;
 
   const isDead = cancelled || (isPast && !hasPhotos);
 
-  // The id is the date, so the date block needs no extra field.
+  // The id is the date, so the chip needs no extra field.
   const [, m, d] = event.id.split("-").map(Number);
+  const day = d;
+  const month = MONTHS[m - 1];
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:px-4 sm:pb-5">
-        <div className="pointer-events-auto mx-auto grid max-w-[920px] grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.5 rounded-panel border border-line bg-white/95 p-3 shadow-float backdrop-blur-md sm:flex sm:rounded-full sm:py-2.5 sm:pl-3 sm:pr-2.5">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:px-4 sm:pb-4 md:pb-6">
+        <div className="pointer-events-auto mx-auto grid max-w-[940px] grid-cols-[42px_minmax(0,1fr)_40px] items-center gap-2 rounded-panel border border-line bg-white/95 p-2.5 shadow-[0_18px_45px_-18px_rgba(15,23,42,.45)] backdrop-blur-md sm:flex sm:gap-3 sm:rounded-full md:gap-4 md:p-3 md:pl-4">
+          {/* Date chip — same object as on the cards, so the bar reads as a
+              continuation of the one you clicked. */}
           <div
-            className={`flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-full ${
-              cancelled ? "bg-red-50 text-red-700" : "bg-surface text-ink"
+            className={`flex w-[42px] shrink-0 flex-col items-center rounded-xl py-1.5 sm:w-[46px] ${
+              cancelled ? "bg-red-50 text-red-600" : "accent-tint text-accent"
             }`}
           >
-            <span className="font-display text-[15px] font-semibold leading-none tabular-nums">{d}</span>
-            <span className="mt-0.5 text-[10px] font-semibold leading-none text-subtle">{MONTHS[m - 1]}</span>
+            <span className="text-[16px] font-extrabold leading-none tabular-nums">
+              {day}
+            </span>
+            <span className="mt-0.5 text-[8.5px] font-bold tracking-[0.1em] opacity-70">
+              {month}
+            </span>
           </div>
 
           <div className="min-w-0 sm:flex-1">
-            <div className="truncate text-[14.5px] font-semibold leading-tight text-ink sm:text-[15px]">
+            <div className="truncate text-[13.5px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[15px]">
               {event.title}
             </div>
-            <div className="mt-1 flex items-center gap-2">
+            <div className="mt-0.5 flex items-center gap-2 sm:mt-1">
               {event.attendeeCount > 0 && (
                 <AvatarStack
                   className="hidden sm:flex"
@@ -94,7 +108,7 @@ export default function EventActionBar({ event }) {
                   size={20}
                 />
               )}
-              <span className="truncate text-[12.5px] text-subtle sm:text-[13px]">
+              <span className="truncate text-[11.5px] font-semibold text-subtle sm:text-[12px]">
                 {event.attendeeCount > 0
                   ? `${event.attendeeCount} ${isPast ? "came" : "going"} · ${event.date}`
                   : event.date}
@@ -102,23 +116,17 @@ export default function EventActionBar({ event }) {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => toggle(event.id)}
-            aria-pressed={saved}
-            aria-label={saved ? "Remove from saved" : "Save this event"}
-            className={`icon-btn sm:hidden ${saved ? "text-accent" : ""}`}
-          >
-            <HeartIcon filled={saved} className="h-5 w-5" />
-          </button>
-
-          <div className="col-span-3 flex min-w-0 items-center gap-1.5 sm:col-auto sm:shrink-0">
+          <div className="col-span-3 mt-1 flex min-w-0 items-center gap-2 sm:col-auto sm:mt-0 sm:shrink-0 sm:gap-1 md:gap-2.5">
             <button
               type="button"
               onClick={() => toggle(event.id)}
               aria-pressed={saved}
               aria-label={saved ? "Remove from saved" : "Save this event"}
-              className={`icon-btn hidden sm:inline-grid ${saved ? "text-accent" : ""}`}
+              className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition-[scale,color,background] duration-200 ease-smooth hover:scale-105 active:scale-95 sm:h-11 sm:w-11 ${
+                saved
+                  ? "bg-accent/10 text-accent"
+                  : "text-subtle hover:bg-line hover:text-ink"
+              }`}
             >
               <HeartIcon filled={saved} className="h-5 w-5" />
             </button>
@@ -128,15 +136,21 @@ export default function EventActionBar({ event }) {
               onClick={share}
               aria-label="Share this event"
               title={shared ? "Link copied" : "Share this event"}
-              className="icon-btn hidden sm:inline-grid"
+              className="hidden h-11 w-11 shrink-0 place-items-center rounded-full text-subtle transition-[scale,color,background] duration-200 ease-smooth hover:scale-105 hover:bg-line hover:text-ink active:scale-95 sm:grid"
             >
-              {shared ? <CheckIcon className="h-5 w-5 text-accent" /> : <ShareIcon className="h-5 w-5" />}
+              {shared ? (
+                <CheckIcon className="h-5 w-5 text-accent" />
+              ) : (
+                <ShareIcon className="h-5 w-5" />
+              )}
             </button>
 
             {isDead ? (
               <span
-                className={`btn w-full cursor-default sm:ml-1.5 sm:w-auto ${
-                  cancelled ? "bg-red-50 text-red-700" : "bg-surface text-subtle"
+              className={`min-w-0 flex-1 rounded-full px-3 py-3 text-center text-[13px] font-bold sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
+                  cancelled
+                    ? "bg-red-50 text-red-600"
+                    : "border border-line-strong text-subtle"
                 }`}
               >
                 {cancelled ? "Cancelled" : attendLabel}
@@ -147,9 +161,10 @@ export default function EventActionBar({ event }) {
                 onClick={isPast ? () => navigate(`/gallery/${event.id}`) : onAttend}
                 aria-pressed={going || undefined}
                 title={going ? "Click to give up your seat" : undefined}
-                className={`btn w-full sm:ml-1.5 sm:w-auto sm:min-w-[170px] ${going ? "btn-accent" : "btn-primary"}`}
+                className={`min-w-0 flex-1 rounded-full px-4 py-3 text-center text-[13px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 sm:flex-none sm:px-5 sm:py-3.5 sm:text-[14px] md:px-7 md:text-[15px] ${
+                  going ? "bg-accent" : "bg-ink hover:bg-accent"
+                }`}
               >
-                {going && <CheckIcon />}
                 {attendLabel}
               </button>
             )}

@@ -11,8 +11,10 @@ import { getDataUrlSize, isUploadedImage, isResolvedImage } from "../../lib/imag
 import { priceLabel } from "../../lib/format.js";
 import { CheckIcon, CloseIcon, UsersIcon } from "../../components/icons.jsx";
 
-const field = "field";
-const labelCls = "field-label";
+const field =
+  "w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none disabled:bg-[#fafbfc] disabled:text-subtle";
+const labelCls =
+  "text-[12px] font-bold uppercase tracking-[0.07em] text-subtle";
 
 function Row({ label, hint, children }) {
   return (
@@ -20,7 +22,7 @@ function Row({ label, hint, children }) {
       <span className={labelCls}>{label}</span>
       {children}
       {hint && (
-        <span className="field-hint">{hint}</span>
+        <span className="text-[12px] leading-relaxed text-subtle">{hint}</span>
       )}
     </label>
   );
@@ -28,13 +30,13 @@ function Row({ label, hint, children }) {
 
 function Card({ title, note, children }) {
   return (
-    <section className="card p-6">
+    <section className="rounded-card border border-line bg-white p-6">
       <div className="mb-5">
-        <h2 className="text-[17px] font-semibold tracking-[-0.01em] text-ink">
+        <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-ink">
           {title}
         </h2>
         {note && (
-          <p className="mt-1 text-[13.5px] leading-relaxed text-subtle">
+          <p className="mt-1 text-[12.5px] leading-relaxed text-subtle">
             {note}
           </p>
         )}
@@ -72,8 +74,8 @@ export default function EventForm() {
 
   if (editing && !built) {
     return (
-      <div className="card p-12 text-center">
-        <p className="font-semibold text-ink">No meetup with that date.</p>
+      <div className="rounded-card border border-line bg-white p-12 text-center">
+        <p className="font-bold text-ink">No meetup with that date.</p>
         <div className="mt-5 flex justify-center">
           <BackLink to="/admin">Back to meetups</BackLink>
         </div>
@@ -90,7 +92,7 @@ export default function EventForm() {
   const save = async () => {
     if (saving) return;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date))
-      return setError("Pick a date. It doubles as the event's ID and URL.");
+      return setError("Pick a date — it doubles as the event's ID and URL.");
 
     const next = {
       date: form.date,
@@ -130,8 +132,8 @@ export default function EventForm() {
       })
     : null;
 
-  /* The gallery only shows on the public site once the meetup has happened,
-     so say so rather than letting someone wonder where their photos went. */
+  /* The gallery only shows on the public site once the meetup has happened —
+     say so rather than letting someone wonder where their photos went. */
   const isPast = built?.isPast;
 
   /* Hosted (Cloudinary) URLs, uploads and absolute paths are used as-is; only
@@ -143,11 +145,11 @@ export default function EventForm() {
     <>
       <BackLink to="/admin">Meetups</BackLink>
 
-      <header className="mb-8 mt-4">
-        <p className="text-[13.5px] font-semibold text-accent">
+      <header className="mb-8 mt-3">
+        <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-subtle">
           {editing ? "Editing" : "New"}
-        </p>
-        <h1 className="display-page mt-1.5">
+        </div>
+        <h1 className="mt-1.5 text-[30px] font-extrabold tracking-[-0.035em] md:text-[34px]">
           {editing ? "Edit meetup" : "Add meetup"}
         </h1>
       </header>
@@ -162,8 +164,8 @@ export default function EventForm() {
               label="Date"
               hint={
                 weekday
-                  ? `${weekday} · 11:00 AM to 1:00 PM IST. This date is the event's URL.`
-                  : "Every meetup is a Saturday, 11:00 AM to 1:00 PM IST."
+                  ? `${weekday} · 11:00 AM–1:00 PM IST. This date is the event's URL.`
+                  : "Every meetup is a Saturday, 11:00 AM–1:00 PM IST."
               }
             >
               <input
@@ -213,18 +215,27 @@ export default function EventForm() {
 
           <Card
             title="Header image"
-            note="Shown next to the title at the top of the event page. Landscape works best; it's cropped to fill."
+            note="Sits behind the title at the top of the event page. Landscape works best — it's cropped to fill."
           >
-            {/* Same 16:10 crop the event page uses, so what you see here is
-                what visitors will see. */}
             <div className="overflow-hidden rounded-card border border-line">
-              <div className="relative aspect-[16/10] bg-surface">
+              <div className="relative h-[190px] bg-ink">
                 <CoverImage
                   src={form.image.trim() || undefined}
                   alt=""
-                  label="No image yet, the default will be used"
-                  className="h-full w-full text-[13px] text-subtle"
+                  label="NO IMAGE — USING THE DEFAULT"
+                  className="h-full w-full"
                 />
+                {/* The real scrim, so you can see whether the title will be
+                    readable on this photo before you save it. */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <div className="text-[16px] font-extrabold leading-tight tracking-[-0.02em] text-white">
+                    {form.title.trim() || DEFAULT_TITLE}
+                  </div>
+                </div>
 
                 {form.image && (
                   <button
@@ -319,7 +330,7 @@ export default function EventForm() {
             className={`flex cursor-pointer items-start gap-3 rounded-card border p-5 transition-colors duration-200 ${
               form.cancelled
                 ? "border-red-200 bg-red-50/60"
-                : "border-line bg-white shadow-card hover:border-line-strong"
+                : "border-line bg-white hover:border-line-strong"
             }`}
           >
             <input
@@ -329,10 +340,10 @@ export default function EventForm() {
               className="mt-0.5 h-4 w-4 accent-red-600"
             />
             <span>
-              <span className="block text-[15px] font-semibold text-ink">
+              <span className="block text-sm font-bold text-ink">
                 This edition is cancelled
               </span>
-              <span className="mt-1 block text-[13.5px] leading-relaxed text-subtle">
+              <span className="mt-1 block text-[12.5px] leading-relaxed text-subtle">
                 It stays listed with a badge so members who already RSVP'd see
                 it's off, rather than quietly vanishing.
               </span>
@@ -340,7 +351,7 @@ export default function EventForm() {
           </label>
 
           {error && (
-            <p role="alert" className="rounded-card border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700">
+            <p className="rounded-card border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
               {error}
             </p>
           )}
@@ -350,7 +361,7 @@ export default function EventForm() {
               type="button"
               onClick={save}
               disabled={saving}
-              className="btn btn-primary btn-lg"
+              className="inline-flex items-center gap-2 rounded-btn bg-ink px-7 py-3.5 text-[15px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:bg-ink"
             >
               {saving ? (
                 <Spinner className="h-4 w-4" />
@@ -363,27 +374,30 @@ export default function EventForm() {
                   ? "Save changes"
                   : "Create meetup"}
             </button>
-            <Link to="/admin" className="btn btn-secondary btn-lg">
+            <Link
+              to="/admin"
+              className="rounded-btn border border-line-strong px-6 py-3.5 text-[15px] font-bold text-muted transition-colors duration-200 hover:border-ink hover:text-ink"
+            >
               Discard
             </Link>
           </div>
         </div>
 
         <aside className="flex flex-col gap-5 lg:sticky lg:top-8">
-          <div className="card p-6">
-            <h2 className="text-[17px] font-semibold tracking-[-0.01em]">
+          <div className="rounded-card border border-line bg-white p-6">
+            <h2 className="text-[15px] font-extrabold tracking-[-0.01em]">
               How it'll read
             </h2>
             <dl className="mt-4 flex flex-col gap-3 text-[13px]">
               <div className="flex justify-between gap-3">
                 <dt className="text-subtle">Title</dt>
-                <dd className="truncate text-right font-semibold text-ink">
+                <dd className="truncate text-right font-bold text-ink">
                   {form.title.trim() || DEFAULT_TITLE}
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-subtle">Entry</dt>
-                <dd className="font-semibold text-ink">
+                <dd className="font-bold text-ink">
                   {priceLabel(Number(form.entryFee) || 0)}
                 </dd>
               </div>
@@ -397,8 +411,8 @@ export default function EventForm() {
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-subtle">Gallery</dt>
-                <dd className="font-semibold text-ink">
-                  {form.photos.length || "None"}
+                <dd className="font-bold text-ink">
+                  {form.photos.length || "—"}
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
@@ -410,13 +424,13 @@ export default function EventForm() {
             </dl>
           </div>
 
-          <div className="card p-6">
+          <div className="rounded-card border border-line bg-white p-6">
             <div className="flex items-baseline justify-between">
-              <h2 className="flex items-center gap-2 text-[17px] font-semibold tracking-[-0.01em]">
+              <h2 className="flex items-center gap-2 text-[15px] font-extrabold tracking-[-0.01em]">
                 <UsersIcon className="h-4 w-4 text-subtle" />
                 Who's going
               </h2>
-              <span className="text-sm font-semibold tabular-nums text-subtle">
+              <span className="text-sm font-bold tabular-nums text-subtle">
                 {built?.attendeeCount ?? (Number(form.attendeeCount) || 0)}
               </span>
             </div>
@@ -431,10 +445,10 @@ export default function EventForm() {
                       ring={p.role === "Prime member"}
                     />
                     <div className="min-w-0">
-                      <div className="truncate text-[14px] font-semibold text-ink">
+                      <div className="truncate text-[13px] font-bold text-ink">
                         {p.name}
                       </div>
-                      <div className="text-[12.5px] text-subtle">
+                      <div className="text-[11px] font-semibold text-subtle">
                         {p.role}
                       </div>
                     </div>

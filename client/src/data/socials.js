@@ -4,7 +4,7 @@
    >>> THE URLS BELOW ARE GUESSES. Replace them with the real profiles. <<<
 
    Meetup is the only one confirmed. The rest are the community's pages that
-   nobody has sent me the addresses for yet, they're shaped correctly and
+   nobody has sent me the addresses for yet , they're shaped correctly and
    pointed at plausible handles so the footer looks right, but every one of
    them needs checking before this is public.
 

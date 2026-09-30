@@ -1,21 +1,27 @@
 import { Link } from "react-router-dom";
-import { ArrowRightIcon } from "../components/icons.jsx";
 
 export default function NotFound() {
   return (
-    <section className="shell flex min-h-[62vh] flex-col items-center justify-center py-20 text-center">
-      <p className="text-[14px] font-semibold text-accent">Error 404</p>
-      <h1 className="display-page mt-3 max-w-[640px]">This page isn't on the calendar.</h1>
-      <p className="lead mt-4 max-w-[460px]">
-        The link may be old or mistyped. Head back home, or see what's coming up.
+    <section className="mx-auto flex min-h-[60vh] max-w-shell flex-col items-center justify-center px-6 text-center">
+      <div className="font-mono text-sm tracking-widest text-faint">404</div>
+      <h1 className="mt-4 text-[36px] font-extrabold tracking-[-0.03em] md:text-[48px]">
+        This page isn't on the calendar.
+      </h1>
+      <p className="mt-4 max-w-105 text-[17px] leading-[1.65] text-muted">
+        The link may be old. Head back home or browse what's coming up.
       </p>
-      <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
-        <Link to="/" className="btn btn-primary w-full sm:w-auto">
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link
+          to="/"
+          className="rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white transition-transform duration-300 ease-smooth hover:-translate-y-0.75 hover:text-white"
+        >
           Go home
         </Link>
-        <Link to="/events" className="btn btn-secondary w-full sm:w-auto">
-          See upcoming events
-          <ArrowRightIcon />
+        <Link
+          to="/events"
+          className="accent-border hover:accent-tint rounded-btn border px-7 py-4 text-[15px] font-bold text-accent transition-[background,translate] duration-300 ease-smooth hover:-translate-y-0.75"
+        >
+          See all events
         </Link>
       </div>
     </section>

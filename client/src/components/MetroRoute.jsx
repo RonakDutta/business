@@ -3,7 +3,7 @@ import { MetroIcon, WalkIcon, ExitIcon } from "./icons.jsx";
 /**
  * The route from the metro, as a route.
  *
- * Three steps down a connected spine rather than a row in a table: the exit
+ * Three steps down a connected spine rather than a row in a table , the exit
  * gate is the bit people get wrong, and a table of station names buries it.
  * Reads the `metro` object off a location; renders nothing without one.
  */
@@ -42,10 +42,10 @@ export default function MetroRoute({ metro, className = "" }) {
             <s.icon className="h-[17px] w-[17px]" />
           </span>
           <div className="min-w-0">
-            <div className="text-[14.5px] font-semibold leading-tight text-ink">
+            <div className="text-[14px] font-bold leading-tight text-ink">
               {s.label}
             </div>
-            <div className="mt-0.5 text-[13px] text-subtle">{s.note}</div>
+            <div className="mt-0.5 text-[12px] text-subtle">{s.note}</div>
           </div>
         </li>
       ))}

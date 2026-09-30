@@ -1,34 +1,43 @@
 import { Link } from "react-router-dom";
 import CoverImage from "./CoverImage.jsx";
-import { ArrowRightIcon } from "./icons.jsx";
 
-/** One meetup's album: the cover photo, then the date, count and title. */
+/** Album tile: event cover, with the title over a scrim. Opens the album. */
 export default function AlbumCard({ album }) {
   return (
     <Link
       to={`/gallery/${album.id}`}
       data-stagger
-      className="reveal card card-hover group flex flex-col overflow-hidden"
+      className="reveal clay group relative block aspect-[4/3] overflow-hidden rounded-card transition-shadow duration-300 hover:shadow-lg"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-surface">
+      {/* Cover zooms; the scrim above it does not */}
+      <div className="absolute inset-0 transition-[scale] duration-[600ms] ease-smooth group-hover:scale-[1.06]">
         <CoverImage
           src={album.cover}
           alt=""
-          className="h-full w-full transition-transform duration-500 ease-smooth group-hover:scale-[1.03]"
+          label="EVENT PHOTO"
+          className="h-full w-full"
         />
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <p className="text-[13.5px] text-subtle">
-          {album.date} · {album.count} {album.count === 1 ? "photo" : "photos"}
-        </p>
-        <h2 className="mt-1.5 text-[18px] font-semibold leading-snug tracking-[-0.01em]">
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
+
+      <div className="absolute inset-x-0 bottom-0 p-5 text-left text-white">
+        <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.06em] uppercase opacity-80">
+          <span>{album.date}</span>
+          <span aria-hidden="true">·</span>
+          <span>
+            {album.count} {album.count === 1 ? "photo" : "photos"}
+          </span>
+        </div>
+
+        <div className="mt-1.5 text-[18px] font-extrabold leading-snug tracking-[-0.02em]">
           {album.title}
-        </h2>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[14.5px] font-semibold text-ink transition-colors duration-200 group-hover:text-accent">
-          View album
-          <ArrowRightIcon className="h-4 w-4 transition-[translate] duration-200 group-hover:translate-x-0.5" />
-        </span>
+        </div>
+
+        {/* Slides up on hover; always visible to keyboard/touch users */}
+        <div className="mt-2 translate-y-1 text-[13px] font-bold opacity-0 transition-[translate,opacity] duration-300 ease-smooth group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+          View album →
+        </div>
       </div>
     </Link>
   );
