@@ -361,6 +361,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.assets = {};
         this.disposed = false;
         this.isPaused = false;
+        // Own clock: advances only while the road is actually moving, so a
+        // pause never makes the lights leap forward on resume.
+        this.elapsed = 0;
+        this.timeScale = 1;
 
         this.road = new Road(this, options);
         this.leftCarLights = new CarLights(
@@ -516,7 +520,8 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.speedUp += lerp(this.speedUp, this.speedUpTarget, lerpPercentage, 0.00001);
         this.timeOffset += this.speedUp * delta;
 
-        let time = this.clock.elapsedTime + this.timeOffset;
+        this.elapsed += delta;
+        let time = this.elapsed + this.timeOffset;
 
         this.rightCarLights.update(time);
         this.leftCarLights.update(time);
@@ -605,9 +610,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       tick() {
         if (this.disposed) return;
-        // Paused while off screen, and while the page is being scrolled so the
-        // GPU goes to the scroll instead of the road.
-        if (this.isPaused || this.scrollPaused) {
+        // Off screen: stop outright. getDelta() keeps the clock fresh so the
+        // first frame back doesn't see the whole gap.
+        if (this.isPaused) {
+          this.clock.getDelta();
           requestAnimationFrame(this.tick);
           return;
         }
@@ -636,8 +642,22 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         }
 
         if (this.hasValidSize) {
-          // Clamped so the road doesn't leap forward after a pause.
-          const delta = Math.min(this.clock.getDelta(), 1 / 30);
+          const raw = Math.min(this.clock.getDelta(), 1 / 30);
+
+          // While the page scrolls the road eases to a stop (then stops
+          // rendering so the GPU goes to the scroll), and eases back up to
+          // speed afterwards, instead of freezing and snapping.
+          const target = this.scrollPaused ? 0 : 1;
+          const ease = 1 - Math.exp(-raw * (this.scrollPaused ? 10 : 4));
+          this.timeScale += (target - this.timeScale) * ease;
+
+          if (this.scrollPaused && this.timeScale < 0.03) {
+            this.timeScale = 0;
+            requestAnimationFrame(this.tick);
+            return;
+          }
+
+          const delta = raw * this.timeScale;
           this.render(delta);
           this.update(delta);
         }
@@ -1159,7 +1179,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
       clearTimeout(scrollTimer);
       scrollTimer = setTimeout(() => {
         if (appRef.current) appRef.current.scrollPaused = false;
-      }, 160);
+      }, 200);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
