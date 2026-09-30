@@ -1,145 +1,137 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CoverImage from "./CoverImage.jsx";
+import LoadingState from "./LoadingState.jsx";
+import SectionHeader from "./SectionHeader.jsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "./icons.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
-import { ServerLoader } from "./ServerLoader.jsx";
 
-// Page 3 of the sketch: one wide photo from a past meetup with the details
-// beside it, and arrows to step through the other albums.
+const pad = (n) => String(n).padStart(2, "0");
+
+// Page 3 of the sketch: one photo from a past meetup with its details beside
+// it, arrows to step through the other albums, and a way into the gallery.
+// It moves on by itself every few seconds, and holds still while the pointer
+// or keyboard focus is on it, or when the visitor prefers less motion.
 export default function GlimpsesSection({ albums = [] }) {
   const { ready } = useEvents();
   const [index, setIndex] = useState(0);
-  const [isFading, setIsFading] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const fadeTimeoutRef = useRef(null);
+  const [visible, setVisible] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const fadeRef = useRef(null);
 
-  const album = albums[index];
+  const count = albums.length;
+  const current = count ? index % count : 0;
+  const album = albums[current];
   const photo = album?.photos?.[0];
 
   const step = useCallback(
     (direction) => {
-      if (isFading || albums.length <= 1) return;
-
-      setIsFading(true);
-      if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
-
-      fadeTimeoutRef.current = setTimeout(() => {
-        setIndex((current) => (current + direction + albums.length) % albums.length);
-        setIsFading(false);
-      }, 220);
+      if (count <= 1) return;
+      setVisible(false);
+      clearTimeout(fadeRef.current);
+      fadeRef.current = setTimeout(() => {
+        setIndex((i) => (i + direction + count) % count);
+        setVisible(true);
+      }, 200);
     },
-    [albums.length, isFading],
+    [count],
   );
 
-  // Auto-switch to next album every 5 seconds (5000ms), paused on hover
   useEffect(() => {
-    if (albums.length <= 1 || isPaused) return;
-
-    const timer = setInterval(() => {
-      step(1);
-    }, 5000);
-
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (count <= 1 || paused || reduced) return;
+    const timer = setInterval(() => step(1), 6000);
     return () => clearInterval(timer);
-  }, [albums.length, isPaused, step]);
+  }, [count, paused, step]);
 
-  useEffect(() => {
-    return () => {
-      if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
-    };
-  }, []);
+  useEffect(() => () => clearTimeout(fadeRef.current), []);
 
-  const arrowButton =
-    "clay clay-press grid h-11 w-11 place-items-center rounded-full bg-white text-ink transition-transform duration-200 active:scale-95";
+  const fade = `transition-opacity duration-200 ease-smooth ${visible ? "opacity-100" : "opacity-0"}`;
 
   return (
-    <section id="gallery" className="px-5 py-16 sm:px-6 md:px-10 md:py-24">
-      <div className="mx-auto max-w-shell">
-        <div className="reveal">
-          <div className="text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            Glimpses
-          </div>
-          <h2 className="mt-3 text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
-            From the past events
-          </h2>
-        </div>
+    <section id="gallery" className="section scroll-mt-20">
+      <div className="shell">
+        <SectionHeader
+          title="Glimpses from past events"
+          lead="A few photos from recent Saturdays. Every meetup has its own album."
+        />
 
         <div
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          className="reveal clay mt-9 overflow-hidden rounded-panel bg-white md:mt-12"
+          className="reveal mt-10 md:mt-12"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
         >
           {!ready ? (
-            <ServerLoader message="Loading photo gallery..." hint="Fetching event glimpses..." />
+            <LoadingState message="Loading photos" />
           ) : album ? (
-            <div
-              className={`grid items-stretch lg:grid-cols-2 transition-all duration-300 ease-smooth ${
-                isFading ? "opacity-0 scale-[0.99] blur-[2px]" : "opacity-100 scale-100 blur-0"
-              }`}
-            >
-              <div className="h-[260px] sm:h-[380px] lg:h-[520px]">
-                <CoverImage
-                  src={photo?.src}
-                  alt={photo?.alt || `Photo from ${album.title}`}
-                  label="MEETUP PHOTO"
-                />
+            <div className="card grid overflow-hidden lg:grid-cols-[1.3fr_1fr]">
+              <div className="h-64 bg-surface sm:h-80 lg:h-[440px]">
+                <Link to={`/gallery/${album.id}`} className={`block h-full ${fade}`} tabIndex={-1} aria-hidden="true">
+                  <CoverImage
+                    src={photo?.src}
+                    alt=""
+                    label=""
+                    className="h-full w-full"
+                  />
+                </Link>
               </div>
 
-              <div className="flex w-full max-w-[560px] flex-col justify-center gap-6 px-5 py-10 sm:px-8 sm:py-14 md:px-12 lg:px-16">
-                <div>
-                  <div className="text-[12px] font-bold uppercase tracking-[0.11em] text-subtle">
-                    {album.date}
-                  </div>
-                  <h3 className="mt-3 text-[24px] font-extrabold leading-[1.2] tracking-[-0.025em] sm:text-[30px]">
-                    {album.title}
-                  </h3>
-                  <p className="mt-4 text-[15px] leading-[1.7] text-muted sm:text-[16px]">
-                    {album.place} · {album.count}{" "}
-                    {album.count === 1 ? "photo" : "photos"} from the day.
+              <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
+                <div className={fade} aria-live="polite">
+                  <p className="text-[13.5px] font-semibold text-accent">{album.date}</p>
+                  <h3 className="display-3 mt-2">{album.title}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-muted">
+                    {album.place} · {album.count} {album.count === 1 ? "photo" : "photos"}
                   </p>
+                  <Link to={`/gallery/${album.id}`} className="link-arrow mt-6 text-[15px]">
+                    Open this album
+                    <ArrowRightIcon />
+                  </Link>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link
-                    to="/gallery"
-                    className="clay clay-press rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:text-white"
-                  >
-                    Gallery
+                <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
+                  <Link to="/gallery" className="btn btn-secondary btn-sm">
+                    View the gallery
                   </Link>
 
-                  {albums.length > 1 && (
-                    <div className="ml-auto flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => step(-1)}
-                        aria-label="Previous event"
-                        className={arrowButton}
-                      >
-                        <ArrowLeftIcon className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => step(1)}
-                        aria-label="Next event"
-                        className={arrowButton}
-                      >
-                        <ArrowRightIcon className="h-4 w-4" />
-                      </button>
+                  {count > 1 && (
+                    <div className="flex items-center gap-3">
+                      <span className="hidden whitespace-nowrap text-[13.5px] font-medium text-subtle tabular-nums sm:inline">
+                        {pad(current + 1)} / {pad(count)}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => step(-1)}
+                          aria-label="Previous event"
+                          className="icon-btn icon-btn-outline"
+                        >
+                          <ArrowLeftIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => step(1)}
+                          aria-label="Next event"
+                          className="icon-btn icon-btn-outline"
+                        >
+                          <ArrowRightIcon className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="px-5 py-16 text-center sm:px-6 md:px-10">
-              <p className="text-[16px] text-muted">
-                Photos from the meetups will show up here.
+            <div className="card px-6 py-14 text-center">
+              <p className="text-[17px] font-semibold text-ink">No photos yet</p>
+              <p className="mx-auto mt-2 max-w-[320px] text-[14.5px] leading-relaxed text-muted">
+                Photos from each meetup go up here a few days after it happens.
               </p>
-              <Link
-                to="/gallery"
-                className="clay clay-press mt-6 inline-block rounded-btn bg-ink px-8 py-4 text-[15px] font-bold text-white hover:text-white"
-              >
-                Gallery
+              <Link to="/gallery" className="btn btn-secondary btn-sm mt-6">
+                View the gallery
               </Link>
             </div>
           )}

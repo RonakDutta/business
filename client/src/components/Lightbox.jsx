@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef } from "react";
-import CoverImage from "./CoverImage.jsx";
+import { ArrowLeftIcon, ArrowRightIcon, CloseIcon } from "./icons.jsx";
 
 /**
- * Fullscreen photo viewer. Arrow keys / Esc, click backdrop to close.
- * Locks body scroll while open and restores focus to the trigger on close.
+ * Fullscreen photo viewer. Arrow keys and Esc work, clicking the backdrop
+ * closes it. Locks page scroll while open and gives focus back to the photo
+ * you opened when it closes.
  */
 export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
   const closeRef = useRef(null);
@@ -17,7 +18,7 @@ export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
       if (e.key === "ArrowLeft") onPrev();
       if (e.key === "ArrowRight") onNext();
     },
-    [onClose, onPrev, onNext]
+    [onClose, onPrev, onNext],
   );
 
   useEffect(() => {
@@ -40,6 +41,8 @@ export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
   if (!open) return null;
 
   const photo = photos[index];
+  const control =
+    "grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20";
 
   return (
     <div
@@ -47,58 +50,57 @@ export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
       aria-modal="true"
       aria-label={`Photo ${index + 1} of ${photos.length}`}
       onClick={onClose}
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/92 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 sm:p-8"
     >
       <button
         ref={closeRef}
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-2xl leading-none text-white transition-[scale,background] duration-200 ease-smooth hover:scale-105 hover:bg-white/20"
+        className={`${control} absolute right-4 top-4`}
       >
-        ✕
+        <CloseIcon className="h-5 w-5" />
       </button>
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onPrev();
-        }}
-        aria-label="Previous photo"
-        className="absolute left-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-3xl leading-none text-white transition-[scale,background] duration-200 ease-smooth hover:scale-105 hover:bg-white/20 md:left-8"
-      >
-        ‹
-      </button>
+      {photos.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            aria-label="Previous photo"
+            className={`${control} absolute left-3 top-1/2 -translate-y-1/2 md:left-8`}
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+          </button>
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onNext();
-        }}
-        aria-label="Next photo"
-        className="absolute right-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-3xl leading-none text-white transition-[scale,background] duration-200 ease-smooth hover:scale-105 hover:bg-white/20 md:right-8"
-      >
-        ›
-      </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
+            aria-label="Next photo"
+            className={`${control} absolute right-3 top-1/2 -translate-y-1/2 md:right-8`}
+          >
+            <ArrowRightIcon className="h-5 w-5" />
+          </button>
+        </>
+      )}
 
-      {/* stopPropagation so clicking the photo itself doesn't close */}
+      {/* stopPropagation so clicking the photo itself doesn't close it */}
       <figure
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[82vh] w-full max-w-[1000px] flex-col items-center gap-4"
+        className="flex max-h-full w-full max-w-[1100px] flex-col items-center gap-4"
       >
-        <div className="flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-panel bg-white/5">
-          <CoverImage
-            src={photo.src}
-            alt={photo.alt || ""}
-            label="PHOTO"
-            className="h-full w-full"
-            loading="eager"
-          />
-        </div>
-
-        <figcaption className="font-mono text-xs tracking-[0.08em] text-white/70">
+        <img
+          src={photo.src}
+          alt={photo.alt || ""}
+          className="max-h-[80vh] w-auto max-w-full rounded-card object-contain"
+        />
+        <figcaption className="text-[13px] tabular-nums text-white/70">
           {index + 1} / {photos.length}
         </figcaption>
       </figure>

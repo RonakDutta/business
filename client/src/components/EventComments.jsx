@@ -6,13 +6,12 @@ import { useComments, MAX_COMMENT_LENGTH } from "../hooks/useComments.js";
 import { ArrowRightIcon, TrashIcon } from "./icons.jsx";
 
 /* ===========================================================================
-   "How was it" — members' notes on a meetup that has already happened.
+   Members' notes on a meetup that has already happened.
 
-   Shown on past editions only: there's nothing to say about a room nobody has
-   sat in yet. Signed-out visitors can read the thread and get a prompt to sign
-   in; signed-in members can post, and remove their own.
+   Shown on past editions only. Signed-out visitors can read the thread and get
+   a prompt to sign in; signed-in members can post, and remove their own.
 
-   Storage is this browser only for now — see hooks/useComments.js.
+   Storage is this browser only for now: see hooks/useComments.js.
    =========================================================================== */
 
 /** "2 hours ago" / "3 days ago" / a date once it's old enough to not matter. */
@@ -54,15 +53,15 @@ export default function EventComments({ event }) {
   return (
     <div>
       {user ? (
-        <form onSubmit={submit} className="mb-8">
+        <form onSubmit={submit} className="mb-10">
           <div className="flex gap-3">
-            <Avatar
-              person={{ name: user.name || user.email }}
-              size={36}
-              className="mt-1"
-            />
+            <Avatar person={{ name: user.name || user.email }} size={40} className="mt-0.5" />
             <div className="min-w-0 flex-1">
+              <label htmlFor="comment-body" className="sr-only">
+                Your comment
+              </label>
               <textarea
+                id="comment-body"
                 rows={3}
                 value={body}
                 onChange={(e) => {
@@ -71,30 +70,22 @@ export default function EventComments({ event }) {
                 }}
                 maxLength={MAX_COMMENT_LENGTH}
                 placeholder={`How was ${event.date.split(" · ")[0]}? What stuck with you?`}
-                className="w-full resize-y rounded-2xl border border-line-strong bg-[#fafbfc] px-4 py-3 text-[15px] leading-relaxed text-ink transition-[border-color,background] duration-200 placeholder:text-faint focus:border-accent focus:bg-white focus:outline-none"
+                className="field resize-y"
               />
 
-              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                <span
-                  className={`text-[12px] font-semibold ${
-                    left < 60 ? "text-red-600" : "text-faint"
-                  }`}
-                >
+              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
+                <span className={`text-[12.5px] ${left < 60 ? "font-semibold text-red-600" : "text-faint"}`}>
                   {left < 60 ? `${left} characters left` : ""}
                 </span>
 
-                <button
-                  type="submit"
-                  disabled={!body.trim()}
-                  className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-2.5 text-[14px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-ink"
-                >
+                <button type="submit" disabled={!body.trim()} className="btn btn-primary btn-sm">
                   Post comment
-                  <ArrowRightIcon className="h-4 w-4" />
+                  <ArrowRightIcon />
                 </button>
               </div>
 
               {error && (
-                <p role="alert" className="mt-2 text-[13px] font-semibold text-red-600">
+                <p role="alert" className="mt-2 text-[13.5px] font-semibold text-red-600">
                   {error}
                 </p>
               )}
@@ -102,50 +93,40 @@ export default function EventComments({ event }) {
           </div>
         </form>
       ) : (
-        <div className="accent-border accent-tint mb-8 flex flex-wrap items-center justify-between gap-3 rounded-card border px-5 py-4">
-          <p className="text-[14px] font-semibold text-ink">
-            Sign in to share how this meetup went.
-          </p>
+        <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-card border border-line bg-surface px-5 py-4">
+          <p className="text-[15px] text-ink">Sign in to share how this meetup went.</p>
           <Link
             to={`/login?next=${encodeURIComponent(`/events/${event.id}`)}`}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-btn bg-ink px-5 py-2.5 text-[13.5px] font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
+            className="btn btn-primary btn-sm"
           >
             Sign in
-            <ArrowRightIcon className="h-4 w-4" />
+            <ArrowRightIcon />
           </Link>
         </div>
       )}
 
       {comments.length === 0 ? (
-        <p className="text-[14.5px] leading-relaxed text-muted">
-          No notes on this edition yet
-          {user ? " — be the first to leave one." : "."}
+        <p className="text-[15px] leading-relaxed text-muted">
+          No notes on this edition yet.
+          {user ? " Be the first to leave one." : ""}
         </p>
       ) : (
-        <ul className="flex flex-col gap-5">
+        <ul className="flex flex-col divide-y divide-line">
           {comments.map((c) => {
             const mine = user && (user.id || user.email) === c.author.id;
 
             return (
-              <li key={c.id} className="flex gap-3">
-                <Avatar person={{ name: c.author.name }} size={36} />
+              <li key={c.id} className="flex gap-3 py-5 first:pt-0">
+                <Avatar person={{ name: c.author.name }} size={40} />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                    <span className="text-[14px] font-bold text-ink">
-                      {c.author.name}
-                    </span>
-                    {mine && (
-                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-accent">
-                        You
-                      </span>
-                    )}
-                    <span className="text-[12px] font-semibold text-faint">
-                      {timeAgo(c.createdAt)}
-                    </span>
+                    <span className="text-[14.5px] font-semibold text-ink">{c.author.name}</span>
+                    {mine && <span className="badge h-5 bg-accent/10 px-2 text-[11px] text-accent">You</span>}
+                    <span className="text-[13px] text-faint">{timeAgo(c.createdAt)}</span>
                   </div>
 
-                  <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-[1.7] text-muted">
+                  <p className="mt-1.5 whitespace-pre-wrap text-[15.5px] leading-[1.7] text-muted">
                     {c.body}
                   </p>
                 </div>
@@ -156,7 +137,7 @@ export default function EventComments({ event }) {
                     onClick={() => remove(c.id)}
                     aria-label="Delete your comment"
                     title="Delete"
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-faint transition-colors duration-200 hover:bg-red-50 hover:text-red-600"
+                    className="icon-btn h-9 w-9 hover:bg-red-50 hover:text-red-600"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>

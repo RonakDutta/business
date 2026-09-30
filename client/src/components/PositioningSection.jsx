@@ -1,86 +1,85 @@
-import CoverImage from "./CoverImage.jsx";
-import { ClayShapes, GlowingRings } from "./Decor.jsx";
-import {
-  LightbulbIcon,
-  ChartIcon,
-  CompassIcon,
-  LifebuoyIcon,
-} from "./icons.jsx";
-
 const PILLARS = [
   {
     label: "Ideas",
     note: "Say the half-formed one out loud and let the room shape it.",
-    Icon: LightbulbIcon,
   },
   {
     label: "Insights",
     note: "What actually worked last quarter, numbers and all.",
-    Icon: ChartIcon,
   },
   {
     label: "Exploration",
     note: "Sit in on a trade you know nothing about.",
-    Icon: CompassIcon,
   },
   {
     label: "Business support",
     note: "A supplier, a first hire, a second opinion before you sign.",
-    Icon: LifebuoyIcon,
   },
 ];
 
-// The branding block: the name gets the big type, and the four things the room
-// is for sit together in one panel rather than four floating cards.
+const PHOTOS = [
+  {
+    src: "/images/gallery/2026-04-25/06.jpg",
+    alt: "Members around the tables at a Saturday meetup",
+    className: "row-span-2",
+  },
+  {
+    src: "/images/gallery/2026-05-23/04.jpg",
+    alt: "A conversation by the window",
+  },
+  {
+    src: "/images/gallery/2026-06-06/03.jpg",
+    alt: "The group outside the venue after a session",
+  },
+];
+
+// The branding block: the name in big type, and the four things the room is
+// for as a short numbered list, next to a few photos from past meetups.
 export default function PositioningSection() {
   return (
-    <section className="relative isolate py-16 md:py-24">
-      <ClayShapes className="pointer-events-none absolute -left-24 top-10 -z-10 h-[420px] w-[420px] opacity-70 md:-left-10" />
-      <GlowingRings className="pointer-events-none absolute -right-6 top-10 -z-10 h-[340px] w-[340px] opacity-80" />
-
-      <div className="mx-auto grid max-w-shell items-stretch gap-8 px-5 sm:px-6 md:px-10 lg:grid-cols-2 lg:gap-12">
-        <div className="reveal clay relative z-10 flex h-full min-h-[320px] overflow-hidden rounded-panel bg-white p-3">
-          <CoverImage
-            src="/images/gallery/2026-06-06/03.jpg"
-            alt="Members talking at a Business 4.0 meetup"
-            label="MEETUP PHOTO"
-            className="h-full w-full rounded-[16px] object-cover"
-          />
+    <section className="section bg-surface">
+      <div className="shell grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="reveal grid h-[340px] grid-cols-2 grid-rows-2 gap-3 sm:h-[480px] sm:gap-4 lg:h-[540px]">
+          {PHOTOS.map((photo) => (
+            <div
+              key={photo.src}
+              className={`overflow-hidden rounded-card bg-surface-strong ${photo.className || ""}`}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ))}
         </div>
 
-        <div className="reveal flex flex-col justify-between" data-delay="0.1">
-          <div>
-            <h2 className="text-[38px] font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-[50px] md:text-[56px]">
-              Business <span className="text-accent">4.0</span>
-            </h2>
+        <div data-delay="0.08" className="reveal">
+          <h2 className="font-display text-[44px] font-semibold leading-none tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[64px]">
+            Business <span className="text-accent">4.0</span>
+          </h2>
+          <p className="mt-4 font-display text-[20px] font-medium text-muted sm:text-[22px]">
+            A place for
+          </p>
 
-            <p className="mt-2 text-[16px] font-bold tracking-[-0.01em] text-subtle sm:text-[18px]">
-              A place for
-            </p>
-          </div>
-
-          <div className="clay relative z-10 mt-5 rounded-panel bg-white p-2 sm:p-3">
-            <div className="grid sm:grid-cols-2">
-              {PILLARS.map(({ label, note, Icon }) => (
-                <div
-                  key={label}
-                  className="flex gap-3.5 rounded-[16px] p-4 transition-colors duration-200 hover:bg-canvas sm:p-5"
-                >
-                  <span className="clay-inset grid h-10 w-10 shrink-0 place-items-center rounded-[13px] bg-accent/10 text-accent">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="text-[16px] font-extrabold tracking-[-0.01em] text-ink sm:text-[17px]">
-                      {label}
-                    </div>
-                    <p className="mt-1 text-[13.5px] leading-[1.6] text-muted">
-                      {note}
-                    </p>
-                  </div>
+          <ol className="mt-8 divide-y divide-line border-y border-line">
+            {PILLARS.map((pillar, index) => (
+              <li key={pillar.label} className="grid grid-cols-[2.75rem_1fr] gap-3 py-5">
+                <span className="pt-0.5 font-display text-[15px] font-semibold text-accent tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="text-[18px] font-semibold tracking-[-0.01em]">
+                    {pillar.label}
+                  </h3>
+                  <p className="mt-1 text-[15px] leading-relaxed text-muted">
+                    {pillar.note}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

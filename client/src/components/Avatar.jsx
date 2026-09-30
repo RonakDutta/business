@@ -1,23 +1,18 @@
 import { useState } from "react";
 
-const initials = (name) =>
-  name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+// Two initials when there is room, one when the circle is small or sits in
+// an overlapping stack, where only its left edge shows.
+function initials(name = "", single) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const letters = parts.slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  return single ? letters.slice(0, 1) : letters;
+}
 
 /**
- * Falls back to initials when the avatar API is unreachable , pravatar is a
- * placeholder service and does go down. `ring` marks Prime members.
+ * A member's photo, or their initials if there is no photo or it fails to
+ * load. `ring` marks organisers and Prime members.
  */
-export default function Avatar({
-  person,
-  size = 48,
-  ring = false,
-  className = "",
-}) {
+export default function Avatar({ person, size = 48, ring = false, stacked = false, className = "" }) {
   const [failed, setFailed] = useState(false);
 
   const ringCls = ring
@@ -26,12 +21,15 @@ export default function Avatar({
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full bg-line ${ringCls} ${className}`}
+      className={`relative shrink-0 overflow-hidden rounded-full bg-surface-strong ${ringCls} ${className}`}
       style={{ width: size, height: size }}
     >
       {failed || !person.avatar ? (
-        <span className="flex h-full w-full items-center justify-center text-[11px] font-bold text-subtle">
-          {initials(person.name)}
+        <span
+          className="flex h-full w-full items-center justify-center font-semibold text-muted"
+          style={{ fontSize: Math.max(10, Math.round(size * 0.36)) }}
+        >
+          {initials(person.name, stacked || size < 30)}
         </span>
       ) : (
         <img

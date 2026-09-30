@@ -1,43 +1,31 @@
 import logoImg from "/images/logo/logo.jpeg";
 
-export default function Wordmark({
-  tone = "dark",
-  size = "md",
-  className = "",
-}) {
+// The logo disc and the name. `tone="light"` is for dark backgrounds.
+export default function Wordmark({ tone = "dark", size = "md", className = "" }) {
   const small = size === "sm";
-
   const light = tone === "light";
 
   return (
     <span className={`flex items-center gap-2.5 ${className}`}>
-      {/* The logo sits in a moulded ring rather than being cut straight out of
-          the bar , it is the one place the brand touches every page. */}
-      <span
+      <img
+        src={logoImg}
+        alt=""
         aria-hidden="true"
-        className={`grid shrink-0 place-items-center rounded-full p-[3px] ${
-          light ? "clay-dark bg-white/10" : "clay bg-white"
+        className={`shrink-0 rounded-full object-cover ${
+          light ? "ring-1 ring-white/15" : "ring-1 ring-black/5"
         } ${small ? "h-8 w-8" : "h-9 w-9"}`}
-      >
-        <img
-          src={logoImg}
-          alt="Logo"
-          className="h-full w-full rounded-full object-cover"
-        />
-      </span>
+      />
 
       <span
-        className={`font-extrabold tracking-[-0.03em] ${
+        className={`font-display font-semibold tracking-[-0.02em] ${
           small ? "text-[15px]" : "text-[17px]"
         } ${light ? "text-white" : "text-ink"}`}
       >
         Business{" "}
-        {/* 4.0 carries the accent, same as the big branding block on the home
-            page. On a dark bar the accent is lightened so it stays readable. */}
         <span
           className={
             light
-              ? "text-[color-mix(in_srgb,var(--b4-accent)_35%,white)]"
+              ? "text-[color-mix(in_srgb,var(--b4-accent)_40%,white)]"
               : "text-accent"
           }
         >

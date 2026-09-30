@@ -1,9 +1,5 @@
-/*
-  A small, reusable spinner. Inherits colour from `currentColor` (the ring is
-  the current text colour with a transparent gap), so it reads correctly on
-  any background — white on the ink button, accent on a light panel — just by
-  setting the text colour on a parent. Size + thickness via className.
-*/
+// A small rotating ring. It takes its colour from the text colour of its
+// parent, so it works on a dark button and on a white panel alike.
 export default function Spinner({ className = "h-5 w-5", label = "Loading" }) {
   return (
     <span

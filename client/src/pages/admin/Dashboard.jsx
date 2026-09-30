@@ -33,39 +33,31 @@ const MONTHS = [
 ];
 
 const STATUS = {
-  upcoming: {
-    label: "Upcoming",
-    cls: "bg-accent/10 text-accent",
-    dot: "bg-accent",
-  },
-  past: { label: "Held", cls: "bg-line text-subtle", dot: "bg-faint" },
-  cancelled: {
-    label: "Cancelled",
-    cls: "bg-red-50 text-red-600",
-    dot: "bg-red-500",
-  },
+  upcoming: { label: "Upcoming", cls: "bg-accent/10 text-accent" },
+  past: { label: "Held", cls: "bg-surface-strong text-muted" },
+  cancelled: { label: "Cancelled", cls: "bg-red-50 text-red-700" },
 };
 
-/** The id is the date , a chip reads faster than "2026-07-18" in a long list. */
+/** The id is the date: a chip reads faster than "2026-07-18" in a long list. */
 function DateChip({ id, muted = false }) {
   const [y, m, d] = id.split("-").map(Number);
   return (
     <div className="flex items-center gap-3">
       <div
-        className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border ${
-          muted ? "border-line bg-[#fafbfc]" : "accent-border accent-tint"
+        className={`flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl ${
+          muted ? "bg-surface" : "bg-accent/10"
         }`}
       >
         <span
-          className={`text-[15px] font-extrabold leading-none tabular-nums ${
+          className={`font-display text-[15px] font-semibold leading-none tabular-nums ${
             muted ? "text-muted" : "text-accent"
           }`}
         >
           {d}
         </span>
         <span
-          className={`text-[8.5px] font-bold leading-none tracking-[0.08em] ${
-            muted ? "text-faint" : "text-accent/70"
+          className={`text-[9.5px] font-semibold leading-none ${
+            muted ? "text-subtle" : "text-accent/80"
           }`}
         >
           {MONTHS[m - 1]}
@@ -78,17 +70,15 @@ function DateChip({ id, muted = false }) {
 
 function StatCard({ icon: Icon, label, value, hint }) {
   return (
-    <div className="rounded-card border border-line bg-white p-4">
+    <div className="card p-5">
       <div className="flex items-center gap-2 text-subtle">
         <Icon className="h-4 w-4" />
-        <span className="text-[10.5px] font-bold uppercase tracking-[0.09em]">
-          {label}
-        </span>
+        <span className="meta-label">{label}</span>
       </div>
-      <div className="mt-2.5 text-[26px] font-extrabold leading-none tracking-[-0.035em] tabular-nums text-ink">
+      <div className="mt-3 font-display text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-ink">
         {value}
       </div>
-      {hint && <div className="mt-1.5 text-[12px] text-subtle">{hint}</div>}
+      {hint && <div className="mt-2 text-[13px] text-subtle">{hint}</div>}
     </div>
   );
 }
@@ -98,19 +88,14 @@ function Spotlight({ event }) {
   if (!event) {
     return (
       <div className="flex flex-col justify-center rounded-panel border border-dashed border-line-strong bg-white p-7">
-        <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-subtle">
-          Next meetup
-        </div>
-        <p className="mt-3 text-[19px] font-extrabold tracking-[-0.02em] text-ink">
+        <div className="meta-label">Next meetup</div>
+        <p className="mt-3 font-display text-[20px] font-semibold tracking-[-0.01em] text-ink">
           Nothing on the calendar
         </p>
-        <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">
+        <p className="mt-1.5 text-[14px] leading-relaxed text-muted">
           The public site has no upcoming date to show. Add the next Saturday.
         </p>
-        <Link
-          to="/admin/events/new"
-          className="mt-5 inline-flex w-fit items-center gap-2 rounded-btn bg-ink px-5 py-2.5 text-[13.5px] font-bold text-white transition-colors duration-200 hover:bg-accent"
-        >
+        <Link to="/admin/events/new" className="btn btn-primary btn-sm mt-5 w-fit">
           <PlusIcon className="h-4 w-4" />
           Add meetup
         </Link>
@@ -120,24 +105,16 @@ function Spotlight({ event }) {
 
   return (
     <div className="relative overflow-hidden rounded-panel bg-ink p-7 text-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-accent/25 blur-3xl"
-      />
-
       <div className="relative">
-        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.1em] text-white/45">
-          <span className="grid h-1.5 w-1.5 place-items-center rounded-full bg-accent" />
-          Next meetup
-        </div>
+        <div className="text-[13px] font-semibold text-white/55">Next meetup</div>
 
-        <div className="mt-3.5 text-[13px] font-bold text-accent">
+        <div className="mt-3 text-[14px] font-semibold text-[color-mix(in_srgb,var(--b4-accent)_45%,white)]">
           {event.when.headline}
         </div>
 
         <Link
           to={`/events/${event.id}`}
-          className="mt-1.5 block max-w-[420px] text-[22px] font-extrabold leading-tight tracking-[-0.03em] text-white hover:text-white/80"
+          className="mt-1.5 block max-w-[420px] font-display text-[22px] font-semibold leading-tight tracking-[-0.02em] text-white hover:text-white/80"
         >
           {event.title}
         </Link>
@@ -151,27 +128,21 @@ function Spotlight({ event }) {
               size={28}
               className="[&_span]:ring-ink"
             />
-            <span className="text-[13px] font-bold text-white/70">
+            <span className="text-[13.5px] text-white/70">
               {event.attendeeCount} going
             </span>
           </div>
-          <span className="text-[13px] font-bold text-white/70">
+          <span className="text-[13.5px] text-white/70">
             {priceLabel(event.entryFee)} entry
           </span>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          <Link
-            to={`/admin/events/${event.id}`}
-            className="inline-flex items-center gap-2 rounded-btn bg-white px-5 py-2.5 text-[13.5px] font-bold text-ink transition-[translate] duration-300 ease-smooth hover:-translate-y-0.5"
-          >
+          <Link to={`/admin/events/${event.id}`} className="btn btn-light btn-sm">
             <PencilIcon className="h-4 w-4" />
             Edit this meetup
           </Link>
-          <Link
-            to={`/events/${event.id}`}
-            className="inline-flex items-center gap-2 rounded-btn border border-white/20 px-5 py-2.5 text-[13.5px] font-bold text-white/80 transition-colors duration-200 hover:border-white/50 hover:text-white"
-          >
+          <Link to={`/events/${event.id}`} className="btn btn-outline-light btn-sm">
             Public page
             <ArrowUpRightIcon className="h-4 w-4" />
           </Link>
@@ -226,21 +197,13 @@ export default function Dashboard() {
     <>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-subtle">
-            Manage
-          </div>
-          <h1 className="mt-1.5 text-[30px] font-extrabold tracking-[-0.035em] md:text-[34px]">
-            Meetups
-          </h1>
-          <p className="mt-1.5 text-[14.5px] text-muted">
+          <h1 className="display-page">Meetups</h1>
+          <p className="mt-2 text-[15px] text-muted">
             Everything here is live on the public site the moment you save it.
           </p>
         </div>
 
-        <Link
-          to="/admin/events/new"
-          className="inline-flex items-center gap-2 rounded-btn bg-ink px-5 py-3 text-sm font-bold text-white transition-[translate,background] duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-accent"
-        >
+        <Link to="/admin/events/new" className="btn btn-primary">
           <PlusIcon className="h-4 w-4" />
           Add meetup
         </Link>
@@ -283,14 +246,14 @@ export default function Dashboard() {
 
       {/* Toolbar */}
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1.5 rounded-full bg-white p-1 ring-1 ring-line">
+        <div className="flex flex-wrap gap-1 rounded-full border border-line bg-white p-1">
           {filters.map((f) => (
             <button
               key={f.id}
               type="button"
               onClick={() => setFilter(f.id)}
               aria-pressed={filter === f.id}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-bold transition-colors duration-200 ${
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13.5px] font-medium transition-colors duration-200 ${
                 filter === f.id
                   ? "bg-ink text-white"
                   : "text-muted hover:text-ink"
@@ -315,17 +278,17 @@ export default function Dashboard() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search title or date"
-            className="w-full rounded-full border border-line bg-white py-2.5 pl-10 pr-4 text-[13.5px] text-ink transition-colors duration-200 placeholder:text-faint focus:border-accent focus:outline-none"
+            className="field h-11 rounded-full pl-10 pr-4 text-[14px]"
           />
         </label>
       </div>
 
       {/* Table */}
-      <div className="mt-4 overflow-hidden rounded-card border border-line bg-white">
+      <div className="card mt-4 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[780px] text-left">
             <thead>
-              <tr className="border-b border-line bg-[#fbfcfd] text-[10.5px] font-bold uppercase tracking-[0.09em] text-subtle">
+              <tr className="border-b border-line bg-surface text-[12px] font-semibold uppercase tracking-[0.05em] text-subtle">
                 <th className="px-5 py-3">Date</th>
                 <th className="px-5 py-3">Meetup</th>
                 <th className="px-5 py-3">Going</th>
@@ -342,7 +305,7 @@ export default function Dashboard() {
                 return (
                   <tr
                     key={e.id}
-                    className="group transition-colors duration-150 hover:bg-[#fbfcfd]"
+                    className="group transition-colors duration-150 hover:bg-surface"
                   >
                     <td className="px-5 py-3.5">
                       <DateChip id={e.id} muted={e.isPast || e.cancelled} />
@@ -351,11 +314,11 @@ export default function Dashboard() {
                     <td className="max-w-[300px] px-5 py-3.5">
                       <Link
                         to={`/admin/events/${e.id}`}
-                        className="line-clamp-1 text-[14px] font-bold text-ink transition-colors duration-150 hover:text-accent"
+                        className="line-clamp-1 text-[14.5px] font-semibold text-ink transition-colors duration-150 hover:text-accent"
                       >
                         {e.title}
                       </Link>
-                      <div className="mt-0.5 text-[12px] font-semibold text-subtle">
+                      <div className="mt-0.5 text-[13px] text-subtle">
                         {priceLabel(e.entryFee)}
                       </div>
                     </td>
@@ -368,19 +331,14 @@ export default function Dashboard() {
                           max={3}
                           size={26}
                         />
-                        <span className="text-[13px] font-bold tabular-nums text-muted">
+                        <span className="text-[13.5px] font-semibold tabular-nums text-muted">
                           {e.attendeeCount}
                         </span>
                       </div>
                     </td>
 
                     <td className="px-5 py-3.5">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${status.cls}`}
-                      >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
-                        />
+                      <span className={`badge ${status.cls}`}>
                         {status.label}
                       </span>
                     </td>
@@ -397,14 +355,14 @@ export default function Dashboard() {
                               removeEvent(e.id);
                               setConfirmId(null);
                             }}
-                            className="rounded-btn bg-red-600 px-3 py-1.5 text-[12.5px] font-bold text-white transition-colors duration-200 hover:bg-red-700"
+                            className="btn btn-sm h-8 bg-red-600 px-3 text-[13px] text-white hover:bg-red-700"
                           >
                             Delete
                           </button>
                           <button
                             type="button"
                             onClick={() => setConfirmId(null)}
-                            className="rounded-btn px-2.5 py-1.5 text-[12.5px] font-bold text-muted hover:text-ink"
+                            className="btn btn-ghost btn-sm h-8 px-2.5 text-[13px]"
                           >
                             Keep
                           </button>
@@ -459,12 +417,12 @@ export default function Dashboard() {
 
         {rows.length === 0 && (
           <div className="px-5 py-14 text-center">
-            <p className="text-[15px] font-bold text-ink">
+            <p className="text-[16px] font-semibold text-ink">
               {query ? "No meetup matches that" : "Nothing in this list yet"}
             </p>
             <p className="mx-auto mt-1.5 max-w-[320px] text-[13px] leading-relaxed text-muted">
               {query
-                ? "Try the date instead , every meetup is filed under the day it runs."
+                ? "Try the date instead. Every meetup is filed under the day it runs."
                 : "Add a date and it'll show up here and on the public site."}
             </p>
           </div>

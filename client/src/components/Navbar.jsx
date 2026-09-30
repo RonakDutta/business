@@ -12,39 +12,29 @@ import {
   ShieldIcon,
 } from "./icons.jsx";
 
-// Gallery and Guidelines are reachable from buttons inside the page instead
-// of the nav, so the bar stays down to the four things people look for.
 const LINKS = [
   { label: "Home", to: "/" },
   { label: "Guidelines", to: "/guidelines" },
   { label: "Events", to: "/events" },
-  { label: "Contacts", to: "/contact" },
+  { label: "Contact", to: "/contact" },
 ];
 
-/**
- * Nav items sit in one inset track and the current page is the raised pill.
- * Cheaper to read at a glance than an underline you have to hunt for, and it
- * gives the bar a shape of its own instead of five loose words.
- */
-const pill = ({ isActive }) =>
-  `rounded-full px-3.5 py-2 text-[13.5px] font-bold transition-[color,background,box-shadow] duration-200 ease-smooth ${
-    isActive ? "clay bg-white text-ink" : "text-muted hover:text-ink"
+const linkClass = ({ isActive }) =>
+  `rounded-full px-3.5 py-2 text-[14.5px] font-medium transition-colors duration-200 ${
+    isActive ? "bg-surface text-ink" : "text-muted hover:text-ink"
   }`;
 
-/* ---------------------------------------------------------------------------
-   Signed-in account menu.
+function initialOf(user) {
+  return (user.name || user.email || "?").charAt(0).toUpperCase();
+}
 
-   Everything to do with the account lives behind one control, so the bar keeps
-   the same shape whether you're logged out, logged in, or an organiser ,
-   rather than growing an extra pill per privilege.
-   --------------------------------------------------------------------------- */
+// Everything to do with the account sits behind one button, so the bar keeps
+// the same shape for visitors, members and organisers.
 function AccountMenu({ user, isAdmin, signOut }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const { pathname } = useLocation();
-  const initial = (user.name || user.email || "?").charAt(0).toUpperCase();
 
-  // A page change should never leave a menu hanging open behind the new page.
   useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
@@ -62,7 +52,7 @@ function AccountMenu({ user, isAdmin, signOut }) {
   }, [open]);
 
   const item =
-    "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] font-bold transition-colors duration-150";
+    "flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors duration-150";
 
   return (
     <div ref={ref} className="relative">
@@ -71,18 +61,18 @@ function AccountMenu({ user, isAdmin, signOut }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`clay-press flex h-10 items-center gap-2 rounded-full p-1 pr-2.5 transition-[background,box-shadow] duration-200 ${
-          open ? "clay-inset bg-canvas" : "clay bg-white"
+        className={`flex h-10 items-center gap-2 rounded-full border bg-white pl-1 pr-3 transition-colors duration-200 ${
+          open ? "border-line-strong bg-surface" : "border-line hover:bg-surface"
         }`}
       >
-        <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white">
-          {initial}
+        <span className="account-avatar grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white">
+          {initialOf(user)}
         </span>
-        <span className="hidden max-w-24 truncate text-[13px] font-bold text-ink lg:block">
+        <span className="hidden max-w-28 truncate text-[14px] font-medium text-ink lg:block">
           {user.name}
         </span>
         <ChevronDownIcon
-          className={`h-3.5 w-3.5 shrink-0 text-subtle transition-transform duration-200 ${
+          className={`h-4 w-4 shrink-0 text-subtle transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -91,28 +81,19 @@ function AccountMenu({ user, isAdmin, signOut }) {
       {open && (
         <div
           role="menu"
-          className="menu-pop clay absolute right-0 top-[calc(100%+10px)] w-62 origin-top-right overflow-hidden rounded-card bg-white"
+          className="menu-pop absolute right-0 top-[calc(100%+8px)] w-64 overflow-hidden rounded-card border border-line bg-white shadow-float"
         >
-          <div className="flex items-center gap-3 border-b border-line p-4">
-            <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
-              {initial}
-            </span>
-            <div className="min-w-0">
-              <div className="truncate text-sm font-bold text-ink">
-                {user.name}
-              </div>
-              <div className="truncate text-xs font-semibold text-subtle">
-                {user.email}
-              </div>
-            </div>
+          <div className="border-b border-line px-4 py-3.5">
+            <div className="truncate text-[14px] font-semibold text-ink">{user.name}</div>
+            <div className="truncate text-[13px] text-subtle">{user.email}</div>
           </div>
 
-          <div className="p-2">
+          <div className="p-1.5">
             <Link
-              to="/saved"
+              to="/events?tab=saved"
               role="menuitem"
               onClick={() => setOpen(false)}
-              className={`${item} text-muted hover:bg-canvas hover:text-ink`}
+              className={`${item} text-ink hover:bg-surface`}
             >
               <HeartIcon className="h-4 w-4 text-subtle" />
               Saved events
@@ -123,10 +104,10 @@ function AccountMenu({ user, isAdmin, signOut }) {
                 to="/admin"
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className={`${item} text-accent hover:bg-accent-tint`}
+                className={`${item} text-ink hover:bg-surface`}
               >
-                <ShieldIcon className="h-4 w-4 text-accent" />
-                Organiser Hub
+                <ShieldIcon className="h-4 w-4 text-subtle" />
+                Organiser console
               </Link>
             )}
 
@@ -137,9 +118,9 @@ function AccountMenu({ user, isAdmin, signOut }) {
                 setOpen(false);
                 signOut();
               }}
-              className={`${item} w-full text-red-600 hover:bg-red-50`}
+              className={`${item} text-ink hover:bg-surface`}
             >
-              <LogOutIcon className="h-4 w-4 text-red-500" />
+              <LogOutIcon className="h-4 w-4 text-subtle" />
               Sign out
             </button>
           </div>
@@ -157,7 +138,6 @@ export default function Navbar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // Symmetrical scroll transition trigger
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
@@ -165,166 +145,137 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // At the top of the page the bar runs full width. Once you scroll it
+  // tucks into a floating bar. The header keeps a fixed height either way,
+  // so the page underneath never jumps.
+  const floating = scrolled && !open;
+
   return (
-    <header className="sticky top-0 z-50 w-full">
-      {/* Inner navbar container with smooth 2-way animation and zero black border */}
+    <header className="sticky top-0 z-50 h-16 md:h-[72px]">
       <div
-        className={`pointer-events-auto mx-auto w-full bg-white transition-all duration-300 ease-smooth ${
-          scrolled
-            ? "mt-2.5 max-w-[1240px] clay rounded-full py-1.5 px-4 shadow-xl border border-white/80"
-            : "mt-0 max-w-[2000px] rounded-none border-b border-line py-3 px-5 sm:px-6 md:px-10 shadow-xs"
+        className={`absolute left-1/2 -translate-x-1/2 transition-[top,width,max-width,border-radius,background-color,box-shadow,border-color] duration-300 ease-smooth ${
+          floating
+            ? "top-2 w-[calc(100%-1.5rem)] max-w-[1180px] rounded-full border border-line bg-white/90 shadow-float backdrop-blur-md md:top-2.5"
+            : "top-0 w-full max-w-[2400px] rounded-none border border-transparent border-b-line bg-white"
         }`}
       >
-        <div className="mx-auto max-w-shell">
-          <nav className="flex items-center justify-between gap-4">
-            {/* Logo */}
-            <Link to="/" aria-label="Business 4.0 , home" className="flex items-center">
-              <Wordmark />
-            </Link>
+        <nav
+          className={`mx-auto flex max-w-shell items-center justify-between gap-4 transition-[height,padding] duration-300 ease-smooth ${
+            floating
+              ? "h-14 pl-4 pr-2 md:pl-5"
+              : "h-16 px-5 sm:px-6 md:h-[72px] md:px-10"
+          }`}
+        >
+          <Link to="/" aria-label="Business 4.0 home" className="shrink-0">
+            <Wordmark />
+          </Link>
 
-            {/* Desktop Nav Track */}
-            <div className="clay-inset hidden items-center gap-1 rounded-full bg-canvas p-1 md:flex">
-              {LINKS.map((l) => (
-                <NavLink
-                  key={l.label}
-                  to={l.to}
-                  end={l.to === "/"}
-                  className={pill}
-                >
-                  {l.label}
-                </NavLink>
-              ))}
-            </div>
-
-            {/* Desktop Actions (Buttons Untouched) */}
-            <div className="hidden items-center gap-2.5 md:flex">
-              <MusicToggle />
-
-              {user ? (
-                <AccountMenu user={user} isAdmin={isAdmin} signOut={signOut} />
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="flex h-10 items-center rounded-btn px-3.5 text-sm font-bold text-muted transition-colors duration-200 hover:text-ink"
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="clay clay-press flex h-10 items-center whitespace-nowrap rounded-btn bg-ink px-5 text-sm font-bold text-white transition-[background,box-shadow,transform] duration-300 ease-smooth hover:bg-accent hover:text-white"
-                  >
-                    Sign up
-                  </Link>
-                </>
-              )}
-            </div>
-
-            {/* Mobile Toggle & Actions (Buttons Untouched) */}
-            <div className="flex items-center gap-1.5 md:hidden">
-              <MusicToggle />
-              <button
-                type="button"
-                aria-label={open ? "Close menu" : "Open menu"}
-                aria-expanded={open}
-                onClick={() => setOpen((o) => !o)}
-                className="clay clay-press grid h-10 w-10 place-items-center rounded-full bg-white text-ink"
-              >
-                {open ? (
-                  <CloseIcon className="h-4.5 w-4.5" />
-                ) : (
-                  <MenuIcon className="h-4.5 w-4.5" />
-                )}
-              </button>
-            </div>
-          </nav>
-        </div>
-
-        {/* Mobile Dropdown Floating Menu Panel */}
-        {open && (
-          <div className="menu-pop pointer-events-auto absolute left-3 right-3 top-[calc(100%+10px)] max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-line bg-white p-5 shadow-2xl md:hidden sm:left-6 sm:right-6">
-            <div className="flex flex-col gap-1.5">
-              {LINKS.map((l) => (
-                <NavLink
-                  key={l.label}
-                  to={l.to}
-                  end={l.to === "/"}
-                  className={({ isActive }) =>
-                    `rounded-xl px-4 py-3 text-[15px] font-bold transition-all duration-150 ${
-                      isActive
-                        ? "clay bg-white text-ink font-extrabold"
-                        : "text-muted hover:text-ink"
-                    }`
-                  }
-                >
-                  {l.label}
-                </NavLink>
-              ))}
-            </div>
-
-            <div className="mt-4 border-t border-line pt-4">
-              {user ? (
-                <>
-                  <div className="mb-4 flex items-center gap-3 px-3">
-                    <span className="account-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-[15px] font-bold text-white">
-                      {(user.name || user.email).charAt(0).toUpperCase()}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="truncate text-[13.5px] font-bold text-ink">
-                        {user.name}
-                      </div>
-                      <div className="truncate text-[12px] text-subtle">
-                        {user.email}
-                      </div>
-                    </div>
-                    {isAdmin && (
-                      <span className="ml-auto rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.07em] text-accent">
-                        Organiser
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {isAdmin && (
-                      <Link
-                        to="/admin"
-                        className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-accent"
-                      >
-                        Organiser console
-                      </Link>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        signOut();
-                        setOpen(false);
-                      }}
-                      className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-muted"
-                    >
-                      Log out
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Link
-                    to="/login"
-                    className="clay clay-press rounded-btn bg-white px-5.5 py-2.75 text-center text-sm font-bold text-ink"
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="clay clay-press rounded-btn bg-ink px-5.5 py-2.75 text-center text-sm font-bold text-white"
-                  >
-                    Sign up
-                  </Link>
-                </div>
-              )}
-            </div>
+          <div className="hidden items-center gap-1 md:flex">
+            {LINKS.map((l) => (
+              <NavLink key={l.to} to={l.to} end={l.to === "/"} className={linkClass}>
+                {l.label}
+              </NavLink>
+            ))}
           </div>
-        )}
+
+          <div className="hidden items-center gap-1.5 md:flex">
+            <MusicToggle />
+
+            {user ? (
+              <AccountMenu user={user} isAdmin={isAdmin} signOut={signOut} />
+            ) : (
+              <>
+                <Link to="/login" className="btn btn-ghost btn-sm">
+                  Log in
+                </Link>
+                <Link to="/signup" className="btn btn-primary btn-sm">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1 md:hidden">
+            <MusicToggle />
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
+              className="icon-btn text-ink"
+            >
+              {open ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
+            </button>
+          </div>
+        </nav>
       </div>
+
+      {open && (
+        <div className="menu-pop absolute inset-x-3 top-[calc(100%+8px)] max-h-[calc(100dvh-88px)] overflow-y-auto rounded-panel border border-line bg-white p-3 shadow-float md:hidden">
+          <div className="flex flex-col">
+            {LINKS.map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end={l.to === "/"}
+                className={({ isActive }) =>
+                  `rounded-lg px-3.5 py-3 text-[15.5px] font-medium transition-colors duration-150 ${
+                    isActive ? "bg-surface text-ink" : "text-muted hover:text-ink"
+                  }`
+                }
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </div>
+
+          <div className="mt-3 border-t border-line pt-3">
+            {user ? (
+              <>
+                <div className="flex items-center gap-3 px-3.5 py-2">
+                  <span className="account-avatar grid h-9 w-9 shrink-0 place-items-center rounded-full text-[14px] font-semibold text-white">
+                    {initialOf(user)}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate text-[14px] font-semibold text-ink">{user.name}</div>
+                    <div className="truncate text-[13px] text-subtle">{user.email}</div>
+                  </div>
+                </div>
+
+                <div className="mt-2 grid gap-2">
+                  <Link to="/events?tab=saved" className="btn btn-secondary w-full">
+                    Saved events
+                  </Link>
+                  {isAdmin && (
+                    <Link to="/admin" className="btn btn-secondary w-full">
+                      Organiser console
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      signOut();
+                      setOpen(false);
+                    }}
+                    className="btn btn-ghost w-full"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/login" className="btn btn-secondary w-full">
+                  Log in
+                </Link>
+                <Link to="/signup" className="btn btn-primary w-full">
+                  Sign up
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

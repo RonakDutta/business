@@ -1,4 +1,4 @@
-/** "Free" or "₹150" , one source of truth for how price renders. */
+/** "Free" or "₹150", one source of truth for how price renders. */
 export const priceLabel = (entryFee) =>
   !entryFee ? "Free" : `₹${entryFee.toLocaleString("en-IN")}`;
 
@@ -60,10 +60,10 @@ export const eventUrl = (event) =>
 
    Built from the plain "YYYY-MM-DD" string rather than a parsed Date, so the
    label never shifts because of the reader's timezone. Every meetup is
-   11:00 AM - 1:00 PM IST.
+   11:00 AM to 1:00 PM IST.
    --------------------------------------------------------------------------- */
 
-const WD_SHORT = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const WD_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const WD_LONG = [
   "Sunday",
   "Monday",
@@ -72,20 +72,6 @@ const WD_LONG = [
   "Thursday",
   "Friday",
   "Saturday",
-];
-const MO_SHORT = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEP",
-  "OCT",
-  "NOV",
-  "DEC",
 ];
 const MO_LONG = [
   "Jan",
@@ -111,8 +97,8 @@ const parts = (dateStr) => {
 export function eventDateLabel(dateStr, past, startTime = "11:00 AM") {
   const { y, m, d, wd } = parts(dateStr);
   return past
-    ? `${WD_SHORT[wd]}, ${MO_SHORT[m - 1]} ${d}, ${y}`
-    : `${WD_SHORT[wd]}, ${MO_SHORT[m - 1]} ${d} · ${startTime}`;
+    ? `${WD_SHORT[wd]}, ${MO_LONG[m - 1]} ${d}, ${y}`
+    : `${WD_SHORT[wd]}, ${MO_LONG[m - 1]} ${d} · ${startTime}`;
 }
 
 /** Sidebar headline, e.g. "Saturday, Jul 18 · 11:00 AM to 1:00 PM IST" */

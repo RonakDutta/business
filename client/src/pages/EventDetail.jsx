@@ -1,14 +1,14 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import CoverImage from "../components/CoverImage.jsx";
 import Avatar from "../components/Avatar.jsx";
 import AvatarStack from "../components/AvatarStack.jsx";
-import BackLink from "../components/BackLink.jsx";
 import EventMeta from "../components/EventMeta.jsx";
 import EventActionBar from "../components/EventActionBar.jsx";
 import MapEmbed from "../components/MapEmbed.jsx";
 import MetroRoute from "../components/MetroRoute.jsx";
 import AttendeeList from "../components/AttendeeList.jsx";
 import EventComments from "../components/EventComments.jsx";
+import LoadingState from "../components/LoadingState.jsx";
 import NotFound from "./NotFound.jsx";
 import { useReveal } from "../hooks/useReveal.js";
 import { HOST } from "../data/events.js";
@@ -17,38 +17,23 @@ import { useEvents } from "../context/EventsContext.jsx";
 /* ===========================================================================
    EVENT DETAIL
 
-   THE HOLE. A 2-column grid with the prose left and a tall sticky sidebar
-   right only works if the prose is the longer of the two. Ours is four
-   sentences and the sidebar carried a map, so the left column ran out and left
-   a screen-height of white. Fixed by deleting the sidebar: every section is
-   full width and stacked on a fixed label rail, which can't leave a hole no
-   matter how short the content beside it gets.
+   Title and photo side by side at the top, then the three facts people look
+   for (when, where, what it costs), then full-width sections on a label rail.
+   There is deliberately no sidebar: the description is often only a few
+   sentences, and a tall sidebar next to it left a screen of empty space.
 
-   RSVP lives in the floating bar (EventActionBar) and nowhere else. It was
-   briefly a stub on the ticket plus a closing band — that put the price in
-   four places, stacked a second black panel on top of the footer's, and made
-   the ticket's last column read as a stray "GOING 3". One RSVP control, one
-   price, one black panel on the page.
-
-   The shape: a ticket (cover + perforation + facts), then sections on a label
-   rail — editorial rather than listing.
+   RSVP lives in the floating bar at the bottom (EventActionBar) and nowhere
+   else, so the price and the button are stated once.
    =========================================================================== */
 
-/** Section heading in the left rail. Sticky so it stays with its content. */
+// A section with its label in a rail on the left on wide screens.
 function Row({ label, count, children }) {
   return (
-    <section className="reveal grid grid-cols-1 gap-x-10 gap-y-5 border-t border-line pt-8 lg:grid-cols-[150px_1fr]">
+    <section className="reveal grid grid-cols-1 gap-x-12 gap-y-5 border-t border-line pt-10 lg:grid-cols-[180px_1fr]">
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.09em] text-ink">
-          {label}
-        </h2>
-        {count && (
-          <div className="mt-1.5 text-[12.5px] font-semibold text-subtle">
-            {count}
-          </div>
-        )}
+        <h2 className="text-[19px] font-semibold tracking-[-0.01em]">{label}</h2>
+        {count && <p className="mt-1 text-[14px] text-subtle">{count}</p>}
       </div>
-
       <div className="min-w-0">{children}</div>
     </section>
   );
@@ -56,194 +41,167 @@ function Row({ label, count, children }) {
 
 export default function EventDetail() {
   const { id } = useParams();
-  const { getEventById } = useEvents();
+  const { getEventById, ready } = useEvents();
   const event = getEventById(id);
 
-  useReveal([id]);
+  useReveal([id, Boolean(event)]);
 
-  if (!event) return <NotFound />;
+  // Events come from the server; don't call it missing before it has loaded.
+  if (!event) {
+    return ready ? (
+      <NotFound />
+    ) : (
+      <div className="shell py-16">
+        <LoadingState message="Loading the event" />
+      </div>
+    );
+  }
 
   const isPast = event.status === "past";
 
-  const statusCls = event.cancelled
-    ? "bg-red-600 text-white"
+  const status = event.cancelled
+    ? { label: "Cancelled", cls: "bg-red-50 text-red-700" }
     : isPast
-      ? "bg-white/20 text-white"
-      : "bg-accent text-white";
+      ? { label: "Past event", cls: "bg-surface-strong text-muted" }
+      : { label: "Upcoming", cls: "bg-accent/10 text-accent" };
 
   return (
     <>
-      {/* Extra phone padding reserves room for the two-row action bar. */}
-      <article className="mx-auto max-w-shell px-5 pb-32 pt-6 sm:px-6 sm:pt-8 md:px-10">
-        <BackLink to={-1}>Back</BackLink>
+      {/* Extra bottom padding keeps the floating action bar off the content. */}
+      <article className="pb-36">
+        <header className="border-b border-line bg-surface">
+          <div className="shell pb-10 pt-8 md:pb-14 md:pt-12">
+            <nav aria-label="Breadcrumb" className="mb-6 md:mb-8">
+              <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13.5px] text-subtle">
+                <li>
+                  <Link to="/" className="transition-colors hover:text-ink">Home</Link>
+                </li>
+                <li aria-hidden="true" className="text-faint">/</li>
+                <li>
+                  <Link to="/events" className="transition-colors hover:text-ink">Events</Link>
+                </li>
+                <li aria-hidden="true" className="text-faint">/</li>
+                <li aria-current="page" className="max-w-[40ch] truncate font-medium text-ink">
+                  {event.date}
+                </li>
+              </ol>
+            </nav>
 
-        {/* ---- The ticket ---------------------------------------------- */}
-        <div className="reveal mt-5 overflow-hidden rounded-panel border border-line bg-white shadow-[0_24px_50px_-45px_rgba(15,23,42,.55)]">
-          <header className="relative bg-ink">
-            {/*
-              On phones the image is a clean banner and the type sits on the
-              ink panel *below* it — the long title used to be absolutely
-              positioned over a 250px photo and buried it whole. From sm up
-              there's room, so the block goes back to an overlay on the image
-              with a scrim.
-            */}
-            <div className="h-[190px] sm:h-[300px] md:h-[440px]">
-              <CoverImage
-                src={event.image}
-                alt={event.title}
-                label="EVENT COVER"
-                className="h-full w-full"
-                loading="eager"
-              />
-            </div>
-
-            {/* Scrim. Overlay only — on mobile the type isn't on the photo. */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 hidden bg-gradient-to-t from-ink via-ink/60 to-ink/10 sm:block"
-            />
-
-            <div className="relative p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:p-6 md:p-10">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span
-                  className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${statusCls}`}
-                >
-                  {event.cancelled
-                    ? "Cancelled"
-                    : isPast
-                      ? "Past event"
-                      : "Upcoming"}
-                </span>
-                <span className="text-[13px] font-semibold text-white/70">
-                  {event.place}
-                </span>
-              </div>
-
-              <h1 className="mt-3.5 max-w-[820px] text-[23px] font-extrabold leading-[1.12] tracking-[-0.03em] text-white [text-wrap:balance] sm:mt-4 sm:text-[30px] sm:leading-[1.08] md:text-[46px]">
-                {event.title}
-              </h1>
-
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
-                <div className="flex items-center gap-3">
-                  <Avatar person={HOST} size={40} ring />
-                  <div>
-                    <div className="text-[14px] font-bold text-white">
-                      Hosted by {HOST.name}
-                    </div>
-                    <div className="mt-0.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white/50">
-                      {HOST.role}
-                    </div>
-                  </div>
+            <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
+              <div className="reveal order-2 lg:order-1">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <span className={`badge ${status.cls}`}>{status.label}</span>
+                  <span className="text-[14px] font-semibold text-accent">{event.date}</span>
                 </div>
 
-                {event.attendeeCount > 0 && (
+                <h1 className="display-page mt-4">{event.title}</h1>
+
+                <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
                   <div className="flex items-center gap-3">
-                    <span className="hidden h-8 w-px bg-white/15 sm:block" />
-                    <AvatarStack
-                      people={event.attendees}
-                      total={event.attendeeCount}
-                      max={5}
-                      size={32}
-                      className="[&_span]:ring-ink"
-                    />
-                    <span className="text-[13px] font-bold text-white/70">
-                      {event.attendeeCount} {isPast ? "came" : "going"}
-                    </span>
+                    <Avatar person={HOST} size={40} ring />
+                    <div>
+                      <div className="text-[14.5px] font-semibold text-ink">
+                        Hosted by {HOST.name}
+                      </div>
+                      <div className="text-[13px] text-subtle">{HOST.role}</div>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          </header>
 
-          {/*
-            The perforation. Two notches punched into the seam turn what was a
-            hard black-to-white edge (which read as a sharp, un-rounded card
-            end) into a ticket tear: the notches round off the ink block's
-            bottom corners and the dashed line reads as the tear between stub
-            and ticket. Notch fill matches the page behind the card (white).
-          */}
-          <div className="relative border-t border-dashed border-line-strong">
-            <span
-              aria-hidden="true"
-              className="absolute -left-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute -right-3.5 top-0 h-7 w-7 -translate-y-1/2 rounded-full bg-white"
-            />
-            <EventMeta event={event} />
-          </div>
-        </div>
-
-        {/* ---- Sections on a rail -------------------------------------- */}
-        <div className="mt-10 flex flex-col gap-10 sm:mt-14 sm:gap-12">
-          {/* The fee is on the ticket. It was also the rail count and the first
-              line of the body — the same number three times in one screen. */}
-          <Row label="Details">
-            <div className="flex max-w-[68ch] flex-col gap-4">
-              {event.description.map((para, i) => (
-                <p key={i} className="text-[16px] leading-[1.75] text-muted">
-                  {para}
-                </p>
-              ))}
-            </div>
-          </Row>
-
-          <Row label="Getting there" count={event.location.shortName}>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
-              <div>
-                {event.location.gate && (
-                  <p className="inline-flex items-center gap-2 rounded-btn bg-accent/10 px-3.5 py-1.5 text-[12.5px] font-bold text-accent">
-                    Enter via {event.location.gate}
-                  </p>
-                )}
-
-                <MetroRoute metro={event.location.metro} className="mt-6" />
-
-                {event.helpline && (
-                  <p className="mt-6 text-[12.5px] leading-relaxed text-subtle">
-                    Lost on the day? Call{" "}
-                    <a
-                      href={`tel:${event.helpline}`}
-                      className="font-bold text-accent"
-                    >
-                      {event.helpline}
-                    </a>
-                    . Directions only — not for questions about the event.
-                  </p>
-                )}
+                  {event.attendeeCount > 0 && (
+                    <div className="flex items-center gap-3">
+                      <span aria-hidden="true" className="hidden h-8 w-px bg-line-strong sm:block" />
+                      <AvatarStack
+                        people={event.attendees}
+                        total={event.attendeeCount}
+                        max={5}
+                        size={30}
+                        className="[&>span]:ring-surface"
+                      />
+                      <span className="text-[14px] text-muted">
+                        {event.attendeeCount} {isPast ? "came" : "going"}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* The map earns width here rather than height in a sidebar. */}
-              <div className="overflow-hidden rounded-card border border-line">
-                <MapEmbed
-                  location={event.location}
-                  title={event.location.name}
+              <div className="reveal order-1 overflow-hidden rounded-panel bg-surface-strong lg:order-2">
+                <CoverImage
+                  src={event.image}
+                  alt={event.title}
+                  label=""
+                  loading="eager"
+                  className="aspect-[16/10] w-full"
                 />
               </div>
             </div>
-          </Row>
+          </div>
+        </header>
 
-          <Row
-            label={isPast ? "Who came" : "Who's coming"}
-            count={`${event.attendeeCount.toLocaleString("en-IN")} ${isPast ? "attended" : "going"}`}
-          >
-            <AttendeeList
-              attendees={event.attendees}
-              total={event.attendeeCount}
-              past={isPast}
-              host={HOST}
-              bare
-            />
-          </Row>
+        <div className="shell">
+          <div className="reveal -mt-px pt-10 md:pt-12">
+            <EventMeta event={event} />
+          </div>
 
-          {/* Only on editions that have actually happened — there's nothing to
-              say about a room nobody has sat in yet. */}
-          {isPast && !event.cancelled && (
-            <Row label="Comments">
-              <EventComments event={event} />
+          <div className="mt-12 flex flex-col gap-12 md:mt-16">
+            <Row label="Details">
+              <div className="flex max-w-[68ch] flex-col gap-4">
+                {event.description.map((para, i) => (
+                  <p key={i} className="text-[16.5px] leading-[1.75] text-muted">
+                    {para}
+                  </p>
+                ))}
+              </div>
             </Row>
-          )}
+
+            <Row label="Getting there" count={event.location.shortName}>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-[280px_1fr]">
+                <div>
+                  {event.location.gate && (
+                    <p className="badge bg-accent/10 text-accent">
+                      Enter via {event.location.gate}
+                    </p>
+                  )}
+
+                  <MetroRoute metro={event.location.metro} className="mt-6" />
+
+                  {event.helpline && (
+                    <p className="mt-6 text-[13.5px] leading-relaxed text-subtle">
+                      Lost on the day? Call{" "}
+                      <a href={`tel:${event.helpline}`} className="link">
+                        {event.helpline}
+                      </a>
+                      . This number is for directions only, not for questions
+                      about the event.
+                    </p>
+                  )}
+                </div>
+
+                <MapEmbed location={event.location} title={event.location.name} />
+              </div>
+            </Row>
+
+            <Row
+              label={isPast ? "Who came" : "Who's coming"}
+              count={`${event.attendeeCount.toLocaleString("en-IN")} ${isPast ? "attended" : "going"}`}
+            >
+              <AttendeeList
+                attendees={event.attendees}
+                total={event.attendeeCount}
+                past={isPast}
+                host={HOST}
+                bare
+              />
+            </Row>
+
+            {/* Only on editions that have happened: there is nothing to say
+                about a room nobody has sat in yet. */}
+            {isPast && !event.cancelled && (
+              <Row label="Comments">
+                <EventComments event={event} />
+              </Row>
+            )}
+          </div>
         </div>
       </article>
 

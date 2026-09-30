@@ -9,29 +9,27 @@ import { team } from "../data/team.js";
 import { useReveal } from "../hooks/useReveal.js";
 import { useEvents } from "../context/EventsContext.jsx";
 
+// Sections alternate between white and a light grey band, so each one reads
+// as its own block without any decoration.
 export default function Home() {
-  const { upcomingEvents, albums } = useEvents();
+  const { upcomingEvents, albums, ready } = useEvents();
 
-  useReveal([upcomingEvents.length, albums.length]);
+  useReveal([upcomingEvents.length, albums.length, ready]);
 
   return (
     <>
       <Hero />
-
       <AboutSection />
-
       <UpcomingSection events={upcomingEvents} />
-
       <PositioningSection />
 
-      <section className="relative px-5 py-16 sm:px-6 md:px-10 md:py-24">
-        <div className="mx-auto max-w-shell">
-          <Team members={team} showHeader={true} />
+      <section className="section">
+        <div className="shell">
+          <Team members={team} showHeader />
         </div>
       </section>
 
       <Testimonials />
-
       <GlimpsesSection albums={albums} />
     </>
   );

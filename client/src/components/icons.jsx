@@ -1,5 +1,5 @@
 /* ===========================================================================
-   One stroke weight, one join style, one 24x24 box , that's what keeps a set
+   One stroke weight, one join style, one 24x24 box, that's what keeps a set
    of hand-rolled icons from looking hand-rolled. Size them at the call site
    with a className; they inherit colour from `currentColor`.
    =========================================================================== */
@@ -331,7 +331,7 @@ export function FacebookIcon({ className = "" }) {
   );
 }
 
-/* Formerly Twitter. The mark is a glyph, not a stroke drawing , filled to
+/* Formerly Twitter. The mark is a glyph, not a stroke drawing, filled to
    match how X publishes it, rather than outlined to match everything else. */
 export function XIcon({ className = "" }) {
   return (
@@ -371,52 +371,6 @@ export function WalkIcon({ className = "" }) {
       <circle cx="13" cy="4.5" r="1.8" />
       <path d="M11 21l1.8-5.4L10.5 13V9.3l3-1.3 2.4 3 2.6 1" />
       <path d="M10.5 13L7 15.5M12.8 15.6L15 21" />
-    </Icon>
-  );
-}
-
-export function LightbulbIcon({ className = "" }) {
-  return (
-    <Icon className={className}>
-      <path d="M9 17.5h6M10 20.5h4" />
-      <path d="M12 3.5a5.5 5.5 0 0 0-3.2 9.97c.5.36.8.93.8 1.54v.49h4.8v-.49c0-.61.3-1.18.8-1.54A5.5 5.5 0 0 0 12 3.5z" />
-    </Icon>
-  );
-}
-
-export function ChartIcon({ className = "" }) {
-  return (
-    <Icon className={className}>
-      <path d="M4 19.5h16" />
-      <path d="M7 19.5v-6M12 19.5V8M17 19.5v-9" />
-    </Icon>
-  );
-}
-
-export function CompassIcon({ className = "" }) {
-  return (
-    <Icon className={className}>
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5 4.5-1.9z" />
-    </Icon>
-  );
-}
-
-export function LifebuoyIcon({ className = "" }) {
-  return (
-    <Icon className={className}>
-      <circle cx="12" cy="12" r="8.5" />
-      <circle cx="12" cy="12" r="3.5" />
-      <path d="M6 6l3.5 3.5M18 6l-3.5 3.5M6 18l3.5-3.5M18 18l-3.5-3.5" />
-    </Icon>
-  );
-}
-
-export function SparkleIcon({ className = "" }) {
-  return (
-    <Icon className={className}>
-      <path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4z" />
-      <path d="M18.5 16.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6z" />
     </Icon>
   );
 }

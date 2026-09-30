@@ -1,42 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 
-/* v4 auto-detects source files , including markdown. The README documents
+/* v4 auto-detects source files, including markdown. The README documents
    class names in prose, which would otherwise generate real (dead) CSS. */
 @source not "../README.md";
 
-/* ---------------------------------------------------------------
-   Design tokens. In v4 this replaces tailwind.config.js entirely ,
-   every variable here generates utilities automatically:
-   --color-ink       -> text-ink / bg-ink / border-ink
-   --radius-card     -> rounded-card
-   --container-shell -> max-w-shell
-   --ease-smooth     -> ease-smooth
-   --------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   DESIGN TOKENS
+
+   In Tailwind v4 these replace tailwind.config.js. Every variable here becomes
+   a utility: --color-ink -> text-ink / bg-ink, --radius-card -> rounded-card,
+   --shadow-card -> shadow-card, --font-display -> font-display, and so on.
+
+   The look is deliberately quiet: white and a light grey for surfaces, one
+   near-black for type, the brand blue used sparingly, hairline borders and a
+   single soft shadow scale. Real photographs carry the warmth.
+   --------------------------------------------------------------------------- */
 @theme {
-  --color-ink: #16181d;
-  --color-muted: #5b6472;
-  --color-subtle: #7b8494;
-  --color-faint: #9aa3b2;
-  --color-line: #eef0f4;
-  --color-line-strong: #e4e7ed;
+  /* Type */
+  --color-ink: #111418;
+  --color-muted: #4f5764;
+  --color-subtle: #6b7280;
+  --color-faint: #9aa1ad;
+
+  /* Lines */
+  --color-line: #e8eaee;
+  --color-line-strong: #d8dce3;
+
+  /* Surfaces: white page, light grey bands, one dark band */
+  --color-canvas: #ffffff;
+  --color-surface: #f6f7f9;
+  --color-surface-strong: #eef0f3;
+
   --color-accent: var(--b4-accent);
 
-  /* The page sits on a luminous tinted canvas so white clay cards stand out */
-  --color-canvas: #f2f5fd;
-
-  /* Meetup brand pink ("Wild Watermelon") */
+  /* Meetup brand pink, only for the Meetup link */
   --color-meetup: #ff4a79;
 
   --radius-card: var(--b4-card);
   --radius-panel: var(--b4-panel);
   --radius-btn: var(--b4-btn);
 
-  --font-sans: "Inter", "Poppins", "Quicksand", system-ui, sans-serif;
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-poppins: "Poppins", system-ui, sans-serif;
-  --font-quicksand: "Quicksand", system-ui, sans-serif;
-  --font-mono: ui-monospace, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04),
+    0 1px 3px rgba(16, 24, 40, 0.05);
+  --shadow-lift: 0 14px 32px -16px rgba(16, 24, 40, 0.22),
+    0 2px 6px -2px rgba(16, 24, 40, 0.06);
+  --shadow-float: 0 20px 48px -20px rgba(16, 24, 40, 0.3),
+    0 3px 10px -3px rgba(16, 24, 40, 0.08);
 
   --container-shell: 1240px;
 
@@ -44,24 +58,29 @@
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Runtime theme values , overwritten on :root by ThemeContext. */
+/* Runtime theme values, overwritten on :root by ThemeContext. */
 :root {
   --b4-accent: #2563eb;
-  --b4-card: 18px;
-  --b4-panel: 22px;
+  --b4-card: 16px;
+  --b4-panel: 20px;
   --b4-btn: 999px;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 
     /* `clip` rather than `hidden`: `hidden` computes overflow-y to `auto` and
        turns this into a scroll container, which breaks `position: sticky` on
@@ -69,12 +88,28 @@
     overflow-x: clip;
   }
 
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   a {
     color: inherit;
     text-decoration: none;
   }
 
-  /* v4 resets buttons to `cursor: default` , restore the pointer. */
+  ::selection {
+    background: color-mix(in srgb, var(--b4-accent) 18%, transparent);
+  }
+
+  /* v4 resets buttons to `cursor: default`; restore the pointer. */
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
@@ -86,216 +121,425 @@
   }
 }
 
-/* Custom utilities use @utility in v4 so they land in the right
-   cascade layer and still respond to variants like hover:. */
-@utility placeholder-tile {
-  background: repeating-linear-gradient(
-    45deg,
-    #f2f4f8,
-    #f2f4f8 12px,
-    #f8f9fc 12px,
-    #f8f9fc 24px
-  );
-}
+/* ---------------------------------------------------------------------------
+   SMALL UTILITIES
+   --------------------------------------------------------------------------- */
 
-@utility accent-border {
-  border-color: color-mix(in srgb, var(--b4-accent) 35%, #e4e7ed);
+/* Shown wherever an image is missing, so a gap never looks broken. */
+@utility placeholder-tile {
+  background: linear-gradient(135deg, #f1f3f6, #e9ecf0);
 }
 
 @utility accent-tint {
-  background: color-mix(in srgb, var(--b4-accent) 7%, transparent);
+  background: color-mix(in srgb, var(--b4-accent) 8%, transparent);
 }
 
-/* Luminance blue border glow utility for cards on white background */
-@utility card-blue-glow {
-  border: 1px solid rgba(37, 99, 235, 0.25);
-  box-shadow:
-    0 4px 20px -4px rgba(37, 99, 235, 0.16),
-    0 2px 6px -2px rgba(15, 23, 42, 0.04),
-    inset 0 1px 1px rgba(255, 255, 255, 0.95);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.card-blue-glow:hover {
-  border-color: rgba(37, 99, 235, 0.65);
-  box-shadow:
-    0 10px 36px -4px rgba(37, 99, 235, 0.32),
-    0 4px 14px -2px rgba(37, 99, 235, 0.18),
-    inset 0 1px 1px rgba(255, 255, 255, 1);
+@utility accent-border {
+  border-color: color-mix(in srgb, var(--b4-accent) 30%, #e8eaee);
 }
 
-/* ---------------------------------------------------------------------------
-   HERO AMBIENCE
-
-   The hero was a centred column marooned in white. These two layers give it
-   atmosphere without clutter: soft brand-coloured glows behind the headline,
-   and a faint dotted grid that fades out toward the edges. Both are purely
-   decorative (aria-hidden) and self-contained, so removing the two elements
-   in Hero.jsx reverts the look completely.
-   --------------------------------------------------------------------------- */
-@utility hero-glows {
-  background:
-    radial-gradient(
-      560px 380px at 12% -8%,
-      color-mix(in srgb, var(--b4-accent) 16%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      520px 420px at 90% 4%,
-      color-mix(in srgb, var(--color-meetup) 11%, transparent),
-      transparent 66%
-    ),
-    radial-gradient(
-      620px 300px at 50% 118%,
-      color-mix(in srgb, var(--b4-accent) 9%, transparent),
-      transparent 70%
-    );
-}
-
-@utility hero-grid {
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--color-ink) 9%, transparent) 1px,
-    transparent 1.4px
-  );
-  background-size: 24px 24px;
-  /* Fade the dots out so they read as texture near the top, not a wallpaper. */
-  -webkit-mask-image: radial-gradient(78% 62% at 50% 2%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(78% 62% at 50% 2%, #000 0%, transparent 74%);
-}
-
-/* ---------------------------------------------------------------------------
-   SECTION RHYTHM
-
-   A flat white page reads as one long scroll. A faint tinted band under the
-   events lets each block announce itself. The tint is built from the live
-   accent so it re-themes with everything else.
-   --------------------------------------------------------------------------- */
-@utility section-tint {
-  background:
-    linear-gradient(
-      180deg,
-      #fff 0%,
-      color-mix(in srgb, var(--b4-accent) 4%, #fff) 12%,
-      color-mix(in srgb, var(--b4-accent) 4%, #fff) 88%,
-      #fff 100%
-    );
-}
-
-/* A soft dotted field for decorative panels — larger + fainter than hero-grid,
-   and unmasked so callers control the fade with their own gradient overlay. */
-@utility dot-field {
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
-    transparent 1.6px
-  );
-  background-size: 30px 30px;
-}
-
-/* The signed-in chip. A flat accent circle read as another button; the tilt
-   plus the depth of the ink end makes it read as a person instead. */
+/* The signed-in chip: a plain accent disc with the member's initial. */
 @utility account-avatar {
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--b4-accent) 88%, white),
-    color-mix(in srgb, var(--b4-accent) 55%, var(--color-ink))
-  );
+  background: var(--b4-accent);
 }
 
 /* ---------------------------------------------------------------------------
-   CLAYMORPHISM (subtle)
+   COMPONENT CLASSES
 
-   Clay surfaces read as soft and moulded rather than flat: a highlight inset
-   along the top edge, a soft shade inset along the bottom, and a wide diffuse
-   drop shadow underneath. Kept deliberately gentle here , this is a business
-   site, not a toy , so the radii stay on brand and only the depth changes.
+   Plain CSS on purpose: one place defines what a button, a card or a heading
+   looks like, and the JSX just names it. Utilities still win over these, so
+   `btn btn-primary w-full` works as expected.
    --------------------------------------------------------------------------- */
-@utility clay {
-  box-shadow:
-    0 18px 40px -18px rgba(15, 23, 42, 0.24),
-    0 3px 8px -3px rgba(15, 23, 42, 0.08),
-    inset 0 2px 3px rgba(255, 255, 255, 0.95),
-    inset 0 -4px 8px rgba(15, 23, 42, 0.05);
-}
-
-/* The same idea on a dark surface, where the highlight has to be much fainter. */
-@utility clay-dark {
-  box-shadow:
-    0 26px 60px -26px rgba(15, 23, 42, 0.65),
-    inset 0 2px 3px rgba(255, 255, 255, 0.14),
-    inset 0 -6px 12px rgba(0, 0, 0, 0.28);
-}
-
-/* ---------------------------------------------------------------------------
-   SECTION BANDS
-
-   The page alternates between the tinted canvas and a white band so each
-   section announces itself. The band fades in and out at its edges rather than
-   stopping on a hard line, which is what made the old blocks look like stray
-   rectangles.
-   --------------------------------------------------------------------------- */
-@utility band-white {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #fff 0%, transparent) 0%,
-    #fff 7%,
-    #fff 93%,
-    color-mix(in srgb, #fff 0%, transparent) 100%
-  );
-}
-
-/* The navbar. Lighter than .clay , it is a wide surface, so the same shadow
-   would read as a slab hanging over the page. Lit along the top edge, shaded
-   along the bottom, with a soft spread underneath. */
-@utility clay-bar {
-  box-shadow:
-    0 12px 30px -18px rgba(15, 23, 42, 0.3),
-    0 2px 6px -3px rgba(15, 23, 42, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -3px 6px rgba(15, 23, 42, 0.045);
-}
-
-/* A pressed-in surface , the hollow counterpart to .clay. Used for grouped
-   rows inside a clay panel so they read as one moulded object. */
-@utility clay-inset {
-  box-shadow:
-    inset 0 2px 6px rgba(15, 23, 42, 0.07),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.9);
-}
-
-/* Presses squash slightly, the way a soft object would. */
-@utility clay-press {
-  transition:
-    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.22s ease;
-}
-.clay-press:active {
-  transform: scale(0.97);
-}
-
-/* Clay squish effect on hover/active for cards:
-   Simulates pressing/squishing soft moulded clay down into the canvas with shadow compression. */
-@utility clay-squish {
-  transition:
-    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.28s ease;
-}
-.clay-squish:hover {
-  transform: scale(0.982) translateY(2px);
-  box-shadow:
-    0 6px 16px -6px rgba(15, 23, 42, 0.16),
-    0 2px 4px -2px rgba(15, 23, 42, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -2px 5px rgba(15, 23, 42, 0.08);
-}
-.clay-squish:active {
-  transform: scale(0.965) translateY(4px);
-  box-shadow:
-    0 3px 8px -4px rgba(15, 23, 42, 0.14),
-    inset 0 2px 4px rgba(15, 23, 42, 0.1);
-}
-
 @layer components {
+  /* Page width + side gutters, used by every section. */
+  .shell {
+    width: 100%;
+    max-width: var(--container-shell);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .shell {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Vertical rhythm between sections. */
+  .section {
+    padding-block: 4.5rem;
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 6.5rem;
+    }
+  }
+
+  /* ---- Type ------------------------------------------------------------ */
+  .display-1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 2.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .display-1 {
+      font-size: 3rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .display-1 {
+      font-size: 3.5rem;
+      line-height: 1.06;
+    }
+  }
+
+  /* Title at the top of an inner page. */
+  .display-page {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 1.12;
+    letter-spacing: -0.022em;
+    color: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .display-page {
+      font-size: 2.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .display-page {
+      font-size: 2.875rem;
+      line-height: 1.08;
+    }
+  }
+
+  .display-2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .display-2 {
+      font-size: 2.125rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .display-2 {
+      font-size: 2.5rem;
+      line-height: 1.14;
+    }
+  }
+
+  .display-3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    color: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .display-3 {
+      font-size: 1.4rem;
+    }
+  }
+
+  .lead {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+  @media (min-width: 640px) {
+    .lead {
+      font-size: 1.125rem;
+    }
+  }
+
+  /* A short factual line above a heading, e.g. "Every second Saturday". */
+  .kicker {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--b4-accent);
+  }
+
+  /* Small caps label for groups inside cards and forms. (Not called
+     "overline": that is a Tailwind utility for text-decoration.) */
+  .meta-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  /* ---- Buttons --------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 3rem;
+    padding-inline: 1.375rem;
+    border-radius: var(--b4-btn);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .btn-sm {
+    height: 2.5rem;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+  }
+  .btn-lg {
+    height: 3.25rem;
+    padding-inline: 1.75rem;
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    background: var(--color-ink);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #2b303a;
+    color: #fff;
+  }
+
+  .btn-accent {
+    background: var(--b4-accent);
+    color: #fff;
+  }
+  .btn-accent:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--b4-accent) 86%, #000);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px #bfc4cd;
+  }
+
+  .btn-ghost {
+    color: var(--color-muted);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--color-ink);
+    background: var(--color-surface);
+  }
+
+  /* For dark panels. */
+  .btn-light {
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .btn-light:hover:not(:disabled) {
+    background: #e9ecf0;
+    color: var(--color-ink);
+  }
+  .btn-outline-light {
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  }
+  .btn-outline-light:hover:not(:disabled) {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  }
+
+  /* Round, icon-only. Always pair with an aria-label. */
+  .icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    color: var(--color-muted);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .icon-btn:hover:not(:disabled) {
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .icon-btn-outline {
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+    color: var(--color-ink);
+  }
+  .icon-btn-outline:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1px #bfc4cd;
+    background: var(--color-surface);
+  }
+  .icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Text link with a trailing arrow that nudges on hover. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    transition: color 0.2s ease;
+  }
+  .link-arrow:hover {
+    color: var(--b4-accent);
+  }
+  .link-arrow svg {
+    width: 1rem;
+    height: 1rem;
+    transition: translate 0.2s ease;
+  }
+  .link-arrow:hover svg {
+    translate: 2px 0;
+  }
+
+  /* Inline text link inside a paragraph. */
+  .link {
+    font-weight: 600;
+    color: var(--b4-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--b4-accent) 35%, transparent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s ease;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* ---- Surfaces -------------------------------------------------------- */
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--b4-card);
+    box-shadow: var(--shadow-card);
+  }
+  .card-hover {
+    transition:
+      opacity var(--reveal-dur, 0.7s) var(--ease-reveal),
+      translate var(--reveal-dur, 0.7s) var(--ease-reveal),
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+  .card-hover:hover {
+    border-color: var(--color-line-strong);
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Small status pill. Colour comes from utilities at the call site. */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 1.5rem;
+    padding-inline: 0.625rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* ---- Forms ----------------------------------------------------------- */
+  .field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .field-hint {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-subtle);
+  }
+  .field {
+    display: block;
+    width: 100%;
+    height: 3rem;
+    padding-inline: 0.95rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 12px;
+    background: #fff;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .field::placeholder {
+    color: var(--color-faint);
+  }
+  .field:hover:not(:focus):not(:disabled) {
+    border-color: #c4c9d2;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--b4-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--b4-accent) 16%, transparent);
+  }
+  .field:disabled {
+    background: var(--color-surface);
+    color: var(--color-subtle);
+  }
+  textarea.field {
+    height: auto;
+    padding-block: 0.75rem;
+    line-height: 1.6;
+  }
+  select.field {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 1rem;
+  }
+
+  /* ---- Motion ---------------------------------------------------------- */
+
   /*
-    Infinite marquee , the testimonials row.
+    Infinite marquee, the testimonials row.
 
     The track holds the same cards twice and slides exactly half its width, so
     the moment it finishes the second copy is sitting where the first started
@@ -316,7 +560,7 @@
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-drift var(--marquee-duration, 70s) linear infinite;
+    animation: marquee-drift var(--marquee-duration, 80s) linear infinite;
   }
 
   .marquee:hover .marquee-track,
@@ -324,10 +568,9 @@
     animation-play-state: paused;
   }
 
-  /* Fade the row out at both ends instead of cutting the cards off. The fade
-     is shorter on a phone, where 72px is a third of a card. */
+  /* Fade the row out at both ends instead of cutting the cards off. */
   .marquee-mask {
-    --mask-fade: 36px;
+    --mask-fade: 32px;
     -webkit-mask-image: linear-gradient(
       90deg,
       transparent 0,
@@ -343,30 +586,23 @@
       transparent 100%
     );
   }
-
   @media (min-width: 768px) {
     .marquee-mask {
-      --mask-fade: 72px;
+      --mask-fade: 80px;
     }
   }
 
-  /* Scroll reveal , driven by useReveal() */
   /*
-    Elements that also carry a `transition-[...]` utility (cards with hover
-    lifts) get their transition-property overwritten by that utility , the
-    utilities layer always beats this one. Those elements must list
-    `opacity,translate` in their own utility; see EventCard/AlbumCard.
-    Everything else falls back to the transition declared here.
-
-    Uses `translate` rather than `transform` so it composes with v4's
-    translate-* utilities instead of clobbering them.
+    Scroll reveal, driven by useReveal(): content eases up a few pixels as it
+    enters the viewport, once. Uses `translate` rather than `transform` so it
+    composes with v4's translate-* utilities instead of clobbering them.
   */
   .reveal {
     opacity: 0;
-    translate: 0 var(--reveal-dist, 26px);
-    transition-property: opacity, translate, box-shadow, transform;
-    transition-duration: var(--reveal-dur, 0.75s);
-    transition-timing-function: var(--ease-reveal);
+    translate: 0 var(--reveal-dist, 16px);
+    transition:
+      opacity var(--reveal-dur, 0.7s) var(--ease-reveal),
+      translate var(--reveal-dur, 0.7s) var(--ease-reveal);
   }
 
   .reveal.is-visible {
@@ -374,22 +610,16 @@
     translate: 0 0;
   }
 
-  /*
-    Dropdowns and drawers. An animation rather than a transition because these
-    elements are mounted on open , there's no "before" state to transition
-    from. Same reason as .reveal for animating `translate`/`scale` instead of
-    `transform`: it composes with v4's utilities rather than fighting them.
-  */
+  /* Dropdowns and drawers: an animation because they mount on open, so
+     there is no "before" state to transition from. */
   @keyframes menu-pop {
     from {
       opacity: 0;
       translate: 0 -6px;
-      scale: 0.97;
     }
     to {
       opacity: 1;
       translate: none;
-      scale: 1;
     }
   }
 
