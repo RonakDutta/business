@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
+import { Squiggle } from "./Decor.jsx";
 import { ArrowRightIcon, SparkleIcon } from "./icons.jsx";
 import { testimonials } from "../data/testimonials.js";
 
@@ -54,14 +55,10 @@ export default function Testimonials() {
     <section className="band-white py-16 md:py-24">
       <div className="mx-auto max-w-shell px-5 sm:px-6 md:px-10">
         <div className="reveal">
-          <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-            In their words
-          </div>
-
           <h2 className="text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
             Testimonials
           </h2>
+          <Squiggle className="mt-3 h-3 w-24 text-accent/55" />
 
           <p className="mt-4 max-w-[520px] text-[16px] leading-[1.7] text-muted sm:text-[17px]">
             What people walked out with. Tap any of them for the whole story.

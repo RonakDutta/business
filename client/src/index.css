@@ -58,7 +58,14 @@
   }
 
   body {
-    background: var(--color-canvas);
+    /* A faint blue dot pattern on the canvas, like squared paper. The white
+       bands sit on top of it, so it only shows between sections. */
+    background-color: var(--color-canvas);
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--b4-accent) 14%, transparent) 1.2px,
+      transparent 1.6px
+    );
+    background-size: 26px 26px;
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -210,10 +217,10 @@
    --------------------------------------------------------------------------- */
 @utility clay {
   box-shadow:
-    0 18px 40px -18px rgba(15, 23, 42, 0.24),
-    0 3px 8px -3px rgba(15, 23, 42, 0.08),
+    0 20px 42px -20px rgba(30, 58, 138, 0.3),
+    0 4px 10px -4px rgba(30, 58, 138, 0.1),
     inset 0 2px 3px rgba(255, 255, 255, 0.95),
-    inset 0 -4px 8px rgba(15, 23, 42, 0.05);
+    inset 0 -5px 10px rgba(37, 99, 235, 0.07);
 }
 
 /* The same idea on a dark surface, where the highlight has to be much fainter. */
@@ -257,7 +264,7 @@
    rows inside a clay panel so they read as one moulded object. */
 @utility clay-inset {
   box-shadow:
-    inset 0 2px 6px rgba(15, 23, 42, 0.07),
+    inset 0 2px 6px rgba(30, 58, 138, 0.09),
     inset 0 -1px 1px rgba(255, 255, 255, 0.9);
 }
 
@@ -421,4 +428,51 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   COZY PATTERNS
+
+   Soft blue textures for backing plates and headers. Built from the live
+   accent so they re-theme with everything else.
+   --------------------------------------------------------------------------- */
+@utility pattern-dots {
+  background-color: color-mix(in srgb, var(--b4-accent) 8%, #fff);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--b4-accent) 30%, transparent) 1.4px,
+    transparent 2px
+  );
+  background-size: 16px 16px;
+}
+
+@utility pattern-grid {
+  background-color: color-mix(in srgb, var(--b4-accent) 5%, #fff);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--b4-accent) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--b4-accent) 10%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* A clay surface tinted blue: the cozy counterpart to plain white clay. */
+@utility clay-blue {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--b4-accent) 6%, #fff),
+    color-mix(in srgb, var(--b4-accent) 13%, #fff)
+  );
+  box-shadow:
+    0 18px 36px -20px rgba(30, 58, 138, 0.32),
+    inset 0 2px 3px rgba(255, 255, 255, 0.95),
+    inset 0 -5px 10px rgba(37, 99, 235, 0.1);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--r, 0deg)); }
+}
+.bob {
+  animation: bob 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bob { animation: none; }
 }

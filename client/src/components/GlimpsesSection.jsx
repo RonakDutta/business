@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import CoverImage from "./CoverImage.jsx";
+import { Squiggle } from "./Decor.jsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "./icons.jsx";
 import { useEvents } from "../context/EventsContext.jsx";
 import { ServerLoader } from "./ServerLoader.jsx";
@@ -56,12 +57,10 @@ export default function GlimpsesSection({ albums = [] }) {
     <section id="gallery" className="px-5 py-16 sm:px-6 md:px-10 md:py-24">
       <div className="mx-auto max-w-shell">
         <div className="reveal">
-          <div className="text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            Glimpses
-          </div>
           <h2 className="mt-3 text-[30px] font-extrabold leading-[1.12] tracking-[-0.03em] sm:text-[38px] md:text-[44px]">
             From the past events
           </h2>
+          <Squiggle className="mt-3 h-3 w-24 text-accent/55" />
         </div>
 
         <div

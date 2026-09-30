@@ -122,11 +122,6 @@ export default function AuthForm({ mode = "login", onSubmit }) {
               </div>
             )}
 
-            <div className="reveal flex w-fit items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-              <EyebrowIcon className="h-3.5 w-3.5" />
-              {eyebrowText}
-            </div>
-
             <h1
               data-delay="0.06"
               className="reveal mt-3 text-[30px] font-extrabold tracking-[-0.035em] md:text-[36px]"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowUpRightIcon, UsersIcon } from "./icons.jsx";
+import { Squiggle } from "./Decor.jsx";
 
 /**
  * Helper to get initials from full name
@@ -69,7 +70,6 @@ function TeamMember({ person }) {
           {person.name}
         </h3>
         <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.09em] text-accent sm:mt-2 sm:px-3 sm:py-1 sm:text-[11px]">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
           {person.role}
         </div>
       </div>
@@ -100,14 +100,10 @@ export default function Team({ members = [], showHeader = true }) {
     <section id="team" className="relative mx-auto w-full">
       {showHeader && (
         <div className="reveal mb-10 text-center">
-          <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-            <UsersIcon className="h-3.5 w-3.5" />
-            The organisers
-          </div>
           <h2 className="text-[30px] font-extrabold tracking-[-0.025em] md:text-[38px]">
             Meet the organising team
           </h2>
-          <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-accent" />
+          <Squiggle className="mx-auto mt-3 h-3 w-24 text-accent/55" />
           <p className="mx-auto mt-5 max-w-[460px] text-[16px] leading-[1.65] text-muted">
             The people who show up early, stack the chairs, and make sure you
             leave knowing someone new.

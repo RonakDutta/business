@@ -1,6 +1,12 @@
 import { useState } from "react";
 import VideoPlaceholder from "./VideoPlaceholder.jsx";
-import { Blobs, PersonTalking, GlowingRings } from "./Decor.jsx";
+import {
+  Blobs,
+  PersonTalking,
+  Squiggle,
+  Sparkle,
+  CurlyArrow,
+} from "./Decor.jsx";
 import { ArrowRightIcon } from "./icons.jsx";
 import TextType from "./TextType";
 import Hyperspeed from "./Hyperspeed.jsx";
@@ -15,17 +21,26 @@ function HeroIllustration() {
       <PersonTalking className="h-auto w-full max-w-[480px] sm:max-w-[520px]" />
     );
 
+  /* The PNG already carries its own rounded lavender card, so it is not
+     wrapped in another white frame. It sits on an offset dotted plate like a
+     print pinned to a board, with a few pen doodles around it. */
   return (
-    <div className="relative isolate max-w-[520px] sm:max-w-[580px] lg:max-w-[620px] w-full">
-      <GlowingRings className="pointer-events-none absolute -right-10 -top-10 z-0 h-[280px] w-[280px] sm:h-[340px] sm:w-[340px]" />
-      <div className="clay relative z-10 overflow-hidden rounded-[26px] bg-white p-2.5 sm:p-3.5 w-full border border-line shadow-md">
+    <div className="relative isolate w-full max-w-[560px] px-4 py-6">
+      <div
+        aria-hidden
+        className="pattern-dots clay absolute inset-x-4 inset-y-6 -z-10 translate-x-5 translate-y-5 rotate-[3deg] rounded-[30px]"
+      />
+      <div className="clay relative -rotate-[1.5deg] overflow-hidden rounded-[28px] bg-[#eef1fe] ring-[6px] ring-white">
         <img
           src={ILLUSTRATION}
-          alt="What is Business 4.0 illustration"
+          alt="A person at a laptop explaining an idea"
           onError={() => setFailed(true)}
-          className="h-auto w-full rounded-[18px] object-cover"
+          className="block h-auto w-full scale-[1.025]"
         />
       </div>
+      <Sparkle className="bob pointer-events-none absolute -right-1 top-0 h-10 w-10 text-accent [--r:12deg]" />
+      <Squiggle className="pointer-events-none absolute -bottom-1 left-10 h-4 w-28 text-accent/45" />
+      <CurlyArrow className="pointer-events-none absolute -left-16 top-4 h-16 w-24 -scale-x-100 rotate-[20deg] text-accent/40" />
     </div>
   );
 }

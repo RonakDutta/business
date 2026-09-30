@@ -137,11 +137,6 @@ export default function Contact() {
       <Orb className="pointer-events-none absolute -left-24 -top-10 -z-10 h-64 w-64 text-accent blur-2xl" />
 
       <header className="max-w-[640px]">
-        <div className="reveal accent-border inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-2 text-xs font-bold tracking-[0.1em] text-accent backdrop-blur">
-          <MailIcon className="h-3.5 w-3.5" />
-          GET IN TOUCH
-        </div>
-
         <h1
           data-delay="0.06"
           className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[52px]"

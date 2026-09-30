@@ -20,10 +20,6 @@ export default function EventsSection({
       <div className="reveal mb-8 flex flex-wrap items-end justify-between gap-5">
         <div>
           {eyebrow && (
-            <div className="mb-2.5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-              {eyebrow}
-            </div>
           )}
           <h2 className={`${headingClass} font-extrabold tracking-tight`}>
             {title}

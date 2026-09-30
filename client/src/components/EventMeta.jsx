@@ -18,7 +18,7 @@ import { googleCalendarUrl, mapsUrl, isOnline, priceLabel } from "../lib/format.
 function Fact({ icon: Icon, label, value, note, action }) {
   return (
     <div className="flex items-start gap-3.5 p-5">
-      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
+      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center clay-blue rounded-xl text-accent">
         <Icon className="h-[18px] w-[18px]" />
       </span>
 

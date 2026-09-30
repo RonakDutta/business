@@ -115,10 +115,6 @@ function Rule({ text, allowed }) {
 function SectionHead({ icon: Icon, eyebrow, title, className = "" }) {
   return (
     <div className={className}>
-      <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.13em] text-accent">
-        {Icon && <Icon className="h-3.5 w-3.5" />}
-        {eyebrow}
-      </div>
       <h2 className="mt-2.5 text-[26px] font-extrabold tracking-[-0.03em] md:text-[34px]">
         {title}
       </h2>
@@ -147,11 +143,6 @@ export default function Guidelines() {
         <Orb className="pointer-events-none absolute -left-28 -top-24 -z-10 h-72 w-72 text-accent blur-2xl" />
 
         <div className="max-w-[720px]">
-          <div className="reveal accent-border inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-2 text-xs font-bold tracking-[0.1em] text-accent backdrop-blur">
-            <ShieldIcon className="h-3.5 w-3.5" />
-            COMMUNITY GUIDELINES
-          </div>
-
           <h1
             data-delay="0.06"
             className="reveal mt-7 text-[36px] font-extrabold leading-[1.08] tracking-[-0.035em] [text-wrap:balance] md:text-[54px]"

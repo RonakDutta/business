@@ -452,3 +452,75 @@ export function GlowingRings({ className = "" }) {
     </svg>
   );
 }
+
+/* ---------------------------------------------------------------------------
+   HAND-DRAWN DOODLES
+
+   Small pen-stroke marks that sit around clay surfaces so the page feels
+   sketched on rather than generated. All use currentColor and round caps.
+   --------------------------------------------------------------------------- */
+export function Squiggle({ className = "" }) {
+  return (
+    <svg viewBox="0 0 120 24" className={className} aria-hidden="true" fill="none">
+      <path
+        d="M3 14c8-10 14-10 20 0s12 10 18 0 12-10 18 0 12 10 18 0 12-10 18 0 12 10 18 0"
+        stroke="currentColor"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function Sparkle({ className = "" }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden="true" fill="none">
+      <path
+        d="M20 3c1.6 8.8 4.2 11.4 13 13-8.8 1.6-11.4 4.2-13 13-1.6-8.8-4.2-11.4-13-13 8.8-1.6 11.4-4.2 13-13Z"
+        fill="currentColor"
+      />
+      <path d="M34 30v6M31 33h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function CurlyArrow({ className = "" }) {
+  return (
+    <svg viewBox="0 0 110 80" className={className} aria-hidden="true" fill="none">
+      <path
+        d="M6 12c22-8 44 2 40 20-3 13-20 12-18 1 3-14 30-16 44-2 9 9 14 22 16 36"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="1 8"
+      />
+      <path
+        d="M78 58l10 11 10-13"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/* A rounded swatch of dots, like a stamp pressed into the clay. */
+export function DotSwatch({ className = "", cols = 5, rows = 4 }) {
+  const dots = [];
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) dots.push([10 + c * 16, 10 + r * 16]);
+  return (
+    <svg
+      viewBox={`0 0 ${cols * 16 + 4} ${rows * 16 + 4}`}
+      className={className}
+      aria-hidden="true"
+    >
+      {dots.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="3" fill="currentColor" />
+      ))}
+    </svg>
+  );
+}
